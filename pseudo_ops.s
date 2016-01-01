@@ -103,7 +103,7 @@ _mult:
 	push bp
 	mov bp, sp
 	ldw r2, 4(bp)
-	ldw r2, 6(bp)
+	ldw r3, 6(bp)
 
 	mov r1, r0 ; result reg
 ; if a > b

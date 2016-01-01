@@ -35,7 +35,7 @@ printint(int xx, int base, int sign)
 }
 
 void
-printf(int fd, char *fmt, ...)
+printf(char *fmt, ...)
 {
   int i, c;
   uint *argp;
@@ -66,7 +66,6 @@ printf(int fd, char *fmt, ...)
 			printint(*argp++, 16, 0);
       break;
     case 's':
-			breek();
       if((s = (char*)*argp++) == 0)
         s = "(null)";
       for(; *s; s++){
@@ -86,17 +85,17 @@ printf(int fd, char *fmt, ...)
 			pbuf.idx++;
      }
 	}
-	pbuf.data[pbuf.idx] = '\0';
-	write(fd, &pbuf.data, pbuf.idx);
+	pbuf.data[pbuf.idx] = 0;
+	write(1, &pbuf.data, pbuf.idx);
 }
 
 int
 gets(int fd, char *buf, int max)
 {
-	int i;
+	int i=0;
 	char c;
 	//breek();
-	for(i=0;i<=max;){
+	while(i<max){
 		read(fd, &c, 1);
 		//printf("%x", c);
 		if(c=='\r' || c=='\n' || c==0x3c){
@@ -107,4 +106,26 @@ gets(int fd, char *buf, int max)
 			i++;
 		}
 	}
+}
+
+int
+strcmp(const char *p, const char *q, uint n)
+{
+	while(n > 0 && *p && *p == *q)
+		n--, p++, q++;
+  if(n == 0)
+    return 0;
+  return (uchar)*p - (uchar)*q;
+}
+
+
+char*
+strcpy(char *s, char *t)
+{
+  char *os;
+
+  os = s;
+  while((*s++ = *t++) != 0)
+    ;
+  return os;
 }

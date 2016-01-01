@@ -2,6 +2,8 @@
 #include "proc.h"
 #include "mmap.h"
 #include "defs.h"
+#include "fs.h"
+
 
 /* process table is directly linked with the available address spaces
  * determined by the size of the physical page table memory in CPU
@@ -53,6 +55,7 @@ found:
 	/* acquire and map into address space a new page for kstack of new process */
 	p->kstackpage = kalloc();
 	mappage(currproc->ptb, p->kstackpage, KSTACKSCAFF_PG, 0x3);
+	memset((char*)0xf000,0,PGSIZE);
 	p->state = EMBRYO;
 	p->pid = nextpid;
 	nextpid++;
@@ -93,6 +96,7 @@ userinit()
 	p->sz = PGSIZE;
 	p->cwd = namei("/");
 	p->state = RUNNABLE;
+	//strcopy(p->name, "init", (uint)sizeof(p->name));
 	kprintf("userinit: first user process ready to run..\n");
 }
 
@@ -122,7 +126,7 @@ scheduler()
 		if(norunnable){
 			sdirq(1);
 			uartirq();
-			rsi();
+			rsi(); // reset any pending irq in priority encoder
 		}
 	}
 }
@@ -132,6 +136,7 @@ fork(void)
 {
 	struct proc *child;
 	struct contextframe *cf;
+	int i;
 
 	// make an exact copy of the calling process:
 	// 1. allocate and setup a new address space
@@ -145,6 +150,9 @@ fork(void)
 	child->parent = currproc;
 	child->state = 3;
 	child->cwd = currproc->cwd;
+	for(i=0; i<=NOFILE; i++){
+		child->ofile[i]=currproc->ofile[i];
+	}
 	// copy contents to new process
 	copyuvm(currproc->ptb, child->ptb, currproc->sz);
 	//kprintf("HWG: ptb: %x, kstack: %x, pid: %x\n", child->ptb, child->kstack, child->pid);
@@ -174,8 +182,10 @@ wakeup(void *chan)
 	struct proc *p;
 
 	for(p=ptable;p<&ptable[15];p++) {
-		if(p->chan == chan)
+		if(p->chan == chan && p->state == SLEEPING) {
+			kprintf("wakeup: waking %x\n", p);
 			p->state = RUNNABLE;
+		}
 	}
 }
 
@@ -192,6 +202,7 @@ wait()
 		for(p=ptable;p<&ptable[15];p++) {
 			if(p->parent==currproc) {
 				if(p->state == ZOMBIE) {
+					kprintf("wait: freeing %x\n", p);
 					freeuvm(p);
 					p->sz = 0;
 					p->pid = 0;
@@ -236,10 +247,10 @@ listproc(void)
 	int i;
 	struct proc *p;
 
-	kprintf("\nPID LOC PTB  NAME\n");
+	kprintf("\nPID LOC PTB  SIZE  NAME\n");
 	for(p=ptable;p<&ptable[15];p++){
 		if(p->state != UNUSED){
-			kprintf("%d  %x  %x  NAME\n", p->pid, p, p->ptb);
+			kprintf("%d  %x  %x  %x %s\n", p->pid, p, p->ptb, p->sz, p->name);
 		}
 	}
 }

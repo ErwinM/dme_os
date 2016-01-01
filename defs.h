@@ -7,6 +7,8 @@ struct buf* bread(uint blockno);
 int popc(char *c);
 int pushc(char *c);
 
+// file.c
+void fileinit();
 
 // fs.c
 void fsinit(void);

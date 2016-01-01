@@ -66,6 +66,12 @@ struct inode {
   uint addrs[NDIRECT+1]; // Data block addresses
 };
 
+struct stat {
+	uint type;
+	uint size;
+	uint inum;
+};
+
 #define I_BUSY 0x1
 #define I_VALID 0x2
 

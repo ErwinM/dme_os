@@ -12,6 +12,7 @@ static char path[] = "/fs.h";
 
 int kmain() {
 
+
 	uint x,y, r;
 
   char name[13];

@@ -26,19 +26,9 @@ _sdreadb:
 	br wait_while_busy
 	pop r2
 
-
-	;la16 r3, 0xffa0
-	;mov bp, r3
-	;ldw r1, 8(bp)
-	;ldw r2, 10(bp)
-	;ldw r3, 8(bp)
-	;ldw r4, 10(bp)
-	;hlt
-
 	la16 r3, 0xffa8
 	la16 r1, 512
 	add r4, r2, r1	; when buf ptr reaches this address we are done (512 bytes)
-
 L4:
 	ldw r1, r0(r3)
 	stw r0(r2), r1
@@ -52,7 +42,6 @@ L4:
 
 	skip.gte r2, r4
 	br L4
-
 L3:
 	mov	sp, bp
 	pop	bp
@@ -65,6 +54,50 @@ _sdreadcmd:
 	ldw r1, r0(r2)
 	pop	pc
 
+;	writes a single block identified by blockno
+; from buffer pointed to by ptr
+; usage: sdwriteb(bf.blockno, &bf.data)
+_sdwriteb:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldw r2, 6(bp) ; buf ptr
+
+	; set fifo
+	la16 r4, 0x0700
+	la16	r3, 0xffa6
+	stw r0(r3), r4
+
+	; write block to fifo
+	la16 r3, 0xffa8
+	la16 r1, 512
+	add r4, r2, r1	; when buf ptr reaches this address we are done (512 bytes)
+L5:
+	ldw r1, r0(r2)
+	stw r0(r3), r1
+	addi r2, r2, 2
+
+	addi r3, r3, 2 ; increment sd fifo addr to low byte
+	ldw r1, r0(r2)
+	stw r0(r3), r1
+	addi r2, r2, 2
+	subi r3, r3, 2 ; decrease sd fifo addr to high byte
+
+	skip.gte r2, r4
+	br L5
+
+	; issue write command
+	ldw r1, 4(bp) ; blockno
+	la16	r4,0xffa6
+	stw	r0(r4),r1
+
+	la16	r4, 0xffa2
+	la16	r3, 0x8c58
+	stw	r0(r4),r3
+L6:
+	mov	sp, bp
+	pop	bp
+	pop	pc
 
 ; SD initiation sequence
 _sdinit:

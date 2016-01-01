@@ -6,7 +6,7 @@ extern struct proc *currproc;
 void trap(struct trapframe *tf)
 {
 	currproc->tf = tf;
-	kprintf("Trap: %x, uSP: %x\n", tf->trapno, tf->sp);
+	//kprintf("Trap: %x, uSP: %x\n", tf->trapno, tf->sp);
 
 	/* if timer IRQ: tf else: */
 	if(tf->trapno==0x2){

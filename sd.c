@@ -34,7 +34,7 @@ sdwork()
 	struct buf *b;
 	/* implement read */
 	// check if disk is busy, if so sleep
-	kprintf("sdwork: cmd: %x", sdreadcmd());
+	//kprintf("sdwork: cmd: %x", sdreadcmd());
 	if((sdreadcmd() & 0x4000) == 0x4000) {
 		kprintf("sdword: disk busy!\n");
 		sleep(&sdqueue);
@@ -44,13 +44,21 @@ sdwork()
 		return;
 	b = sdqueue;
 	sdqueue = b->qnext;
-	kprintf("-->sdwork: b: %x\n", b);
-	kprintf("-->sdwork: sdq: %x\n", sdqueue);
+	//kprintf("-->sdwork: b: %x\n", b);
+	//kprintf("-->sdwork: sdq: %x\n", sdqueue);
 	//breek();
-	kprintf("sdwork: retrieving block %x\n", b->blockno);
-	sdreadb(b->blockno, b->data);
-	b->flags |= B_VALID;
-	// fsim reads are (near) instant, in reality they take milliseconds
+	if((b->flags & B_DIRTY) == B_DIRTY){
+		// write it
+		kprintf("sdwork: writing block %x\n", b->blockno);
+		sdwriteb(b->blockno, b->data);
+		b->flags &= ~B_DIRTY;
+	} else {
+		// read it
+		kprintf("sdwork: retrieving block %x\n", b->blockno);
+		sdreadb(b->blockno, b->data);
+		b->flags |= B_VALID;
+	}
+	// fsim block reads are (near) instant, in reality they take milliseconds
 	// need to work with interrupts, but that requires:
 	// - sd irq implemented in fsim
 	// - sd irq interface researched
@@ -72,7 +80,7 @@ sdirq(int forced)
 	}
 	wakeup(&sdqueue);
 
-	if(sdqueue) {
+	if(sdqueue!=0) {
 		kprintf("sdirq: sdqueue: %x", (uint)sdqueue);
 		sdwork();
 	}

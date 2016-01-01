@@ -7,6 +7,12 @@
 struct file ftable[TOTFILE];
 extern struct proc *currproc;
 
+void
+fileinit()
+{
+	memset(&ftable,0,(uint)sizeof(ftable));
+}
+
 struct file*
 filealloc()
 {
@@ -74,7 +80,7 @@ fileread(uint fd, char *buf, uint n)
 	struct file *f;
 	// readi(struct inode *ip, char *dst, uint off, uint n)
 	f = currproc->ofile[fd];
-	kprintf("fileread: fd(%d), currproc(%x), f(%x), ip(%x)\n", fd, currproc, f, f->ip);
+	//kprintf("fileread: fd(%d), currproc(%x), f(%x), ip(%x)\n", fd, currproc, f, f->ip->inum);
 	nr = readi(f->ip, buf, f->off, n);
 	f->off += nr;
 	return nr;

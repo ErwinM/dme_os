@@ -106,7 +106,7 @@ freeuvm(struct proc *p)
 {
 	uint pgtable[32], i, page;
 
-	kprintf("ptable at %x/n", &pgtable);
+	//kprintf("ptable at %x/n", &pgtable);
 
 	readpt(p->ptb, &pgtable);
 	// remember the kernel is also mapped in every address space. These

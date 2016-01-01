@@ -1,1 +1,1 @@
-cp ./kernel_ram.mif /Users/erwinmatthijssen/Dropbox\ \(Persoonlijk\)/HACK/PLAY/dme_os.mif
+cp ./dme_os_ram.mif /Users/erwinmatthijssen/Dropbox\ \(Persoonlijk\)/HACK/PLAY/dme_os.mif

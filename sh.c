@@ -19,11 +19,11 @@ main()
 	// lets assume we have our standard fd open
 	n = open("/console", 0);
 	printf("main: console %x", n);
-	printf(1, "DME shell v1 starting..\n\n\n\n");
+	printf("DME shell v1 starting..\n\n\n\n");
 	while(1){
 		getcmd(n);
 		wait();
-		printf(1, "sh: getcmd returned\n");
+		printf("sh: getcmd returned\n");
 	}
 	halt();
 }
@@ -34,7 +34,7 @@ getcmd(uint term)
 	int pid;
 
 	// for now it is always an execcmd
-	printf(1, "DME OS$ ");
+	printf("DME OS$ ");
 	gets(term, &ibuf, 20);
 	parseline(&ibuf);
 	nulterminate();

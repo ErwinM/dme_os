@@ -14,12 +14,15 @@ exec(char *path, char **argv)
 	struct inode *ip;
 	struct binhdr hdr;
 	int oldsz;
+	char *s, *last;
+	//char procname[8];
 
 	/* lookup inode */
 	if ((ip = namei(path))==0){
 		kprintf("exec: file not found!\n");
 		halt();
 	}
+
 	ilock(ip);
 	kprintf("exec, inum: %x", ip->inum);
 
@@ -38,17 +41,22 @@ exec(char *path, char **argv)
 		currproc->sz = allocuvm(hdr.size+PGSIZE);
 	}
 
+  // Save program name for debugging.
+  for(last=s=path; *s; s++)
+    if(*s == '/')
+      last = s+1;
+  safestrcpy(currproc->name, last, (uint)sizeof(currproc->name));
+
   // Load program into memory of current user process
 	loaduvm(ip, 6, hdr.size);
-
+	iunlock(ip);
+	iput(ip);
   // Push argument strings
 
 	// prepare rest of stack in ustack.
 	currproc->tf->pc = 0;
 	currproc->tf->r1 = 0;
 	currproc->tf->sp = currproc->sz;
-
-  // Save program name for debugging.
 
   // Commit to the user image.
 	//kprintf("exec: returning\n");

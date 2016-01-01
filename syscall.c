@@ -95,7 +95,7 @@ argptr(int n, char **p, int sz)
 		halt();
 	if( n>currproc->sz || i+sz>currproc->sz) {
 		kprintf("hiero komt de halt: n(%x) proc.sz(%x), i+sz(%x)\n", n, currproc->sz, i+sz);
-		halt();
+		breek();
 	}
 	*p = (char*)i;
 	return 0;

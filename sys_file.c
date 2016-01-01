@@ -38,7 +38,7 @@ sys_read(void)
 	if(argptr(1, &buf, n) < 0)
 		halt();
 
-	kprintf("sys_read: fd(%d)\n", fd);
+	//kprintf("sys_read: fd(%d)\n", fd);
 
 	return fileread(fd, buf, n);
 }

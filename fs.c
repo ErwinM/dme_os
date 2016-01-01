@@ -22,6 +22,7 @@ fsinit(void)
 	sdinit();
 	binit();
 	readsb();
+	fileinit();
 }
 
 /* read the superblock */
@@ -39,6 +40,7 @@ iget(uint inum)
 {
 	struct inode *ip, *freeinode;
 
+	freeinode = 0;
 	// check if the inode is already in cache
 	for(ip=icache;ip<&icache[NINODES];ip++){
 		if(ip->ref == 0)
@@ -54,7 +56,7 @@ iget(uint inum)
 	freeinode->inum = inum;
 	freeinode->ref = 1;
 	freeinode->flags = 0;
-	kprintf("iget: allocated inode at: %x for inum: %x", (uint)freeinode, inum);
+	kprintf("IGET: allocated inode at: %x for inum: %x\n", (uint)freeinode, inum);
 	//breek();
 	return freeinode;
 }
@@ -85,13 +87,13 @@ ilock(struct inode *ip)
   ip->size = dip->size;
   memmove(ip->addrs, dip->addrs, (uint)sizeof(ip->addrs));
   brelse(buf);
-  ip->flags |= I_VALID;
+  ip->flags |= I_VALID | I_BUSY;
 }
 
 void iunlock(struct inode *ip)
 {
-	if(ip->flags != I_BUSY) {
-		kprintf("iunlock: inode not flagged busy!\n");
+	if((ip->flags & I_BUSY) != I_BUSY) {
+		kprintf("iunlock: inode (%x) not flagged busy!\n", ip);
 		halt();
 	}
 	ip->flags &= ~I_BUSY;
@@ -103,38 +105,41 @@ void iput(struct inode *ip)
 }
 
 // Return the disk block address of the nth block in inode ip.
-// If there is no such block, bmap allocates one.
+// TODO: If there is no such block, bmap allocates one.
 int
 bmap(struct inode *ip, uint n)
 {
-	uint blockno;
+	uint blockno, *a;
 	struct buf *b;
 
-	if(n>NDIRECT) {
-		kprintf("Indirect blocks not implemented yet!\n");
-		halt();
+	if(n<NDIRECT) {
+		return ip->addrs[n];
+	} else {
+		kprintf("Loading indirect blocks from ip(%x): %x\n", ip, ip->addrs[NDIRECT]);
+		b = bread(ip->addrs[NDIRECT]);
+		a = (uint*)b->data + (n-NDIRECT);
+		brelse(b);
+		kprintf("requesting block %x from buf(%x), address: %x(%x)", n, b,a,*a);
+		return *a;
 	}
-
-	return ip->addrs[n];
 }
 
 
 // Read data from inode.
-// FIXME: currently reads one block max at a time
 int
 readi(struct inode *ip, char *dst, uint off, uint n)
 {
 	struct buf *b;
-	uint bn, tot, m;
+	uint tot, m;
 
-	kprintf("readi: ip(%x), type(%x)\n", ip->inum, ip->type);
+	//kprintf("readi: ip(%x), type(%x)\n", ip->inum, ip->type);
 	if(ip->type == T_DEV){
 		return readterm(dst, n);
 	}
 
 	for(tot=0; tot<n; tot+=m, off+=m, dst+=m) {
 		b = bread(bmap(ip, off/BSIZE));
-		// how much to copy...
+		// how much to copy...to end of block or n
 		if ((n-tot) > BSIZE)
 			m = BSIZE-off%BSIZE;
 		else
@@ -143,6 +148,35 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 		memmove(dst, b->data+(off%BSIZE), m);
 		brelse(b);
 	}
+	return tot;
+}
+
+
+int
+writei(struct inode *ip, char *src, uint off, uint n)
+{
+	// write from src to src+n to inode n at offset off
+	// get the right buf loaded, make the write
+	// write the block(s)
+	struct buf *b;
+	uint bn, prev_bn, tot, m;
+
+	for(tot=0;tot<n; tot+=m, off+=m, src+=m){
+		bn = bmap(ip, off/BSIZE);
+		if(bn != prev_bn){
+			// write to log when we cross block boundry
+			bwrite(prev_bn);
+			b = bread(bn);
+		}
+		if ((n-tot) > BSIZE)
+			m = BSIZE-off%BSIZE;
+		else
+			m = n-tot;
+		memmove(b->data+(off%BSIZE), src, n);
+		b->flags &= B_DIRTY;
+		prev_bn = bn;
+	}
+	bwrite(bn);
 	return tot;
 }
 
@@ -158,6 +192,7 @@ dirlookup(struct inode *ip, char *name)
 		kprintf("dirlookup: %x, off: %x\n", &direntry, off);
 		readi(ip, (char*)&direntry, off, (uint)sizeof(de));
 		if(strcmp(direntry.name, name, DIRSIZE)==0) {
+			kprintf("dirlookup: file found.\n");
 			return iget(direntry.inum);
 		}
 	}
@@ -193,7 +228,7 @@ namei(char *path)
 	struct inode *ip, *next;
 	int inum, i;
 	char name[DIRSIZE];
-	kprintf("cwd: %x", currproc->cwd);
+	kprintf("namei: cwd is %x\n", currproc->cwd);
 	// find where to begin
 	if(path[0]=='/')
 		ip = iget(ROOTINO);
@@ -210,9 +245,9 @@ namei(char *path)
 		}
 		next = dirlookup(ip, name);
 		// unlock ip;
+		iunlock(ip);
 		ip = next;
 	}
 	// ip now points to our target file
 	return ip;
 }
-

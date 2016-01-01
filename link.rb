@@ -70,7 +70,7 @@ sources.each do |fname|
     end
 
     syms.each do |s|
-      line.sub!(s, "#{s}_#{name}")
+      line.gsub!(s, "#{s}_#{name}")
     end
 
     output.write(line)

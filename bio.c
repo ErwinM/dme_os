@@ -37,16 +37,15 @@ static struct buf* bget(uint blockno)
 
  loop:
   // Is the block already cached?
- kprintf("bget: looking for buf with blockno: %x\n", blockno);
+ 	kprintf("bget: looking for buf with blockno: %x\n", blockno);
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->blockno == blockno){
       if(!(b->flags & B_BUSY)){
         b->flags |= B_BUSY;
         return b;
       }
-			kprintf("bget: found block with blockno: %x at %x\n", blockno, b);
-      kprintf("sleep(b, &bcache.lock)\n");
-			halt();
+			kprintf("bget: found block with blockno: %x at %x BUSY\n", blockno, b);
+      sleep(b);
       goto loop;
     }
   }
@@ -58,7 +57,7 @@ static struct buf* bget(uint blockno)
     if((b->flags & B_BUSY) == 0 && (b->flags & B_DIRTY) == 0){
       b->blockno = blockno;
       b->flags = B_BUSY;
-			kprintf("bget: allocating new buffer at %x\n", (uint)b);
+			//kprintf("bget: allocating new buffer at %x\n", (uint)b);
       return b;
     }
   }
@@ -83,10 +82,10 @@ struct buf* bread(uint blockno)
 void
 bwrite(struct buf *b)
 {
-  if((b->flags & B_BUSY) == 0)
+  //if((b->flags & B_BUSY) == 0)
     //panic("bwrite");
   b->flags |= B_DIRTY;
-  //iderw(b);
+  sdrw(b);
 }
 
 // Release a B_BUSY buffer.
@@ -105,6 +104,6 @@ brelse(struct buf *b)
   bcache.head.next = b;
 
   b->flags &= ~B_BUSY;
-  //wakeup(b);
+  wakeup(b);
 
 }
