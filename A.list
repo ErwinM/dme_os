@@ -1,0 +1,94 @@
+0000 : 0019     |     ldi r1, 0x3
+0002 : 0012     |     ldi r2, 0x2
+0004 : d088     |     wpte r2, r1
+0006 : 081a     |     ldi r2, 0x103
+0008 : 001b     |     ldi r3, 3
+000a : d0d0     |     wpte r3, r2
+000c : d008     |     wpte r0, r1
+000e : 0009     |     ldi r1, 1
+0010 : d050     |     wpte r1, r2
+0012 : 081a     |     ld16 r2, 0x1f03
+0014 : bc3d     |     
+0016 : 00f9     |     ldi r1, 31
+0018 : d050     |     wpte r1, r2
+001a : cc01     |     lcr r1
+001c : a889     |     ori r1, r1, 4
+001e : ce40     |     scr r1
+0020 : 04e1     |     la16 r1, _trap
+0022 : d801     |     wivec r1
+0024 : 0001     |     la16 r1, 0x1000
+0026 : bc20     |     
+0028 : 9446     |     mov sp, r1
+002a : 0181     |     la16 r1, _kmain
+002c : c201     |     br.r r1
+002e : fe00     |     hlt
+     :          | _kmain:
+0030 : be01     |     push	r1
+0032 : be05     |     push	bp
+0034 : 9585     |     mov	bp, sp
+0036 : 04f4     |     la16	r4,L2_kmain
+0038 : be04     |     push	r4
+003a : a279     |     addi	r1,pc,2
+003c : 2006     |     br	_kprintf ; jaddr
+003e : 9401     |     mov	r1,r0
+     :          | L1_kmain:
+0040 : c005     |     pop	bp
+0042 : c007     |     pop	pc
+     :          | _kprintf:
+0044 : be01     |     push	r1
+0046 : be05     |     push	bp
+0048 : 9585     |     mov	bp, sp
+004a : 0014     |     ldi	r4, 2
+004c : 97a6     |     sub	sp, sp, r4
+004e : 91f8     |     stw	-2(bp),r0
+0050 : 0344     |     la16	r4,L3_console
+0052 : c204     |     br.r r4
+     :          | L2_console:
+0054 : 89fb     |     ldw	r4,-2(bp)
+0056 : 8812     |     ldw	r3,4(bp)
+0058 : 951c     |     add	r4,r4,r3
+005a : b224     |     ldb	r4,r0(r4)
+005c : be04     |     push	r4
+005e : a279     |     addi	r1,pc,2
+0060 : 2018     |     br	_putc ; jaddr
+0062 : 89fb     |     ldw	r4,-2(bp)
+0064 : a224     |     addi	r4,r4,1
+0066 : 8dfb     |     stw	-2(bp),r4
+     :          | L3_console:
+0068 : 89fb     |     ldw	r4,-2(bp)
+006a : 8812     |     ldw	r3,4(bp)
+006c : 951c     |     add	r4,r4,r3
+006e : b224     |     ldb	r4,r0(r4)
+0070 : 9d00     |     skip.eq r4,r0
+0072 : 3fe0     |     br L2_console
+     :          | L1_console:
+0074 : 9546     |     mov	sp, bp
+0076 : c005     |     pop	bp
+0078 : c007     |     pop	pc
+     :          | _putc:
+007a : be01     |     push r1
+007c : be05     |     push bp
+007e : 9585     |     mov bp, sp
+0080 : 0c84     |     la16 r4, 0xff90
+0082 : bdff     |     
+     :          | check_tx_free_uart:
+0084 : 0029     |     ldi r1, 5
+0086 : 9461     |     add r1, r1, r4
+0088 : b009     |     ldw r1, r0(r1)
+008a : 0302     |     ldi r2, 0x60
+008c : 9851     |     and r1, r1, r2
+008e : 9e8a     |     addskp.z r2, r2, r1
+0090 : 3ff2     |     br check_tx_free_uart
+0092 : a2a9     |     addi r1, bp, 4
+0094 : b00b     |     ldw r3, r0(r1)
+0096 : b623     |     stb r0(r4), r3
+0098 : c005     |     pop	bp
+009a : c007     |     pop	pc
+     :          | _trap:
+009c : babe     |     defw 0xbabe
+     :          | L2_kmain:
+009e : 444d     |     defstr "DME OS.."
+00a0 : 4520     |     
+00a2 : 4f53     |     
+00a4 : 2e2e     |     
+00a6 : 0000     |     
