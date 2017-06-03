@@ -1,0 +1,34 @@
+export setframe
+segment text
+function setframe type=int function(unsigned int) sclass=auto scope=GLOBAL flags=0 ref=0.000000 ncalls=0
+caller addr type=unsigned int sclass=auto scope=PARAM flags=0 offset=0 ref=0.000000
+callee addr type=unsigned int sclass=auto scope=PARAM flags=0 offset=0 ref=1.000000
+blockbeg off=0
+local frame type=int sclass=register scope=LOCAL flags=0 offset=0 ref=3.000000
+local off type=int sclass=auto scope=LOCAL flags=0 offset=4 ref=2.000000
+local idx type=int sclass=auto scope=LOCAL flags=0 offset=8 ref=1.000000
+blockend off=12
+ 2. ADDRLP4 count=2 frame
+6. ADDRFP4 addr
+5. INDIRU4 #6
+7. CNSTI4 11
+4. RSHU4 #5 #7
+3. CVUI4 #4 4
+1' ASGNI4 #2 #3 4 4
+9. ADDRLP4 idx
+11. INDIRI4 count=2 #2
+12. CNSTI4 count=2 16
+10. DIVI4 #11 #12
+8' ASGNI4 #9 #10 4 4
+14. ADDRLP4 count=2 off
+15. MODI4 #11 #12
+13' ASGNI4 #14 #15 4 4
+17. INDIRI4 #14
+16' RETI4 #17
+ 1:
+maxoff=12
+segment bss
+export frames
+global frames type=array 16 of unsigned int sclass=auto scope=GLOBAL flags=0 ref=0.000000
+space 64
+progend

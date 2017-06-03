@@ -41,11 +41,15 @@ wivec r1
 la16 r1, 0x1000
 mov sp, r1
 
-; jump into c
-la16 r1, _kmain
-br.r r1
 
+
+; jump into c
+la16 r2, _kmain
+; setup return address in case kmain returns (it shouldn't)
+addi r1, pc, 2
+br.r r2
 hlt
+
 _trap:
 	defw 0xbabe
 

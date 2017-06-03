@@ -4,7 +4,7 @@ require 'pry'
 #args = Hash[ ARGV.join(' ').scan(/--?([^=\s]+)(?:=(\S+))?/) ]
 #test_groups = args["t"].split("")
 
-output = File.open("linked.s", "w+")
+output = File.open("linked.ss", "w+")
 
 # build list of tests to run
 
@@ -25,6 +25,7 @@ ARGV.each do |fname|
 
   f = File.open(fname, "r")
   f.readlines.each do |line|
+    #puts line
     if line.strip[0]==";" then
       next
     end

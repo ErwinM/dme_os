@@ -14,7 +14,7 @@
 001a : cc01     |     lcr r1
 001c : a889     |     ori r1, r1, 4
 001e : ce40     |     scr r1
-0020 : 04f1     |     la16 r1, _trap
+0020 : 04a1     |     la16 r1, _trap
 0022 : d801     |     wivec r1
 0024 : 0001     |     la16 r1, 0x1000
 0026 : bc20     |     
@@ -39,7 +39,7 @@
 0048 : b224     |     ldb	r4,r0(r4)
 004a : be04     |     push	r4
 004c : a279     |     addi	r1,pc,2
-004e : 202c     |     br	_putc ; jaddr
+004e : 2022     |     br	_putc ; jaddr
 0050 : 89fb     |     ldw	r4,-2(bp)
 0052 : a224     |     addi	r4,r4,1
 0054 : 8dfb     |     stw	-2(bp),r4
@@ -58,38 +58,32 @@
 0068 : be01     |     push	r1
 006a : be05     |     push	bp
 006c : 9585     |     mov	bp, sp
-006e : 0504     |     la16	r4,L2_kmain
-0070 : be04     |     push	r4
-0072 : a279     |     addi	r1,pc,2
-0074 : 3fbc     |     br	_kprintf ; jaddr
-0076 : 9401     |     mov	r1,r0
-     :          | L1_kmain:
-0078 : c005     |     pop	bp
-007a : c007     |     pop	pc
+006e : c005     |     pop	bp
+0070 : c007     |     pop	pc
      :          | _putc:
-007c : be01     |     push r1
-007e : be05     |     push bp
-0080 : 9585     |     mov bp, sp
-0082 : 0c84     |     la16 r4, 0xff90
-0084 : bdff     |     
+0072 : be01     |     push r1
+0074 : be05     |     push bp
+0076 : 9585     |     mov bp, sp
+0078 : 0c84     |     la16 r4, 0xff90
+007a : bdff     |     
      :          | check_tx_free_uart:
-0086 : 0029     |     ldi r1, 5
-0088 : 9461     |     add r1, r1, r4
-008a : b009     |     ldw r1, r0(r1)
-008c : 0302     |     ldi r2, 0x60
-008e : 9851     |     and r1, r1, r2
-0090 : 9e8a     |     addskp.z r2, r2, r1
-0092 : 3ff2     |     br check_tx_free_uart
-0094 : a2a9     |     addi r1, bp, 4
-0096 : b00b     |     ldw r3, r0(r1)
-0098 : b623     |     stb r0(r4), r3
-009a : c005     |     pop	bp
-009c : c007     |     pop	pc
+007c : 0029     |     ldi r1, 5
+007e : 9461     |     add r1, r1, r4
+0080 : b009     |     ldw r1, r0(r1)
+0082 : 0302     |     ldi r2, 0x60
+0084 : 9851     |     and r1, r1, r2
+0086 : 9e8a     |     addskp.z r2, r2, r1
+0088 : 3ff2     |     br check_tx_free_uart
+008a : a2a9     |     addi r1, bp, 4
+008c : b00b     |     ldw r3, r0(r1)
+008e : b623     |     stb r0(r4), r3
+0090 : c005     |     pop	bp
+0092 : c007     |     pop	pc
      :          | _trap:
-009e : babe     |     defw 0xbabe
+0094 : babe     |     defw 0xbabe
      :          | L2_kmain:
-00a0 : 444d     |     defstr "DME OS.."
-00a2 : 4520     |     
-00a4 : 4f53     |     
-00a6 : 2e2e     |     
-00a8 : 0000     |     
+0096 : 444d     |     defstr "DME OS..."
+0098 : 4520     |     
+009a : 4f53     |     
+009c : 2e2e     |     
+009e : 2e00     |     
