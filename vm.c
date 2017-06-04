@@ -5,6 +5,7 @@ pde_t *kpgdir;
 void
 initpag()
 {
+	initkmem();
 
 }
 

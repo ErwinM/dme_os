@@ -5,6 +5,7 @@ require 'pry'
 #test_groups = args["t"].split("")
 
 output = File.open("linked.ss", "w+")
+output.write("include(pseudo_ops.h)\n\n")
 
 # build list of tests to run
 

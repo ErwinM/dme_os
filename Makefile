@@ -1,11 +1,12 @@
 OBJS = \
 	boot.s\
 	console.ss\
-	kmain.ss\
 	uart.s\
 	kernel.s\
-	string.ss\
+	vm.ss\
 	kalloc.ss\
+	kmain.ss\
+	pseudo_ops.s\
 
 kernel: $(OBJS)
 	ruby link.rb $(OBJS)

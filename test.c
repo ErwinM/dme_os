@@ -6,7 +6,7 @@
 
 struct {
 	uint frame[16];
-	uint freeptr;
+	uint *freeptr;
 } kmem;
 
 
@@ -23,11 +23,10 @@ kfree(uint *addr)
 }
 
 void
-initkmem()
+freerange(uint *start, uint *end)
 {
-	int i;
-	for(i=0;i<=16;i++){
-		kmem.frame[i]=0xffff;
+	while(start < end) {
+		kfree(start);
+		start += PGSIZE;
 	}
-	kmem.freeptr = 0;
 }
