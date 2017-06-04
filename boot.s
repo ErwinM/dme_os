@@ -11,6 +11,11 @@
 ; setup mapping of kernel to 0x1000
 ; page 2 -> 0
 ; page 3 -> 1
+; page 6 -> 6
+
+; this code is linked at 0x1000 so it works when paging is on
+.code 0x1000
+
 ldi r1, 0x3
 ldi r2, 0x2
 wpte r2, r1
@@ -22,6 +27,11 @@ wpte r3, r2
 ; identity map the first 2 pages or execution would stop
 wpte r0, r1
 ldi r1, 1
+wpte r1, r2
+
+;identity map the 7th page for a stack (FIXME: ON CHIP MEM)
+ldi r1, 7
+la16 r2, 0x703
 wpte r1, r2
 
 ; and the i/o memory mapped page
@@ -38,7 +48,7 @@ la16 r1, _trap
 wivec r1
 
 ; setup SP
-la16 r1, 0x1000
+la16 r1, 0x4000
 mov sp, r1
 
 

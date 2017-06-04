@@ -4,6 +4,8 @@ OBJS = \
 	kmain.ss\
 	uart.s\
 	kernel.s\
+	string.ss\
+	kalloc.ss\
 
 kernel: $(OBJS)
 	ruby link.rb $(OBJS)

@@ -1,6 +1,7 @@
 #include "types.h"
 
 int kmain() {
-	uint i;
 	kprintf("DME OS..");
+	kinit1();
+	kfree(0x800);
 }

@@ -1,0 +1,1 @@
+gcc -E $1 | rcc -target=dme
