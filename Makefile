@@ -3,7 +3,6 @@ OBJS = \
 	console.ss\
 	uart.s\
 	kernel.s\
-	vm.ss\
 	kalloc.ss\
 	kmain.ss\
 	pseudo_ops.s\

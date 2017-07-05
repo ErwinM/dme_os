@@ -9,7 +9,6 @@ struct {
 	uint freeptr;
 } kmem;
 
-
 void
 kfree(uint *addr)
 {

@@ -8,7 +8,7 @@ void kprintfold(char *buf) {
 		i++;
 	}
 }
-
+/*
 static void
 printint(int xx, int base, int sign)
 {
@@ -70,10 +70,9 @@ kprintf(char *fmt, ...)
       putc('%');
       break;
     default:
-		/* Print unknown % sequence to draw attention.*/
+		/* Print unknown % sequence to draw attention.
       putc('%');
       putc(c);
-
     }
 	}
-}
+} */

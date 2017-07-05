@@ -38,6 +38,7 @@ wpte r1, r2
 ld16 r2, 0x1f03
 ldi r1, 31
 wpte r1, r2
+wptb r0
 ; turn on paging (not yet)
 lcr r1
 ori r1, r1, 4

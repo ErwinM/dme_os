@@ -1,98 +1,323 @@
-0000 : 0001     |     la16 r1 , 0x1000
-0002 : bc20     |     
-0004 : 9446     |     mov sp, r1
-     :          | _main:
-0006 : be01     |     push	r1
-0008 : be05     |     push	bp
-000a : 9585     |     mov	bp, sp
-000c : 0014     |     ldi	r4, 2
-000e : 97a6     |     sub	sp, sp, r4
-0010 : 0514     |     la16	r4,_x
-0012 : b024     |     ldw	r4,r0(r4)
-0014 : 0523     |     la16	r3,_y
-0016 : b01b     |     ldw	r3,r0(r3)
-0018 : be05     |     push bp
-001a : be04     |     push r4
-001c : be03     |     push r3
-001e : a27d     |     addi bp, pc, 2
-0020 : 2056     |     br _mult
-0022 : c005     |     pop bp
-0024 : 8df8     |     stw	-2(bp),r1
-0026 : 89f8     |     ldw	r1,-2(bp)
-     :          | L1_mult:
-0028 : 9546     |     mov	sp, bp
-002a : c005     |     pop	bp
-002c : c007     |     pop	pc
+1000 : 0019     |     ldi r1, 0x3
+1002 : 0012     |     ldi r2, 0x2
+1004 : d088     |     wpte r2, r1
+1006 : 081a     |     ldi r2, 0x103
+1008 : 001b     |     ldi r3, 3
+100a : d0d0     |     wpte r3, r2
+100c : d008     |     wpte r0, r1
+100e : 0009     |     ldi r1, 1
+1010 : d050     |     wpte r1, r2
+1012 : 0039     |     ldi r1, 7
+1014 : 081a     |     la16 r2, 0x703
+1016 : bc0d     |     
+1018 : d050     |     wpte r1, r2
+101a : 081a     |     ld16 r2, 0x1f03
+101c : bc3d     |     
+101e : 00f9     |     ldi r1, 31
+1020 : d050     |     wpte r1, r2
+1022 : d400     |     wptb r0
+1024 : cc01     |     lcr r1
+1026 : a889     |     ori r1, r1, 4
+1028 : ce40     |     scr r1
+102a : 00a1     |     la16 r1, _trap
+102c : bc24     |     
+102e : d801     |     wivec r1
+1030 : 0001     |     la16 r1, 0x4000
+1032 : bc80     |     
+1034 : 9446     |     mov sp, r1
+1036 : 0bb2     |     la16 r2, _kmain
+1038 : bc21     |     
+103a : a279     |     addi r1, pc, 2
+103c : c202     |     br.r r2
+103e : fe00     |     hlt
+     :          | _kprintfold:
+1040 : be01     |     push	r1
+1042 : be05     |     push	bp
+1044 : 9585     |     mov	bp, sp
+1046 : 0014     |     ldi	r4, 2
+1048 : 97a6     |     sub	sp, sp, r4
+104a : 91f8     |     stw	-2(bp),r0
+104c : 0354     |     la16	r4,L3_console
+104e : bc23     |     
+1050 : c204     |     br.r r4
+     :          | L2_console:
+1052 : 89fb     |     ldw	r4,-2(bp)
+1054 : 8812     |     ldw	r3,4(bp)
+1056 : 951c     |     add	r4,r4,r3
+1058 : b224     |     ldb	r4,r0(r4)
+105a : be04     |     push	r4
+105c : 03e2     |     la16	r2,_putc ; jaddr
+105e : bc21     |     
+1060 : a279     |     addi	r1,pc,2
+1062 : c202     |     br.r	r2
+1064 : 89fb     |     ldw	r4,-2(bp)
+1066 : a224     |     addi	r4,r4,1
+1068 : 8dfb     |     stw	-2(bp),r4
+     :          | L3_console:
+106a : 89fb     |     ldw	r4,-2(bp)
+106c : 8812     |     ldw	r3,4(bp)
+106e : 951c     |     add	r4,r4,r3
+1070 : b224     |     ldb	r4,r0(r4)
+1072 : 9d00     |     skip.eq r4,r0
+1074 : 3fdc     |     br L2_console
+     :          | L1_console:
+1076 : 9546     |     mov	sp, bp
+1078 : c005     |     pop	bp
+107a : c007     |     pop	pc
+     :          | _putc:
+107c : be01     |     push r1
+107e : be05     |     push bp
+1080 : 9585     |     mov bp, sp
+1082 : 0c84     |     la16 r4, 0xff90
+1084 : bdff     |     
+     :          | check_tx_free_uart:
+1086 : 0029     |     ldi r1, 5
+1088 : 9461     |     add r1, r1, r4
+108a : b009     |     ldw r1, r0(r1)
+108c : 0302     |     ldi r2, 0x60
+108e : 9851     |     and r1, r1, r2
+1090 : 9c88     |     skip.eq r2, r1
+1092 : 3ff2     |     br check_tx_free_uart
+1094 : a2a9     |     addi r1, bp, 4
+1096 : b00b     |     ldw r3, r0(r1)
+1098 : b623     |     stb r0(r4), r3
+109a : c005     |     pop	bp
+109c : c007     |     pop	pc
+     :          | _inituart:
+109e : be01     |     push r1
+10a0 : be05     |     push bp
+10a2 : 0c81     |     la16 r1, 0xff90
+10a4 : bdfc     |     
+10a6 : 9445     |     mov r5, r1
+10a8 : 9401     |     mov r1, r0
+10aa : 8c04     |     stw 1(bp), r1   ; port + 1 0x00 - disable all interrupts
+10ac : 0401     |     ldi r1, 0x80
+10ae : 8c0c     |     stw 3(bp), r1   ; port + 3 0x80 enable dlab
+10b0 : 0101     |     ldi r1, 32
+10b2 : 8c00     |     stw 0(bp), r1		; port + 0 set divisor to 1 LSB
+10b4 : 0001     |     ldi r1, 0
+10b6 : 8c04     |     stw 1(bp), r1		; port + 1 set divisor to 1 MSB
+10b8 : 0019     |     ldi r1, 3
+10ba : 8c0c     |     stw 3(bp), r1		; port + 3 set LCR - validate
+10bc : c005     |     pop	bp
+10be : c007     |     pop	pc; MEMSET (char *dst, int c, uint n)
+     :          | _memset:
+10c0 : be01     |     push	r1
+10c2 : be05     |     push	bp
+10c4 : 9585     |     mov	bp, sp
+10c6 : 8810     |     ldw	r1,4(bp) ; load dst
+10c8 : 8819     |     ldw	r2,6(bp) ; load c
+10ca : 8822     |     ldw	r3,8(bp) ; load n
+10cc : a61c     |     andi r4,r3,1
+10ce : 9d00     |     skip.eq r4, r0
+10d0 : 2018     |     br _stosb
+10d2 : a60c     |     andi r4, r1, 1
+10d4 : 9d00     |     skip.eq r4, r0
+10d6 : 2012     |     br _stosb
+10d8 : db0b     |     shl r4, r2, 8
+10da : 9aa2     |     or r2, r2, r4
+10dc : a45b     |     subi r3, r3, 2
+     :          | _stoswL1:
+10de : 945c     |     add	r4,r1,r3
+10e0 : b422     |     stw	r0(r4),r2
+10e2 : ad9b     |     addskpi.z r3, r3, -2
+10e4 : 3ff8     |     br _stoswL1
+10e6 : b40a     |     stw r0(r1), r2
+10e8 : 200c     |     br _memsetend
+     :          | _stosb:
+10ea : a41b     |     subi r3, r3, 1
+     :          | _stosbL1:
+10ec : 945c     |     add	r4,r1,r3
+10ee : b622     |     stb	r0(r4),r2
+10f0 : addb     |     addskpi.z r3, r3, -1
+10f2 : 3ff8     |     br _stosbL1
+10f4 : b60a     |     stb r0(r1), r2
+     :          | _memsetend:
+10f6 : c005     |     pop	bp
+10f8 : c007     |     pop	pc;	DME assembly file, generated by lcc 4.2
+     :          | _kfree:
+10fa : be01     |     push	r1
+10fc : be05     |     push	bp
+10fe : 9585     |     mov	bp, sp
+1100 : 0024     |     ldi	r4, 4
+1102 : 97a6     |     sub	sp, sp, r4
+1104 : 0004     |     ld16	r4, 2048
+1106 : bc13     |     
+1108 : be04     |     push	r4
+110a : 000c     |     ld16	r4, 1
+110c : be04     |     push	r4
+110e : 8813     |     ldw	r4,4(bp)
+1110 : be04     |     push	r4
+1112 : 0602     |     la16	r2,_memset ; jaddr
+1114 : bc21     |     
+1116 : a279     |     addi	r1,pc,2
+1118 : c202     |     br.r	r2
+111a : 8813     |     ldw	r4,4(bp)
+111c : dc92     |     shr	r3, r4, 4
+111e : 8dfa     |     stw	-2(bp),r3
+1120 : 007b     |     ld16	r3, 15
+1122 : 991c     |     and	r4,r4,r3
+1124 : 8df3     |     stw	-4(bp),r4
+1126 : 000c     |     ld16	r4, 1
+1128 : 89fa     |     ldw	r3,-2(bp)
+112a : da2e     |     shl	r3, r3, 1
+112c : 0102     |     la16	r2,_kmem
+112e : bc25     |     
+1130 : 94d3     |     add	r3,r3,r2
+1132 : b01a     |     ldw	r2,r0(r3)
+1134 : 89f0     |     ldw	r1,-4(bp)
+1136 : df0c     |     shl.r	r4, r4, r1
+1138 : 9aa4     |     or	r4,r2,r4
+113a : b41c     |     stw	r0(r3),r4
+     :          | L2_kalloc:
+113c : 9546     |     mov	sp, bp
+113e : c005     |     pop	bp
+1140 : c007     |     pop	pc
+     :          | _initkmem:
+1142 : be01     |     push	r1
+1144 : be05     |     push	bp
+1146 : 9585     |     mov	bp, sp
+1148 : 0014     |     ldi	r4, 2
+114a : 97a6     |     sub	sp, sp, r4
+114c : 91f8     |     stw	-2(bp),r0
+     :          | L4_kalloc:
+114e : 89fb     |     ldw	r4,-2(bp)
+1150 : da33     |     shl	r4, r4, 1 ; [via index]
+1152 : 0103     |     la16	r3,_kmem
+1154 : bc26     |     
+1156 : 0ffa     |     ld16	r2, 0xffff
+1158 : bdfd     |     
+115a : b51a     |     stw	r4(r3),r2
+     :          | L5_kalloc:
+115c : 89fb     |     ldw	r4,-2(bp)
+115e : a224     |     addi	r4,r4,1
+1160 : 8dfb     |     stw	-2(bp),r4
+1162 : 89fb     |     ldw	r4,-2(bp)
+1164 : 0083     |     ld16	r3, 16
+1166 : 9d1c     |     skip.gt	r4,r3
+1168 : 3fe4     |     br	L4_kalloc
+116a : 0204     |     la16	r4,_kmem+32
+116c : bc27     |     
+116e : b420     |     stw	r0(r4),r0
+     :          | L3_kalloc:
+1170 : 9546     |     mov	sp, bp
+1172 : c005     |     pop	bp
+1174 : c007     |     pop	pc
+     :          | _kmain:
+1176 : be01     |     push	r1
+1178 : be05     |     push	bp
+117a : 9585     |     mov	bp, sp
+117c : 04f2     |     la16	r2,_inituart ; jaddr
+117e : bc21     |     
+1180 : a279     |     addi	r1,pc,2
+1182 : c202     |     br.r	r2
+1184 : 00b4     |     la16	r4,L2_kmain
+1186 : bc27     |     
+1188 : be04     |     push	r4
+118a : 0202     |     la16	r2,_kprintfold ; jaddr
+118c : bc21     |     
+118e : a279     |     addi	r1,pc,2
+1190 : c202     |     br.r	r2
+1192 : 0a12     |     la16	r2,_initkmem ; jaddr
+1194 : bc21     |     
+1196 : a279     |     addi	r1,pc,2
+1198 : c202     |     br.r	r2
+119a : 9401     |     mov	r1,r0
+     :          | L1_kmain:
+119c : c005     |     pop	bp
+119e : c007     |     pop	pc
      :          | _div:
-002e : c003     |     pop r3 ; op1
-0030 : c002     |     pop r2 ; op2
-0032 : 9401     |     mov r1, r0
-0034 : 000c     |     ldi r4, 1
+11a0 : c003     |     pop r3 ; op1
+11a2 : c002     |     pop r2 ; op2
+11a4 : 9401     |     mov r1, r0
+11a6 : 000c     |     ldi r4, 1
      :          | divL1_pseudo_ops:
-0036 : 9c9c     |     skip.gt r2, r3
-0038 : 2006     |     br divL2_pseudo_ops
-003a : da2e     |     shl r3, r3, 1
-003c : da33     |     shl r4, r4, 1
-003e : 3ff6     |     br divL1_pseudo_ops
+11a8 : 9c9c     |     skip.gt r2, r3
+11aa : 2006     |     br divL2_pseudo_ops
+11ac : da2e     |     shl r3, r3, 1
+11ae : da33     |     shl r4, r4, 1
+11b0 : 3ff6     |     br divL1_pseudo_ops
      :          | divL2_pseudo_ops:
-0040 : afe0     |     addskpi.nz r0, r4, -1
-0042 : 200e     |     br divL3_pseudo_ops
-0044 : dc2e     |     shr r3, r3, 1
-0046 : dc33     |     shr r4, r4, 1
-0048 : 9c9d     |     skip.gte r2, r3
-004a : 3ff4     |     br divL2_pseudo_ops
-004c : 969a     |     sub r2, r2, r3
-004e : 9a61     |     or	r1, r1, r4
-0050 : 3fee     |     br divL2_pseudo_ops
+11b2 : afe0     |     addskpi.nz r0, r4, -1
+11b4 : 200e     |     br divL3_pseudo_ops
+11b6 : dc2e     |     shr r3, r3, 1
+11b8 : dc33     |     shr r4, r4, 1
+11ba : 9c9d     |     skip.gte r2, r3
+11bc : 3ff4     |     br divL2_pseudo_ops
+11be : 969a     |     sub r2, r2, r3
+11c0 : 9a61     |     or	r1, r1, r4
+11c2 : 3fee     |     br divL2_pseudo_ops
      :          | divL3_pseudo_ops:
-0052 : c205     |     br.r bp ; return
+11c4 : c205     |     br.r bp ; return
      :          | _mod:
-0054 : c003     |     pop r3 ; op1
-0056 : c002     |     pop r2 ; op2
-0058 : 000c     |     ldi r4, 1
+11c6 : c003     |     pop r3 ; op1
+11c8 : c002     |     pop r2 ; op2
+11ca : 000c     |     ldi r4, 1
      :          | modL1_pseudo_ops:
-005a : 9c9c     |     skip.gt r2, r3
-005c : 2006     |     br modL2_pseudo_ops
-005e : da2e     |     shl r3, r3, 1
-0060 : da33     |     shl r4, r4, 1
-0062 : 3ff6     |     br modL1_pseudo_ops
+11cc : 9c9c     |     skip.gt r2, r3
+11ce : 2006     |     br modL2_pseudo_ops
+11d0 : da2e     |     shl r3, r3, 1
+11d2 : da33     |     shl r4, r4, 1
+11d4 : 3ff6     |     br modL1_pseudo_ops
      :          | modL2_pseudo_ops:
-0064 : afe0     |     addskpi.nz r0, r4, -1
-0066 : 200c     |     br modL3_pseudo_ops
-0068 : dc2e     |     shr r3, r3, 1
-006a : dc33     |     shr r4, r4, 1
-006c : 9c9d     |     skip.gte r2, r3
-006e : 3fd0     |     br divL2_pseudo_ops
-0070 : 969a     |     sub r2, r2, r3
-0072 : 3ff0     |     br modL2_pseudo_ops
+11d6 : afe0     |     addskpi.nz r0, r4, -1
+11d8 : 200c     |     br modL3_pseudo_ops
+11da : dc2e     |     shr r3, r3, 1
+11dc : dc33     |     shr r4, r4, 1
+11de : 9c9d     |     skip.gte r2, r3
+11e0 : 3fd0     |     br divL2_pseudo_ops
+11e2 : 969a     |     sub r2, r2, r3
+11e4 : 3ff0     |     br modL2_pseudo_ops
      :          | modL3_pseudo_ops:
-0074 : 9481     |     mov r1, r2
-0076 : c205     |     br.r bp ; return
+11e6 : 9481     |     mov r1, r2
+11e8 : c205     |     br.r bp ; return
      :          | _mult:
-0078 : c002     |     pop r2 ; op1
-007a : c003     |     pop r3 ; op2
-007c : 9401     |     mov r1, r0 ; result reg
-007e : 9c9c     |     skip.gt r2, r3
-0080 : 2006     |     br multL2_pseudo_ops
-0082 : 9484     |     mov r4, r2
-0084 : 94c2     |     mov r2, r3
-0086 : 9503     |     mov r3, r4
+11ea : c002     |     pop r2 ; op1
+11ec : c003     |     pop r3 ; op2
+11ee : 9401     |     mov r1, r0 ; result reg
+11f0 : 9c9c     |     skip.gt r2, r3
+11f2 : 2006     |     br multL2_pseudo_ops
+11f4 : 9484     |     mov r4, r2
+11f6 : 94c2     |     mov r2, r3
+11f8 : 9503     |     mov r3, r4
      :          | multL2_pseudo_ops:
-0088 : 000c     |     ldi r4, 1
-008a : 9ca4     |     skip.gt r2, r4
-008c : 200c     |     br multL3_pseudo_ops
-008e : a614     |     andi r4, r2, 1
-0090 : afe4     |     addskpi.nz r4, r4, -1
-0092 : 9459     |     add r1, r1, r3
-0094 : dc29     |     shr r2, r2, 1
-0096 : da2e     |     shl r3, r3, 1
-0098 : 3fee     |     br multL2_pseudo_ops
+11fa : 000c     |     ldi r4, 1
+11fc : 9ca4     |     skip.gt r2, r4
+11fe : 200c     |     br multL3_pseudo_ops
+1200 : a614     |     andi r4, r2, 1
+1202 : afe4     |     addskpi.nz r4, r4, -1
+1204 : 9459     |     add r1, r1, r3
+1206 : dc29     |     shr r2, r2, 1
+1208 : da2e     |     shl r3, r3, 1
+120a : 3fee     |     br multL2_pseudo_ops
      :          | multL3_pseudo_ops:
-009a : a60c     |     andi r4, r1, 1
-009c : afe4     |     addskpi.nz r4, r4, -1
-009e : 9459     |     add r1, r1, r3
-00a0 : c205     |     br.r bp
-     :          | _x:
-00a2 : 0002     |     defw 0x2
-     :          | _y:
-00a4 : 0003     |     defw 0x3
+120c : a60c     |     andi r4, r1, 1
+120e : afe4     |     addskpi.nz r4, r4, -1
+1210 : 9459     |     add r1, r1, r3
+1212 : c205     |     br.r bp
+     :          | _trap:
+1214 : babe     |     defw 0xbabe
+     :          | L2_kmain:
+1216 : 444d     |     defstr "DME OS.."
+1218 : 4520     |     
+121a : 4f53     |     
+121c : 2e2e     |     
+121e : 0000     |     
+     :          | _kmem:
+1220 : 0000     |     defs 34
+1222 : 0000     |     
+1224 : 0000     |     
+1226 : 0000     |     
+1228 : 0000     |     
+122a : 0000     |     
+122c : 0000     |     
+122e : 0000     |     
+1230 : 0000     |     
+1232 : 0000     |     
+1234 : 0000     |     
+1236 : 0000     |     
+1238 : 0000     |     
+123a : 0000     |     
+123c : 0000     |     
+123e : 0000     |     
+1240 : 0000     |     
