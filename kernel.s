@@ -40,3 +40,70 @@ _stosbL1:
 _memsetend:
 	pop	bp
 	pop	pc
+
+_halt:
+  hlt
+
+_breek:
+	push r1
+	brk
+	pop pc
+
+_writepte:
+	push r1
+	push bp
+	mov bp, sp
+	ldw r1, 4(bp)
+	ldw r2, 6(bp)
+	wpte r1, r2
+	pop bp
+	pop pc
+
+_switchptb:
+	push r1
+	push bp
+	mov bp, sp
+	ldw r1, 4(bp)
+	wptb r1
+	pop bp
+	pop pc
+
+_clearptb:
+; clear all page entries in an address space
+	push r1
+	push bp
+	mov bp, sp
+	ldw r1, 4(bp)
+	ldi r2, 32 ; one extra cause we sub 1 in loop
+	add r2, r1, r2
+_clearptbL1:
+	subi r2, r2, 1
+	wpte r2, 0
+	skip.eq r2, r1
+	br _clearptbL1
+	pop bp
+	pop pc
+
+_memmove:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldw	r4,4(bp)    ; dst
+	ldw	r3,6(bp)    ; src
+	ldw	r2,8(bp)    ; n
+	add	r4,r4,r2
+	add	r3,r3,r2
+	br _memmoveL3
+_memmoveL2:
+	subi	r2,r2,1
+	addi	r3,r3,-1
+	addi	r4,r4,-1
+	ldb	r1,r0(r3)
+	stb	r0(r4),r1
+_memmoveL3:
+	skip.eq r2,r0
+	br _memmoveL2
+	mov	r1,r3
+	mov	sp, bp
+	pop	bp
+	pop	pc

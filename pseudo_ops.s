@@ -51,7 +51,7 @@ modL2:
 	shr r4, r4, 1
 
 	skip.gte r2, r3
-	br divL2
+	br modL2
 	sub r2, r2, r3
 	br modL2
 

@@ -1,14 +1,5 @@
 #include "types.h"
 
-void kprintfold(char *buf) {
-	int i = 0;
-	while( buf[i] != 0)
-	{
-		putc(buf[i]);
-		i++;
-	}
-}
-/*
 static void
 printint(int xx, int base, int sign)
 {
@@ -52,7 +43,7 @@ kprintf(char *fmt, ...)
     if(c == 0)
       break;
     switch(c){
-    case 'd':
+		case 'd':
 			printint(*argp++, 10, 1);
       break;
     case 'x':
@@ -70,9 +61,9 @@ kprintf(char *fmt, ...)
       putc('%');
       break;
     default:
-		/* Print unknown % sequence to draw attention.
+		/* Print unknown % sequence to draw attention. */
       putc('%');
       putc(c);
     }
 	}
-} */
+}

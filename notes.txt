@@ -1,7 +1,21 @@
-- i/o space should bypass paging logic or it should be above 512kb. The last option would be cleanest and allow it to be remapped. Current setup I have actually created the shitty mem mapped io like on x86 lol
--> lets map one page above 512kb. we can use bit20 to identify i/o space
--> we need to adjust PTE to have fewer status bits (5?)
 
-or doenst it.....what if in every address space page[31] -> page[31]..
-nope i dont!!!
 
+kalloc
+------
+
+allocating memory will also mean allocatng a page (since the available memory is bigger than the address space)
+
+VM
+--
+
+building a new address space is done by:
+- reserving one of the 16 (512/32) address spaces (OS)
+- this address space is identified by its PTB
+- mapping kernel code
+- get page for process kernel stack
+- map process kernel stack
+
+user space part:
+- allocate x pages
+- map them
+- copy in code

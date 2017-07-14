@@ -1,2 +1,2 @@
 typedef unsigned int uint;
-typedef unsigned int pde_t;
+typedef unsigned int pte_t;

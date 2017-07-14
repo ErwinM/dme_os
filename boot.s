@@ -17,39 +17,37 @@
 .code 0x1000
 
 ldi r1, 0x3
-ldi r2, 0x2
+ldi r2, 0x22
 wpte r2, r1
 
 ldi r2, 0x103
-ldi r3, 3
+ldi r3, 0x23
 wpte r3, r2
 
 ; identity map the first 2 pages or execution would stop
-wpte r0, r1
+ldi r3, 32
+wpte r3, r1
+ldi r3, 33
 ldi r1, 1
-wpte r1, r2
-
-;identity map the 7th page for a stack (FIXME: ON CHIP MEM)
-ldi r1, 7
-la16 r2, 0x703
-wpte r1, r2
+wpte r3, r2
 
 ; and the i/o memory mapped page
-ld16 r2, 0x1f03
-ldi r1, 31
+ld16 r2, 0x703
+ldi r1, 0x3f
 wpte r1, r2
-wptb r0
+ldi r3, 32
+wptb r3
 ; turn on paging (not yet)
 lcr r1
 ori r1, r1, 4
 scr r1
 
 ; setup IVEC
-la16 r1, _trap
+la16 r1, _trapret
 wivec r1
 
 ; setup SP
-la16 r1, 0x4000
+la16 r1, 0xff00
 mov sp, r1
 
 
@@ -60,9 +58,6 @@ la16 r2, _kmain
 addi r1, pc, 2
 br.r r2
 hlt
-
-_trap:
-	defw 0xbabe
 
 
 

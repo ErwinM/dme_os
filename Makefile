@@ -4,8 +4,13 @@ OBJS = \
 	uart.s\
 	kernel.s\
 	kalloc.ss\
+	vm.ss\
+	proc.ss\
+	trapasm.s\
+	swtch.s\
 	kmain.ss\
 	pseudo_ops.s\
+
 
 kernel: $(OBJS)
 	ruby link.rb $(OBJS)

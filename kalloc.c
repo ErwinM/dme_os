@@ -1,32 +1,47 @@
 #include "types.h"
 #include "mmap.h"
 
-#define IDXBIT(a) ((uint)a/(8*2))
-#define OFFBIT(a) ((uint)a%(8*2))
+#define PGFRAME(a) (a/16)
+#define PGBIT(a) (a%16)
 
-struct {
-	uint frame[16];
-	uint freeptr;
-} kmem;
-
-void
-kfree(uint *addr)
-{
-	uint idx, off;
-
-	memset(addr, 1, PGSIZE);
-
-	idx = IDXBIT(addr);
-	off = OFFBIT(addr);
-	kmem.frame[idx] |= (1<<off);
-}
+uint pframe[16];
 
 void
 initkmem()
 {
 	int i;
-	for(i=0;i<=16;i++){
-		kmem.frame[i]=0xffff;
+	for(i=1;i<=14;i++){
+	pframe[i]=0xffff;
 	}
-	kmem.freeptr = 0;
+	/* kernel code is in physical page 0 and 1 so these are never available */
+	pframe[0] = 0x0fff;
+	pframe[15] = 0xfffe;
+}
+
+uint
+findfreepg()
+{
+	int i,j, test;
+	for (j=0;j<=16;j++) {
+		if(pframe[j]==0)
+			continue;
+		for (i=15;i>=0;i--) {
+			test = 0x1 << i;
+			if (test & pframe[j])
+				return (16*j)+(15-i);
+		}
+	}
+	kprintf("Findfreepg: NO FREE PAGE FOUND!\n");
+}
+
+uint
+kalloc()
+{
+	int freepg, framenr, mask;
+	freepg = findfreepg();
+	/* set the frame as taken */
+	framenr = freepg / 16;
+	mask = ~(0x1 << (15-freepg%16));
+	pframe[framenr] &= mask;
+	return freepg;
 }
