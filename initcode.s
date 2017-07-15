@@ -5,13 +5,15 @@
 ;
 ;
 ;  exec(init, argv)
-initcodestart:
-  ldi r1, argv
+
+_initcodestart:
+  la16 r1, L2
   push r1
-	ldi r1, init
+	la16 r1, L1
   push r1
 	push r0    ; where caller pc would be
   ldi r1, 7 ; syscall 7 = exec
+	push r1
   syscall
 
 ;# for(;;) exit();
@@ -21,13 +23,13 @@ initcodestart:
 ;  jmp exit
 ;
 ;# char init[] = "/init\0";
-init:
+L1:
  defstr "/init\0"
 ;
 ;# char *argv[] = { init, 0 };
 ;.p2align 2
 ;
-argv:
-  defw init
+L2:
+  defw L1
 	defw 0
 

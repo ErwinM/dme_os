@@ -45,10 +45,10 @@ wptb r3
 ; turn on paging (not yet)
 lcr r1
 ori r1, r1, 4
-scr r1
+wcr r1
 
 ; setup IVEC
-la16 r1, _trapret
+la16 r1, _alltraps
 wivec r1
 
 ; setup SP
@@ -843,7 +843,6 @@ _setupkvm:
 	br.r	r2
 	ldi	r2,4
 	add	sp,sp,r2
-	mov	r1,r0
 L2_vm:
 	mov	sp, bp
 	pop	bp
@@ -881,6 +880,90 @@ L3_vm:
 	pop	bp
 	pop	pc
 
+;	.global _addpage
+_addpage:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 4
+	sub	sp, sp, r4
+	ldw	r4,6(bp)
+	stb	6(bp),r4
+	la16	r2,_kalloc
+	addi	r1,pc,2
+	br.r	r2
+	mov	r4,r1
+	stw	-2(bp),r4
+	ldw	r4,-2(bp)
+	shl	r4, r4, 8
+	ldb	r3,6(bp)
+	or	r4,r4,r3
+	stw	-4(bp),r4
+	ldw	r4,-4(bp)
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r2,_writepte
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ldw	r1,-2(bp)
+L4_vm:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _inituvm
+_inituvm:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	la16	r2,_kalloc
+	addi	r1,pc,2
+	br.r	r2
+	mov	r4,r1
+	stw	-2(bp),r4
+	ldw	r4,-2(bp)
+	shl	r4, r4, 8
+	ori	r4,r4,1
+	push	r4
+	ld16	r4, 32
+	push	r4
+	la16	r2,_writepte
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ldw	r4,-2(bp)
+	shl	r4, r4, 8
+	ori	r4,r4,1
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r2,_writepte
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ld16	r4, 50
+	push	r4
+	ldw	r4,6(bp)
+	push	r4
+	push	r0
+	la16	r2,_memmove
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,6
+	add	sp,sp,r2
+L5_vm:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _memmove
 ;	.extern _kalloc
 ;	.extern _writepte
 ;	.extern _initkmem
@@ -949,7 +1032,7 @@ _allocproc:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldi	r4, 6
+	ldi	r4, 4
 	sub	sp, sp, r4
 	la16	r4,_ptable
 	stw	-2(bp),r4
@@ -996,9 +1079,15 @@ L1_proc6:
 	br.r	r2
 	ldi	r2,4
 	add	sp,sp,r2
-	la16	r2,_getkstack
+	ld16	r4, 3
+	push	r4
+	ld16	r4, 62
+	push	r4
+	la16	r2,_addpage
 	addi	r1,pc,2
 	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
 	ldw	r3,-2(bp)
 	ld16	r2, 6
 	add	r3,r3,r2
@@ -1018,7 +1107,7 @@ L1_proc6:
 	ldw	r3,r0(r4)
 	addi	r3,r3,1
 	stw	r0(r4),r3
-	ld16	r4, 0xff00
+	ld16	r4, 0xf700
 	stw	-4(bp),r4
 	ldw	r4,-4(bp)
 	ld16	r3, -16
@@ -1028,18 +1117,23 @@ L1_proc6:
 	ld16	r3, 12
 	add	r4,r4,r3
 	ldw	r3,-4(bp)
+	ld16	r2, 2048
+	add	r3,r3,r2
 	stw	r0(r4),r3
 	ldw	r4,-4(bp)
-	addi	r4,r4,-4
+	addi	r4,r4,-2
+	stw	-4(bp),r4
+	ldw	r4,-4(bp)
+	la16	r3,_cntxret
+	stw	r0(r4),r3
+	ldw	r4,-4(bp)
+	addi	r4,r4,-2
 	stw	-4(bp),r4
 	ldw	r4,-2(bp)
 	addi	r4,r4,4
 	ldw	r3,-4(bp)
-	stw	r0(r4),r3
-	ld16	r4, 0xf6ee
-	stw	-6(bp),r4
-	ldw	r4,-6(bp)
-	la16	r3,_trapret
+	ld16	r2, 2048
+	add	r3,r3,r2
 	stw	r0(r4),r3
 	ldw	r1,-2(bp)
 L8_proc:
@@ -1052,16 +1146,84 @@ _userinit:
 	push	r1
 	push	bp
 	mov	bp, sp
+	ldi	r4, 4
+	sub	sp, sp, r4
+	la16	r2,_allocproc ; jaddr
+	addi	r1,pc,2
+	br.r	r2
+	stw	-2(bp),r1
+	ldw	r4,-2(bp)
+	ld16	r3, 6
+	add	r3,r4,r3
+	ldw	r3,r0(r3)
+	push	r3
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r2,_setupkvm
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	la16	r4,_initcodestart
+	push	r4
+	ldw	r4,-2(bp)
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r2,_inituvm
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ld16	r4, 0xf6f0
+	stw	-4(bp),r4
+	ldw	r4,-4(bp)
+	ld16	r3, 10
+	add	r4,r4,r3
+	ld16	r3, 2048
+	stw	r0(r4),r3
+	ldw	r4,-4(bp)
+	ld16	r3, 12
+	add	r4,r4,r3
+	stw	r0(r4),r0
+	ldw	r4,-4(bp)
+	ld16	r3, 14
+	add	r4,r4,r3
+	ld16	r3, 12
+	stw	r0(r4),r3
+	ldw	r4,-2(bp)
+	addi	r4,r4,8
+	ld16	r3, 3
+	stw	r0(r4),r3
+	ldw	r4,-2(bp)
+	addi	r3,r4,4
+	ldw	r3,r0(r3)
+	push	r3
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_stable
+	push	r4
+	la16	r2,_swtch
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,6
+	add	sp,sp,r2
 L1_proc9:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
-;	.extern _getkstack
+;	.extern _swtch
+;	.extern _inituvm
+;	.extern _setupkvm
+;	.extern _addpage
 ;	.extern _halt
 ;	.extern _kprintf
 ;	.extern _memset
-;	.extern _trapret
+;	.extern _initcodestart
+;	.extern _cntxret
 	.bss
 ;	.global _nextpid
 _nextpid:
@@ -1165,8 +1327,49 @@ L7_proc:
 	defb 10
 	defb 0
 ;	.end
+; when we trap we need to check if it is a timer irq (0x20)
+; if it is we push all user space registers, if not than we don't...'
+; the trap number is in sr1
+
+
+_alltraps:
+	; if r1 == 0x20 then push.u everything else not
+	; FIXME: this does not handle concurrent traps yet
+	ldi r3, 0x20
+	and r4, r1, r3
+	skip.eq r4, r3
+	br tohandler_trapasm
+	hlt
+
+tohandler_trapasm:
+	push.u sp
+	push r1 	;trapnr
+	la16 r3, _trap
+	addi r1, pc, 2
+	br.r r3
+
+; when we return from a trap
+_cntxret:
+; we are returning from a trap after a context switch
+; this means we need to restore the user registers which were saved
+; to the kstack as a trapframe when we trapped
+; sp is pointing at the bottom of tf (r1)
+	pop.u r1
+	pop.u r2
+	pop.u r3
+	pop.u r4
+	pop.u bp
+	pop.u sp
+	pop.u pc
+	pop r1
+	wcr.u r1
+	reti
+
+
 _trapret:
-brk;
+	; we prob need to pop some more stuff of the stack but lets see
+	brk
+;
 ; to make a context switch on dme:
 ; - INSIGHT: a context switch is just a SP switch... ip just keeps processing
 ; 	- save context on old stack
@@ -1182,7 +1385,6 @@ _swtch:
 	ldw r1, 4(bp) ; sched->context (to save SP)
 	ldw r2, 6(bp) ; ptb
 	ldw r3, 8(bp) ; context (= new SP)
-	brk
 	; i dont think i need to save much except sp and bp...
 	; the registers all all clear after switch is called..
 
@@ -1198,14 +1400,64 @@ _swtch:
 
  ; INT_MAX: ffffffff
 
+;	.global _trap
+;	.code
+_trap:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldw	r4,6(bp)
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,L2_trap
+	push	r4
+	la16	r2,_kprintf
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r2,_halt
+	addi	r1,pc,2
+	br.r	r2
+L1_trap:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _halt
+;	.extern _kprintf
+	.data
+L2_trap:
+	defb 84
+	defb 114
+	defb 97
+	defb 112
+	defb 58
+	defb 32
+	defb 37
+	defb 100
+	defb 44
+	defb 32
+	defb 117
+	defb 83
+	defb 80
+	defb 58
+	defb 32
+	defb 37
+	defb 120
+	defb 0
+;	.end
+;	DME assembly file, generated by lcc 4.2
+
+ ; INT_MAX: ffffffff
+
 ;	.global _kmain
 ;	.code
 _kmain:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldi	r4, 2
-	sub	sp, sp, r4
 	la16	r4,L2_kmain
 	push	r4
 	la16	r2,_kprintf
@@ -1219,47 +1471,9 @@ _kmain:
 	la16	r2,_pinit
 	addi	r1,pc,2
 	br.r	r2
-	la16	r2,_allocproc ; jaddr
+	la16	r2,_userinit
 	addi	r1,pc,2
 	br.r	r2
-	stw	-2(bp),r1
-	la16	r4,L3_kmain
-	push	r4
-	la16	r2,_kprintf
-	addi	r1,pc,2
-	br.r	r2
-	ldi	r2,2
-	add	sp,sp,r2
-	la16	r2,_breek
-	addi	r1,pc,2
-	br.r	r2
-	ldw	r4,-2(bp)
-	ld16	r3, 6
-	add	r3,r4,r3
-	ldw	r3,r0(r3)
-	push	r3
-	addi	r4,r4,2
-	ldw	r4,r0(r4)
-	push	r4
-	la16	r2,_setupkvm
-	addi	r1,pc,2
-	br.r	r2
-	ldi	r2,4
-	add	sp,sp,r2
-	ldw	r4,-2(bp)
-	addi	r3,r4,4
-	ldw	r3,r0(r3)
-	push	r3
-	addi	r4,r4,2
-	ldw	r4,r0(r4)
-	push	r4
-	la16	r4,_stable
-	push	r4
-	la16	r2,_swtch
-	addi	r1,pc,2
-	br.r	r2
-	ldi	r2,6
-	add	sp,sp,r2
 	la16	r2,_halt
 	addi	r1,pc,2
 	br.r	r2
@@ -1270,32 +1484,13 @@ L1_kmain:
 	pop	pc
 
 ;	.extern _halt
-;	.extern _swtch
-;	.extern _setupkvm
-;	.extern _breek
+;	.extern _userinit
 ;	.extern _pinit
 ;	.extern _initkmem
 ;	.extern _kprintf
 ;	.extern _stable
 ;	.extern _allocproc
 	.data
-L3_kmain:
-	defb 112
-	defb 111
-	defb 115
-	defb 116
-	defb 32
-	defb 97
-	defb 108
-	defb 108
-	defb 111
-	defb 99
-	defb 112
-	defb 114
-	defb 111
-	defb 99
-	defb 10
-	defb 0
 L2_kmain:
 	defb 68
 	defb 77
@@ -1414,4 +1609,38 @@ multL3_pseudo_ops:
 	andi r4, r1, 1
 	addskpi.nz r4, r4, -1
 	add r1, r1, r3
-	br.r bp
+	br.r bp;  Initial process execs /init.
+;
+; include "syscall.h"
+; include "traps.h"
+;
+;
+;  exec(init, argv)
+
+_initcodestart:
+  la16 r1, L2_initcode
+  push r1
+	la16 r1, L1_initcode
+  push r1
+	push r0    ; where caller pc would be
+  ldi r1, 7 ; syscall 7 = exec
+	push r1
+  syscall
+
+;# for(;;) exit();
+;exit:
+;  movl $SYS_exit, %eax
+;  int $T_SYSCALL
+;  jmp exit
+;
+;# char init[] = "/init\0";
+L1_initcode:
+ defstr "/init\0"
+;
+;# char *argv[] = { init, 0 };
+;.p2align 2
+;
+L2_initcode:
+  defw L1_initcode
+	defw 0
+

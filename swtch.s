@@ -14,7 +14,6 @@ _swtch:
 	ldw r1, 4(bp) ; sched->context (to save SP)
 	ldw r2, 6(bp) ; ptb
 	ldw r3, 8(bp) ; context (= new SP)
-	brk
 	; i dont think i need to save much except sp and bp...
 	; the registers all all clear after switch is called..
 

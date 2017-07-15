@@ -17,15 +17,15 @@
 1020 : d4c0     |     wptb r3
 1022 : cc01     |     lcr r1
 1024 : a889     |     ori r1, r1, 4
-1026 : ce40     |     scr r1
-1028 : 0511     |     la16 r1, _trapret
+1026 : ce40     |     wcr r1
+1028 : 0f51     |     la16 r1, _alltraps
 102a : bc2c     |     
 102c : d801     |     wivec r1
 102e : 0801     |     la16 r1, 0xff00
 1030 : bdfc     |     
 1032 : 9446     |     mov sp, r1
-1034 : 05e2     |     la16 r2, _kmain
-1036 : bc2d     |     
+1034 : 02d2     |     la16 r2, _kmain
+1036 : bc31     |     
 1038 : a279     |     addi r1, pc, 2
 103a : c202     |     br.r r2
 103c : fe00     |     hlt
@@ -80,10 +80,10 @@
 1092 : be03     |     push r3
 1094 : be02     |     push r2
 1096 : a27d     |     addi bp, pc, 2
-1098 : 26e4     |     br _mod
+1098 : 2826     |     br _mod
 109a : c005     |     pop bp
-109c : 0e64     |     la16	r4,L2_console
-109e : bc2f     |     
+109c : 0914     |     la16	r4,L2_console
+109e : bc33     |     
 10a0 : 9464     |     add	r4,r1,r4
 10a2 : b224     |     ldb	r4,r0(r4)
 10a4 : 8992     |     ldw	r3,-28(bp)
@@ -95,7 +95,7 @@
 10ae : be04     |     push r4
 10b0 : be03     |     push r3
 10b2 : a27d     |     addi bp, pc, 2
-10b4 : 26a2     |     br _div
+10b4 : 27e4     |     br _div
 10b6 : c005     |     pop bp
 10b8 : 8df0     |     stw	-4(bp),r1
 10ba : 9c40     |     skip.eq r1,r0
@@ -263,8 +263,8 @@
 11e2 : 8df3     |     stw	-4(bp),r4
 11e4 : 9d00     |     skip.eq r4,r0
 11e6 : 2024     |     br L3_console7
-11e8 : 0eec     |     la16	r4,L3_console3
-11ea : bc2f     |     
+11e8 : 099c     |     la16	r4,L3_console3
+11ea : bc33     |     
 11ec : 8df3     |     stw	-4(bp),r4
 11ee : 0064     |     la16	r4,L3_console7
 11f0 : bc27     |     
@@ -480,7 +480,7 @@
      :          | L2_kalloc:
 1360 : 89fb     |     ldw	r4,-2(bp)
 1362 : da33     |     shl	r4, r4, 1 ; [via index]
-1364 : 0443     |     la16	r3,_pframe
+1364 : 0f63     |     la16	r3,_pframe
 1366 : bc32     |     
 1368 : 0ffa     |     ld16	r2, 0xffff
 136a : bdfd     |     
@@ -493,13 +493,13 @@
 1376 : 0073     |     ld16	r3, 14
 1378 : 9d1c     |     skip.gt	r4,r3
 137a : 3fe4     |     br	L2_kalloc
-137c : 0444     |     la16	r4,_pframe
+137c : 0f64     |     la16	r4,_pframe
 137e : bc33     |     
 1380 : 0ffb     |     ld16	r3, 4095
 1382 : bc1e     |     
 1384 : b423     |     stw	r0(r4),r3
-1386 : 0534     |     la16	r4,_pframe+30
-1388 : bc33     |     
+1386 : 0054     |     la16	r4,_pframe+30
+1388 : bc37     |     
 138a : 0ff3     |     ld16	r3, 0xfffe
 138c : bdfe     |     
 138e : b423     |     stw	r0(r4),r3
@@ -517,7 +517,7 @@
      :          | L8_kalloc:
 13a2 : 89eb     |     ldw	r4,-6(bp)
 13a4 : da33     |     shl	r4, r4, 1 ; [via index]
-13a6 : 0443     |     la16	r3,_pframe
+13a6 : 0f63     |     la16	r3,_pframe
 13a8 : bc32     |     
 13aa : b11c     |     ldw	r4,r4(r3)
 13ac : 9d00     |     skip.eq r4,r0
@@ -536,7 +536,7 @@
 13c2 : 89f3     |     ldw	r4,-4(bp)
 13c4 : 89ea     |     ldw	r3,-6(bp)
 13c6 : da2e     |     shl	r3, r3, 1 ; [via index]
-13c8 : 0442     |     la16	r2,_pframe
+13c8 : 0f62     |     la16	r2,_pframe
 13ca : bc31     |     
 13cc : b0d3     |     ldw	r3,r3(r2)
 13ce : 991c     |     and	r4,r4,r3
@@ -567,8 +567,8 @@
 13fc : 0083     |     ld16	r3, 16
 13fe : 9d1c     |     skip.gt	r4,r3
 1400 : 3fa0     |     br	L8_kalloc
-1402 : 0f24     |     la16	r4,L2_kalloc0
-1404 : bc2f     |     
+1402 : 09d4     |     la16	r4,L2_kalloc0
+1404 : bc33     |     
 1406 : be04     |     push	r4
 1408 : 0812     |     la16	r2,_kprintf
 140a : bc21     |     
@@ -601,7 +601,7 @@
 143c : be04     |     push r4
 143e : be03     |     push r3
 1440 : a27d     |     addi bp, pc, 2
-1442 : 2314     |     br _div
+1442 : 2456     |     br _div
 1444 : c005     |     pop bp
 1446 : 8df0     |     stw	-4(bp),r1
 1448 : 000c     |     ld16	r4, 1
@@ -615,7 +615,7 @@
 1458 : be02     |     push r2
 145a : be01     |     push r1
 145c : a27d     |     addi bp, pc, 2
-145e : 231e     |     br _mod
+145e : 2460     |     br _mod
 1460 : c005     |     pop bp
 1462 : 89cb     |     ldw	r4,-14(bp)
 1464 : 970c     |     sub	r4,r4,r1
@@ -626,7 +626,7 @@
 146e : 8deb     |     stw	-6(bp),r4
 1470 : 89f3     |     ldw	r4,-4(bp)
 1472 : da33     |     shl	r4, r4, 1
-1474 : 0443     |     la16	r3,_pframe
+1474 : 0f63     |     la16	r3,_pframe
 1476 : bc32     |     
 1478 : 951c     |     add	r4,r4,r3
 147a : b023     |     ldw	r3,r0(r4)
@@ -705,675 +705,684 @@
 1504 : c202     |     br.r	r2
 1506 : 0022     |     ldi	r2,4
 1508 : 9596     |     add	sp,sp,r2
-150a : 9401     |     mov	r1,r0
      :          | L2_vm:
-150c : 9546     |     mov	sp, bp
-150e : c005     |     pop	bp
-1510 : c007     |     pop	pc
+150a : 9546     |     mov	sp, bp
+150c : c005     |     pop	bp
+150e : c007     |     pop	pc
      :          | _getkstack:
-1512 : be01     |     push	r1
-1514 : be05     |     push	bp
-1516 : 9585     |     mov	bp, sp
-1518 : 0024     |     ldi	r4, 4
-151a : 97a6     |     sub	sp, sp, r4
-151c : 00e2     |     la16	r2,_kalloc
-151e : bc29     |     
-1520 : a279     |     addi	r1,pc,2
-1522 : c202     |     br.r	r2
-1524 : 9444     |     mov	r4,r1
-1526 : 8dfb     |     stw	-2(bp),r4
-1528 : 89fb     |     ldw	r4,-2(bp)
-152a : db13     |     shl	r4, r4, 8
-152c : 001b     |     ld16	r3, 3
-152e : 9b1c     |     or	r4,r4,r3
-1530 : 8df3     |     stw	-4(bp),r4
-1532 : 89f3     |     ldw	r4,-4(bp)
-1534 : be04     |     push	r4
-1536 : 01f4     |     ld16	r4, 62
-1538 : be04     |     push	r4
-153a : 07a2     |     la16	r2,_writepte
-153c : bc25     |     
-153e : a279     |     addi	r1,pc,2
-1540 : c202     |     br.r	r2
-1542 : 0022     |     ldi	r2,4
-1544 : 9596     |     add	sp,sp,r2
-1546 : 89f8     |     ldw	r1,-2(bp)
+1510 : be01     |     push	r1
+1512 : be05     |     push	bp
+1514 : 9585     |     mov	bp, sp
+1516 : 0024     |     ldi	r4, 4
+1518 : 97a6     |     sub	sp, sp, r4
+151a : 00e2     |     la16	r2,_kalloc
+151c : bc29     |     
+151e : a279     |     addi	r1,pc,2
+1520 : c202     |     br.r	r2
+1522 : 9444     |     mov	r4,r1
+1524 : 8dfb     |     stw	-2(bp),r4
+1526 : 89fb     |     ldw	r4,-2(bp)
+1528 : db13     |     shl	r4, r4, 8
+152a : 001b     |     ld16	r3, 3
+152c : 9b1c     |     or	r4,r4,r3
+152e : 8df3     |     stw	-4(bp),r4
+1530 : 89f3     |     ldw	r4,-4(bp)
+1532 : be04     |     push	r4
+1534 : 01f4     |     ld16	r4, 62
+1536 : be04     |     push	r4
+1538 : 07a2     |     la16	r2,_writepte
+153a : bc25     |     
+153c : a279     |     addi	r1,pc,2
+153e : c202     |     br.r	r2
+1540 : 0022     |     ldi	r2,4
+1542 : 9596     |     add	sp,sp,r2
+1544 : 89f8     |     ldw	r1,-2(bp)
      :          | L3_vm:
-1548 : 9546     |     mov	sp, bp
-154a : c005     |     pop	bp
-154c : c007     |     pop	pc
+1546 : 9546     |     mov	sp, bp
+1548 : c005     |     pop	bp
+154a : c007     |     pop	pc
+     :          | _addpage:
+154c : be01     |     push	r1
+154e : be05     |     push	bp
+1550 : 9585     |     mov	bp, sp
+1552 : 0024     |     ldi	r4, 4
+1554 : 97a6     |     sub	sp, sp, r4
+1556 : 881b     |     ldw	r4,6(bp)
+1558 : 8e1b     |     stb	6(bp),r4
+155a : 00e2     |     la16	r2,_kalloc
+155c : bc29     |     
+155e : a279     |     addi	r1,pc,2
+1560 : c202     |     br.r	r2
+1562 : 9444     |     mov	r4,r1
+1564 : 8dfb     |     stw	-2(bp),r4
+1566 : 89fb     |     ldw	r4,-2(bp)
+1568 : db13     |     shl	r4, r4, 8
+156a : 8a1a     |     ldb	r3,6(bp)
+156c : 9b1c     |     or	r4,r4,r3
+156e : 8df3     |     stw	-4(bp),r4
+1570 : 89f3     |     ldw	r4,-4(bp)
+1572 : be04     |     push	r4
+1574 : 8813     |     ldw	r4,4(bp)
+1576 : be04     |     push	r4
+1578 : 07a2     |     la16	r2,_writepte
+157a : bc25     |     
+157c : a279     |     addi	r1,pc,2
+157e : c202     |     br.r	r2
+1580 : 0022     |     ldi	r2,4
+1582 : 9596     |     add	sp,sp,r2
+1584 : 89f8     |     ldw	r1,-2(bp)
+     :          | L4_vm:
+1586 : 9546     |     mov	sp, bp
+1588 : c005     |     pop	bp
+158a : c007     |     pop	pc
+     :          | _inituvm:
+158c : be01     |     push	r1
+158e : be05     |     push	bp
+1590 : 9585     |     mov	bp, sp
+1592 : 0014     |     ldi	r4, 2
+1594 : 97a6     |     sub	sp, sp, r4
+1596 : 00e2     |     la16	r2,_kalloc
+1598 : bc29     |     
+159a : a279     |     addi	r1,pc,2
+159c : c202     |     br.r	r2
+159e : 9444     |     mov	r4,r1
+15a0 : 8dfb     |     stw	-2(bp),r4
+15a2 : 89fb     |     ldw	r4,-2(bp)
+15a4 : db13     |     shl	r4, r4, 8
+15a6 : a824     |     ori	r4,r4,1
+15a8 : be04     |     push	r4
+15aa : 0104     |     ld16	r4, 32
+15ac : be04     |     push	r4
+15ae : 07a2     |     la16	r2,_writepte
+15b0 : bc25     |     
+15b2 : a279     |     addi	r1,pc,2
+15b4 : c202     |     br.r	r2
+15b6 : 0022     |     ldi	r2,4
+15b8 : 9596     |     add	sp,sp,r2
+15ba : 89fb     |     ldw	r4,-2(bp)
+15bc : db13     |     shl	r4, r4, 8
+15be : a824     |     ori	r4,r4,1
+15c0 : be04     |     push	r4
+15c2 : 8813     |     ldw	r4,4(bp)
+15c4 : be04     |     push	r4
+15c6 : 07a2     |     la16	r2,_writepte
+15c8 : bc25     |     
+15ca : a279     |     addi	r1,pc,2
+15cc : c202     |     br.r	r2
+15ce : 0022     |     ldi	r2,4
+15d0 : 9596     |     add	sp,sp,r2
+15d2 : 0194     |     ld16	r4, 50
+15d4 : be04     |     push	r4
+15d6 : 881b     |     ldw	r4,6(bp)
+15d8 : be04     |     push	r4
+15da : be00     |     push	r0
+15dc : 0952     |     la16	r2,_memmove
+15de : bc25     |     
+15e0 : a279     |     addi	r1,pc,2
+15e2 : c202     |     br.r	r2
+15e4 : 0032     |     ldi	r2,6
+15e6 : 9596     |     add	sp,sp,r2
+     :          | L5_vm:
+15e8 : 9546     |     mov	sp, bp
+15ea : c005     |     pop	bp
+15ec : c007     |     pop	pc
      :          | _pinit:
-154e : be01     |     push	r1
-1550 : be05     |     push	bp
-1552 : 9585     |     mov	bp, sp
-1554 : 0024     |     ldi	r4, 4
-1556 : 97a6     |     sub	sp, sp, r4
-1558 : 91f0     |     stw	-4(bp),r0
-155a : 0d04     |     ld16	r4, 416
-155c : be04     |     push	r4
-155e : be00     |     push	r0
-1560 : 0564     |     la16	r4,_ptable
-1562 : bc33     |     
-1564 : be04     |     push	r4
-1566 : 0592     |     la16	r2,_memset
-1568 : bc25     |     
-156a : a279     |     addi	r1,pc,2
-156c : c202     |     br.r	r2
-156e : 0032     |     ldi	r2,6
-1570 : 9596     |     add	sp,sp,r2
-1572 : 0564     |     la16	r4,_ptable
-1574 : bc33     |     
-1576 : 8dfb     |     stw	-2(bp),r4
-1578 : 0ca4     |     la16	r4,L5_proc
-157a : bc2b     |     
-157c : c204     |     br.r r4
-     :          | L2_proc:
-157e : 89fb     |     ldw	r4,-2(bp)
-1580 : a264     |     addi	r4,r4,2
-1582 : 89f2     |     ldw	r3,-4(bp)
-1584 : b423     |     stw	r0(r4),r3
-1586 : 89f3     |     ldw	r4,-4(bp)
-1588 : a224     |     addi	r4,r4,1
-158a : 8df3     |     stw	-4(bp),r4
-     :          | L3_proc:
-158c : 89fb     |     ldw	r4,-2(bp)
-158e : 00d3     |     ld16	r3, 26
-1590 : 951c     |     add	r4,r4,r3
-1592 : 8dfb     |     stw	-2(bp),r4
-     :          | L5_proc:
-1594 : 89fb     |     ldw	r4,-2(bp)
-1596 : 0263     |     la16	r3,_ptable+416
-1598 : bc36     |     
-159a : 9ce6     |     skip.ult	r3,r4
-159c : 3fe0     |     br	L2_proc
-159e : 0224     |     la16	r4,L7_proc
-15a0 : bc33     |     
-15a2 : be04     |     push	r4
-15a4 : 0812     |     la16	r2,_kprintf
-15a6 : bc21     |     
-15a8 : a279     |     addi	r1,pc,2
-15aa : c202     |     br.r	r2
-15ac : 0012     |     ldi	r2,2
-15ae : 9596     |     add	sp,sp,r2
-15b0 : 0544     |     la16	r4,_nextpid
-15b2 : bc33     |     
-15b4 : b420     |     stw	r0(r4),r0
-     :          | L1_proc:
-15b6 : 9546     |     mov	sp, bp
-15b8 : c005     |     pop	bp
-15ba : c007     |     pop	pc
-     :          | _allocproc:
-15bc : be01     |     push	r1
-15be : be05     |     push	bp
-15c0 : 9585     |     mov	bp, sp
-15c2 : 0034     |     ldi	r4, 6
-15c4 : 97a6     |     sub	sp, sp, r4
-15c6 : 0564     |     la16	r4,_ptable
-15c8 : bc33     |     
-15ca : 8dfb     |     stw	-2(bp),r4
-15cc : 0f54     |     la16	r4,L1_proc2
-15ce : bc2b     |     
-15d0 : c204     |     br.r r4
-     :          | L9_proc:
-15d2 : 89fb     |     ldw	r4,-2(bp)
-15d4 : a2e4     |     addi	r4,r4,8
-15d6 : b024     |     ldw	r4,r0(r4)
-15d8 : 9d00     |     skip.eq r4,r0
-15da : 2006     |     br L1_proc4
-15dc : 0074     |     la16	r4,L1_proc6
-15de : bc2f     |     
-15e0 : c204     |     br.r r4
-     :          | L1_proc4:
-15e2 : 89fb     |     ldw	r4,-2(bp)
-15e4 : 00d3     |     ld16	r3, 26
-15e6 : 951c     |     add	r4,r4,r3
-15e8 : 8dfb     |     stw	-2(bp),r4
-     :          | L1_proc2:
-15ea : 89fb     |     ldw	r4,-2(bp)
-15ec : 0263     |     la16	r3,_ptable+416
-15ee : bc36     |     
-15f0 : 9ce6     |     skip.ult	r3,r4
-15f2 : 3fde     |     br	L9_proc
-15f4 : 0104     |     la16	r4,L1_proc7
-15f6 : bc33     |     
-15f8 : be04     |     push	r4
-15fa : 0812     |     la16	r2,_kprintf
-15fc : bc21     |     
-15fe : a279     |     addi	r1,pc,2
-1600 : c202     |     br.r	r2
-1602 : 0012     |     ldi	r2,2
-1604 : 9596     |     add	sp,sp,r2
-1606 : 0762     |     la16	r2,_halt
+15ee : be01     |     push	r1
+15f0 : be05     |     push	bp
+15f2 : 9585     |     mov	bp, sp
+15f4 : 0024     |     ldi	r4, 4
+15f6 : 97a6     |     sub	sp, sp, r4
+15f8 : 91f0     |     stw	-4(bp),r0
+15fa : 0d04     |     ld16	r4, 416
+15fc : be04     |     push	r4
+15fe : be00     |     push	r0
+1600 : 0084     |     la16	r4,_ptable
+1602 : bc37     |     
+1604 : be04     |     push	r4
+1606 : 0592     |     la16	r2,_memset
 1608 : bc25     |     
 160a : a279     |     addi	r1,pc,2
 160c : c202     |     br.r	r2
+160e : 0032     |     ldi	r2,6
+1610 : 9596     |     add	sp,sp,r2
+1612 : 0084     |     la16	r4,_ptable
+1614 : bc37     |     
+1616 : 8dfb     |     stw	-2(bp),r4
+1618 : 01a4     |     la16	r4,L5_proc
+161a : bc2f     |     
+161c : c204     |     br.r r4
+     :          | L2_proc:
+161e : 89fb     |     ldw	r4,-2(bp)
+1620 : a264     |     addi	r4,r4,2
+1622 : 89f2     |     ldw	r3,-4(bp)
+1624 : b423     |     stw	r0(r4),r3
+1626 : 89f3     |     ldw	r4,-4(bp)
+1628 : a224     |     addi	r4,r4,1
+162a : 8df3     |     stw	-4(bp),r4
+     :          | L3_proc:
+162c : 89fb     |     ldw	r4,-2(bp)
+162e : 00d3     |     ld16	r3, 26
+1630 : 951c     |     add	r4,r4,r3
+1632 : 8dfb     |     stw	-2(bp),r4
+     :          | L5_proc:
+1634 : 89fb     |     ldw	r4,-2(bp)
+1636 : 0d83     |     la16	r3,_ptable+416
+1638 : bc36     |     
+163a : 9ce6     |     skip.ult	r3,r4
+163c : 3fe0     |     br	L2_proc
+163e : 0cd4     |     la16	r4,L7_proc
+1640 : bc33     |     
+1642 : be04     |     push	r4
+1644 : 0812     |     la16	r2,_kprintf
+1646 : bc21     |     
+1648 : a279     |     addi	r1,pc,2
+164a : c202     |     br.r	r2
+164c : 0012     |     ldi	r2,2
+164e : 9596     |     add	sp,sp,r2
+1650 : 0064     |     la16	r4,_nextpid
+1652 : bc37     |     
+1654 : b420     |     stw	r0(r4),r0
+     :          | L1_proc:
+1656 : 9546     |     mov	sp, bp
+1658 : c005     |     pop	bp
+165a : c007     |     pop	pc
+     :          | _allocproc:
+165c : be01     |     push	r1
+165e : be05     |     push	bp
+1660 : 9585     |     mov	bp, sp
+1662 : 0024     |     ldi	r4, 4
+1664 : 97a6     |     sub	sp, sp, r4
+1666 : 0084     |     la16	r4,_ptable
+1668 : bc37     |     
+166a : 8dfb     |     stw	-2(bp),r4
+166c : 0454     |     la16	r4,L1_proc2
+166e : bc2f     |     
+1670 : c204     |     br.r r4
+     :          | L9_proc:
+1672 : 89fb     |     ldw	r4,-2(bp)
+1674 : a2e4     |     addi	r4,r4,8
+1676 : b024     |     ldw	r4,r0(r4)
+1678 : 9d00     |     skip.eq r4,r0
+167a : 2006     |     br L1_proc4
+167c : 0574     |     la16	r4,L1_proc6
+167e : bc2f     |     
+1680 : c204     |     br.r r4
+     :          | L1_proc4:
+1682 : 89fb     |     ldw	r4,-2(bp)
+1684 : 00d3     |     ld16	r3, 26
+1686 : 951c     |     add	r4,r4,r3
+1688 : 8dfb     |     stw	-2(bp),r4
+     :          | L1_proc2:
+168a : 89fb     |     ldw	r4,-2(bp)
+168c : 0d83     |     la16	r3,_ptable+416
+168e : bc36     |     
+1690 : 9ce6     |     skip.ult	r3,r4
+1692 : 3fde     |     br	L9_proc
+1694 : 0bb4     |     la16	r4,L1_proc7
+1696 : bc33     |     
+1698 : be04     |     push	r4
+169a : 0812     |     la16	r2,_kprintf
+169c : bc21     |     
+169e : a279     |     addi	r1,pc,2
+16a0 : c202     |     br.r	r2
+16a2 : 0012     |     ldi	r2,2
+16a4 : 9596     |     add	sp,sp,r2
+16a6 : 0762     |     la16	r2,_halt
+16a8 : bc25     |     
+16aa : a279     |     addi	r1,pc,2
+16ac : c202     |     br.r	r2
      :          | L1_proc6:
-160e : 89fb     |     ldw	r4,-2(bp)
-1610 : a264     |     addi	r4,r4,2
-1612 : b024     |     ldw	r4,r0(r4)
-1614 : be04     |     push	r4
-1616 : 0044     |     la16	r4,L1_proc8
-1618 : bc33     |     
-161a : be04     |     push	r4
-161c : 0812     |     la16	r2,_kprintf
-161e : bc21     |     
-1620 : a279     |     addi	r1,pc,2
-1622 : c202     |     br.r	r2
-1624 : 0022     |     ldi	r2,4
-1626 : 9596     |     add	sp,sp,r2
-1628 : 0892     |     la16	r2,_getkstack
-162a : bc29     |     
-162c : a279     |     addi	r1,pc,2
-162e : c202     |     br.r	r2
-1630 : 89fa     |     ldw	r3,-2(bp)
-1632 : 0032     |     ld16	r2, 6
-1634 : 94d3     |     add	r3,r3,r2
-1636 : 9444     |     mov	r4,r1
-1638 : b41c     |     stw	r0(r3),r4
-163a : 89fb     |     ldw	r4,-2(bp)
-163c : a2e4     |     addi	r4,r4,8
-163e : 000b     |     ld16	r3, 1
-1640 : b423     |     stw	r0(r4),r3
-1642 : 89fb     |     ldw	r4,-2(bp)
-1644 : 0053     |     ld16	r3, 10
-1646 : 951c     |     add	r4,r4,r3
-1648 : 0543     |     la16	r3,_nextpid
-164a : bc32     |     
-164c : b01b     |     ldw	r3,r0(r3)
-164e : b423     |     stw	r0(r4),r3
-1650 : 0544     |     la16	r4,_nextpid
-1652 : bc33     |     
-1654 : b023     |     ldw	r3,r0(r4)
-1656 : a21b     |     addi	r3,r3,1
-1658 : b423     |     stw	r0(r4),r3
-165a : 0804     |     ld16	r4, 0xff00
-165c : bdff     |     
-165e : 8df3     |     stw	-4(bp),r4
-1660 : 89f3     |     ldw	r4,-4(bp)
-1662 : 1f83     |     ld16	r3, -16
-1664 : 951c     |     add	r4,r4,r3
-1666 : 8df3     |     stw	-4(bp),r4
-1668 : 89fb     |     ldw	r4,-2(bp)
-166a : 0063     |     ld16	r3, 12
-166c : 951c     |     add	r4,r4,r3
-166e : 89f2     |     ldw	r3,-4(bp)
-1670 : b423     |     stw	r0(r4),r3
-1672 : 89f3     |     ldw	r4,-4(bp)
-1674 : a364     |     addi	r4,r4,-4
-1676 : 8df3     |     stw	-4(bp),r4
-1678 : 89fb     |     ldw	r4,-2(bp)
-167a : a2a4     |     addi	r4,r4,4
-167c : 89f2     |     ldw	r3,-4(bp)
-167e : b423     |     stw	r0(r4),r3
-1680 : 0774     |     ld16	r4, 0xf6ee
-1682 : bdef     |     
-1684 : 8deb     |     stw	-6(bp),r4
-1686 : 89eb     |     ldw	r4,-6(bp)
-1688 : 0513     |     la16	r3,_trapret
-168a : bc2e     |     
-168c : b423     |     stw	r0(r4),r3
-168e : 89f8     |     ldw	r1,-2(bp)
-     :          | L8_proc:
-1690 : 9546     |     mov	sp, bp
-1692 : c005     |     pop	bp
-1694 : c007     |     pop	pc
-     :          | _userinit:
-1696 : be01     |     push	r1
-1698 : be05     |     push	bp
-169a : 9585     |     mov	bp, sp
-     :          | L1_proc9:
-169c : 9546     |     mov	sp, bp
-169e : c005     |     pop	bp
-16a0 : c007     |     pop	pc
-     :          | _trapret:
-16a2 : ca00     |     brk;
-     :          | _swtch:
-16a4 : be01     |     push r1
-16a6 : be05     |     push bp
-16a8 : 9585     |     mov bp, sp
-16aa : 8810     |     ldw r1, 4(bp) ; sched->context (to save SP)
-16ac : 8819     |     ldw r2, 6(bp) ; ptb
-16ae : 8822     |     ldw r3, 8(bp) ; context (= new SP)
-16b0 : ca00     |     brk
-16b2 : b40e     |     stw r0(r1), sp  ; store old sp in sched->context
-16b4 : d480     |     wptb r2					; switch to new address space
-16b6 : 94c6     |     mov sp, r3      ; switch sp to new stack bottom
-16b8 : c005     |     pop bp
-16ba : c007     |     pop pc
-     :          | _kmain:
-16bc : be01     |     push	r1
-16be : be05     |     push	bp
-16c0 : 9585     |     mov	bp, sp
-16c2 : 0014     |     ldi	r4, 2
-16c4 : 97a6     |     sub	sp, sp, r4
-16c6 : 0384     |     la16	r4,L2_kmain
-16c8 : bc33     |     
+16ae : 89fb     |     ldw	r4,-2(bp)
+16b0 : a264     |     addi	r4,r4,2
+16b2 : b024     |     ldw	r4,r0(r4)
+16b4 : be04     |     push	r4
+16b6 : 0af4     |     la16	r4,L1_proc8
+16b8 : bc33     |     
+16ba : be04     |     push	r4
+16bc : 0812     |     la16	r2,_kprintf
+16be : bc21     |     
+16c0 : a279     |     addi	r1,pc,2
+16c2 : c202     |     br.r	r2
+16c4 : 0022     |     ldi	r2,4
+16c6 : 9596     |     add	sp,sp,r2
+16c8 : 001c     |     ld16	r4, 3
 16ca : be04     |     push	r4
-16cc : 0812     |     la16	r2,_kprintf
-16ce : bc21     |     
-16d0 : a279     |     addi	r1,pc,2
-16d2 : c202     |     br.r	r2
-16d4 : 0012     |     ldi	r2,2
-16d6 : 9596     |     add	sp,sp,r2
-16d8 : 0a92     |     la16	r2,_initkmem
-16da : bc25     |     
-16dc : a279     |     addi	r1,pc,2
-16de : c202     |     br.r	r2
-16e0 : 0a72     |     la16	r2,_pinit
-16e2 : bc29     |     
-16e4 : a279     |     addi	r1,pc,2
-16e6 : c202     |     br.r	r2
-16e8 : 0de2     |     la16	r2,_allocproc ; jaddr
-16ea : bc29     |     
-16ec : a279     |     addi	r1,pc,2
-16ee : c202     |     br.r	r2
-16f0 : 8df8     |     stw	-2(bp),r1
-16f2 : 0304     |     la16	r4,L3_kmain
-16f4 : bc33     |     
-16f6 : be04     |     push	r4
-16f8 : 0812     |     la16	r2,_kprintf
-16fa : bc21     |     
-16fc : a279     |     addi	r1,pc,2
-16fe : c202     |     br.r	r2
-1700 : 0012     |     ldi	r2,2
-1702 : 9596     |     add	sp,sp,r2
-1704 : 0772     |     la16	r2,_breek
-1706 : bc25     |     
-1708 : a279     |     addi	r1,pc,2
-170a : c202     |     br.r	r2
-170c : 89fb     |     ldw	r4,-2(bp)
-170e : 0033     |     ld16	r3, 6
-1710 : 951b     |     add	r3,r4,r3
-1712 : b01b     |     ldw	r3,r0(r3)
-1714 : be03     |     push	r3
-1716 : a264     |     addi	r4,r4,2
-1718 : b024     |     ldw	r4,r0(r4)
-171a : be04     |     push	r4
-171c : 0502     |     la16	r2,_setupkvm
-171e : bc29     |     
-1720 : a279     |     addi	r1,pc,2
-1722 : c202     |     br.r	r2
-1724 : 0022     |     ldi	r2,4
-1726 : 9596     |     add	sp,sp,r2
-1728 : 89fb     |     ldw	r4,-2(bp)
-172a : a2a3     |     addi	r3,r4,4
-172c : b01b     |     ldw	r3,r0(r3)
-172e : be03     |     push	r3
-1730 : a264     |     addi	r4,r4,2
-1732 : b024     |     ldw	r4,r0(r4)
-1734 : be04     |     push	r4
-1736 : 0554     |     la16	r4,_stable
-1738 : bc33     |     
-173a : be04     |     push	r4
-173c : 0522     |     la16	r2,_swtch
-173e : bc2d     |     
-1740 : a279     |     addi	r1,pc,2
-1742 : c202     |     br.r	r2
-1744 : 0032     |     ldi	r2,6
-1746 : 9596     |     add	sp,sp,r2
-1748 : 0762     |     la16	r2,_halt
-174a : bc25     |     
-174c : a279     |     addi	r1,pc,2
-174e : c202     |     br.r	r2
-1750 : 9401     |     mov	r1,r0
+16cc : 01f4     |     ld16	r4, 62
+16ce : be04     |     push	r4
+16d0 : 0a62     |     la16	r2,_addpage
+16d2 : bc29     |     
+16d4 : a279     |     addi	r1,pc,2
+16d6 : c202     |     br.r	r2
+16d8 : 0022     |     ldi	r2,4
+16da : 9596     |     add	sp,sp,r2
+16dc : 89fa     |     ldw	r3,-2(bp)
+16de : 0032     |     ld16	r2, 6
+16e0 : 94d3     |     add	r3,r3,r2
+16e2 : 9444     |     mov	r4,r1
+16e4 : b41c     |     stw	r0(r3),r4
+16e6 : 89fb     |     ldw	r4,-2(bp)
+16e8 : a2e4     |     addi	r4,r4,8
+16ea : 000b     |     ld16	r3, 1
+16ec : b423     |     stw	r0(r4),r3
+16ee : 89fb     |     ldw	r4,-2(bp)
+16f0 : 0053     |     ld16	r3, 10
+16f2 : 951c     |     add	r4,r4,r3
+16f4 : 0063     |     la16	r3,_nextpid
+16f6 : bc36     |     
+16f8 : b01b     |     ldw	r3,r0(r3)
+16fa : b423     |     stw	r0(r4),r3
+16fc : 0064     |     la16	r4,_nextpid
+16fe : bc37     |     
+1700 : b023     |     ldw	r3,r0(r4)
+1702 : a21b     |     addi	r3,r3,1
+1704 : b423     |     stw	r0(r4),r3
+1706 : 0804     |     ld16	r4, 0xf700
+1708 : bdef     |     
+170a : 8df3     |     stw	-4(bp),r4
+170c : 89f3     |     ldw	r4,-4(bp)
+170e : 1f83     |     ld16	r3, -16
+1710 : 951c     |     add	r4,r4,r3
+1712 : 8df3     |     stw	-4(bp),r4
+1714 : 89fb     |     ldw	r4,-2(bp)
+1716 : 0063     |     ld16	r3, 12
+1718 : 951c     |     add	r4,r4,r3
+171a : 89f2     |     ldw	r3,-4(bp)
+171c : 0002     |     ld16	r2, 2048
+171e : bc11     |     
+1720 : 94d3     |     add	r3,r3,r2
+1722 : b423     |     stw	r0(r4),r3
+1724 : 89f3     |     ldw	r4,-4(bp)
+1726 : a3a4     |     addi	r4,r4,-2
+1728 : 8df3     |     stw	-4(bp),r4
+172a : 89f3     |     ldw	r4,-4(bp)
+172c : 0003     |     la16	r3,_cntxret
+172e : bc32     |     
+1730 : b423     |     stw	r0(r4),r3
+1732 : 89f3     |     ldw	r4,-4(bp)
+1734 : a3a4     |     addi	r4,r4,-2
+1736 : 8df3     |     stw	-4(bp),r4
+1738 : 89fb     |     ldw	r4,-2(bp)
+173a : a2a4     |     addi	r4,r4,4
+173c : 89f2     |     ldw	r3,-4(bp)
+173e : 0002     |     ld16	r2, 2048
+1740 : bc11     |     
+1742 : 94d3     |     add	r3,r3,r2
+1744 : b423     |     stw	r0(r4),r3
+1746 : 89f8     |     ldw	r1,-2(bp)
+     :          | L8_proc:
+1748 : 9546     |     mov	sp, bp
+174a : c005     |     pop	bp
+174c : c007     |     pop	pc
+     :          | _userinit:
+174e : be01     |     push	r1
+1750 : be05     |     push	bp
+1752 : 9585     |     mov	bp, sp
+1754 : 0024     |     ldi	r4, 4
+1756 : 97a6     |     sub	sp, sp, r4
+1758 : 02e2     |     la16	r2,_allocproc ; jaddr
+175a : bc2d     |     
+175c : a279     |     addi	r1,pc,2
+175e : c202     |     br.r	r2
+1760 : 8df8     |     stw	-2(bp),r1
+1762 : 89fb     |     ldw	r4,-2(bp)
+1764 : 0033     |     ld16	r3, 6
+1766 : 951b     |     add	r3,r4,r3
+1768 : b01b     |     ldw	r3,r0(r3)
+176a : be03     |     push	r3
+176c : a264     |     addi	r4,r4,2
+176e : b024     |     ldw	r4,r0(r4)
+1770 : be04     |     push	r4
+1772 : 0502     |     la16	r2,_setupkvm
+1774 : bc29     |     
+1776 : a279     |     addi	r1,pc,2
+1778 : c202     |     br.r	r2
+177a : 0022     |     ldi	r2,4
+177c : 9596     |     add	sp,sp,r2
+177e : 0874     |     la16	r4,_initcodestart
+1780 : bc33     |     
+1782 : be04     |     push	r4
+1784 : 89fb     |     ldw	r4,-2(bp)
+1786 : a264     |     addi	r4,r4,2
+1788 : b024     |     ldw	r4,r0(r4)
+178a : be04     |     push	r4
+178c : 0c62     |     la16	r2,_inituvm
+178e : bc29     |     
+1790 : a279     |     addi	r1,pc,2
+1792 : c202     |     br.r	r2
+1794 : 0022     |     ldi	r2,4
+1796 : 9596     |     add	sp,sp,r2
+1798 : 0784     |     ld16	r4, 0xf6f0
+179a : bdef     |     
+179c : 8df3     |     stw	-4(bp),r4
+179e : 89f3     |     ldw	r4,-4(bp)
+17a0 : 0053     |     ld16	r3, 10
+17a2 : 951c     |     add	r4,r4,r3
+17a4 : 0003     |     ld16	r3, 2048
+17a6 : bc12     |     
+17a8 : b423     |     stw	r0(r4),r3
+17aa : 89f3     |     ldw	r4,-4(bp)
+17ac : 0063     |     ld16	r3, 12
+17ae : 951c     |     add	r4,r4,r3
+17b0 : b420     |     stw	r0(r4),r0
+17b2 : 89f3     |     ldw	r4,-4(bp)
+17b4 : 0073     |     ld16	r3, 14
+17b6 : 951c     |     add	r4,r4,r3
+17b8 : 0063     |     ld16	r3, 12
+17ba : b423     |     stw	r0(r4),r3
+17bc : 89fb     |     ldw	r4,-2(bp)
+17be : a2e4     |     addi	r4,r4,8
+17c0 : 001b     |     ld16	r3, 3
+17c2 : b423     |     stw	r0(r4),r3
+17c4 : 89fb     |     ldw	r4,-2(bp)
+17c6 : a2a3     |     addi	r3,r4,4
+17c8 : b01b     |     ldw	r3,r0(r3)
+17ca : be03     |     push	r3
+17cc : a264     |     addi	r4,r4,2
+17ce : b024     |     ldw	r4,r0(r4)
+17d0 : be04     |     push	r4
+17d2 : 0074     |     la16	r4,_stable
+17d4 : bc37     |     
+17d6 : be04     |     push	r4
+17d8 : 00b2     |     la16	r2,_swtch
+17da : bc31     |     
+17dc : a279     |     addi	r1,pc,2
+17de : c202     |     br.r	r2
+17e0 : 0032     |     ldi	r2,6
+17e2 : 9596     |     add	sp,sp,r2
+     :          | L1_proc9:
+17e4 : 9546     |     mov	sp, bp
+17e6 : c005     |     pop	bp
+17e8 : c007     |     pop	pc
+     :          | _alltraps:
+17ea : 0103     |     ldi r3, 0x20
+17ec : 985c     |     and r4, r1, r3
+17ee : 9d18     |     skip.eq r4, r3
+17f0 : 2002     |     br tohandler_trapasm
+17f2 : fe00     |     hlt
+     :          | tohandler_trapasm:
+17f4 : c806     |     push.u sp
+17f6 : be01     |     push r1 	;trapnr
+17f8 : 0163     |     la16 r3, _trap
+17fa : bc32     |     
+17fc : a279     |     addi r1, pc, 2
+17fe : c203     |     br.r r3
+     :          | _cntxret:
+1800 : e201     |     pop.u r1
+1802 : e202     |     pop.u r2
+1804 : e203     |     pop.u r3
+1806 : e204     |     pop.u r4
+1808 : e205     |     pop.u bp
+180a : e206     |     pop.u sp
+180c : e207     |     pop.u pc
+180e : c001     |     pop r1
+1810 : e640     |     wcr.u r1
+1812 : c600     |     reti
+     :          | _trapret:
+1814 : ca00     |     brk
+     :          | _swtch:
+1816 : be01     |     push r1
+1818 : be05     |     push bp
+181a : 9585     |     mov bp, sp
+181c : 8810     |     ldw r1, 4(bp) ; sched->context (to save SP)
+181e : 8819     |     ldw r2, 6(bp) ; ptb
+1820 : 8822     |     ldw r3, 8(bp) ; context (= new SP)
+1822 : b40e     |     stw r0(r1), sp  ; store old sp in sched->context
+1824 : d480     |     wptb r2					; switch to new address space
+1826 : 94c6     |     mov sp, r3      ; switch sp to new stack bottom
+1828 : c005     |     pop bp
+182a : c007     |     pop pc
+     :          | _trap:
+182c : be01     |     push	r1
+182e : be05     |     push	bp
+1830 : 9585     |     mov	bp, sp
+1832 : 881b     |     ldw	r4,6(bp)
+1834 : be04     |     push	r4
+1836 : 8813     |     ldw	r4,4(bp)
+1838 : be04     |     push	r4
+183a : 0db4     |     la16	r4,L2_trap
+183c : bc33     |     
+183e : be04     |     push	r4
+1840 : 0812     |     la16	r2,_kprintf
+1842 : bc21     |     
+1844 : a279     |     addi	r1,pc,2
+1846 : c202     |     br.r	r2
+1848 : 0032     |     ldi	r2,6
+184a : 9596     |     add	sp,sp,r2
+184c : 0762     |     la16	r2,_halt
+184e : bc25     |     
+1850 : a279     |     addi	r1,pc,2
+1852 : c202     |     br.r	r2
+     :          | L1_trap:
+1854 : 9546     |     mov	sp, bp
+1856 : c005     |     pop	bp
+1858 : c007     |     pop	pc
+     :          | _kmain:
+185a : be01     |     push	r1
+185c : be05     |     push	bp
+185e : 9585     |     mov	bp, sp
+1860 : 0e44     |     la16	r4,L2_kmain
+1862 : bc33     |     
+1864 : be04     |     push	r4
+1866 : 0812     |     la16	r2,_kprintf
+1868 : bc21     |     
+186a : a279     |     addi	r1,pc,2
+186c : c202     |     br.r	r2
+186e : 0012     |     ldi	r2,2
+1870 : 9596     |     add	sp,sp,r2
+1872 : 0a92     |     la16	r2,_initkmem
+1874 : bc25     |     
+1876 : a279     |     addi	r1,pc,2
+1878 : c202     |     br.r	r2
+187a : 0f72     |     la16	r2,_pinit
+187c : bc29     |     
+187e : a279     |     addi	r1,pc,2
+1880 : c202     |     br.r	r2
+1882 : 0a72     |     la16	r2,_userinit
+1884 : bc2d     |     
+1886 : a279     |     addi	r1,pc,2
+1888 : c202     |     br.r	r2
+188a : 0762     |     la16	r2,_halt
+188c : bc25     |     
+188e : a279     |     addi	r1,pc,2
+1890 : c202     |     br.r	r2
+1892 : 9401     |     mov	r1,r0
      :          | L1_kmain:
-1752 : 9546     |     mov	sp, bp
-1754 : c005     |     pop	bp
-1756 : c007     |     pop	pc
+1894 : 9546     |     mov	sp, bp
+1896 : c005     |     pop	bp
+1898 : c007     |     pop	pc
      :          | _div:
-1758 : c003     |     pop r3 ; op1
-175a : c002     |     pop r2 ; op2
-175c : 9401     |     mov r1, r0
-175e : 000c     |     ldi r4, 1
+189a : c003     |     pop r3 ; op1
+189c : c002     |     pop r2 ; op2
+189e : 9401     |     mov r1, r0
+18a0 : 000c     |     ldi r4, 1
      :          | divL1_pseudo_ops:
-1760 : 9c9c     |     skip.gt r2, r3
-1762 : 2006     |     br divL2_pseudo_ops
-1764 : da2e     |     shl r3, r3, 1
-1766 : da33     |     shl r4, r4, 1
-1768 : 3ff6     |     br divL1_pseudo_ops
+18a2 : 9c9c     |     skip.gt r2, r3
+18a4 : 2006     |     br divL2_pseudo_ops
+18a6 : da2e     |     shl r3, r3, 1
+18a8 : da33     |     shl r4, r4, 1
+18aa : 3ff6     |     br divL1_pseudo_ops
      :          | divL2_pseudo_ops:
-176a : afe0     |     addskpi.nz r0, r4, -1
-176c : 200e     |     br divL3_pseudo_ops
-176e : dc2e     |     shr r3, r3, 1
-1770 : dc33     |     shr r4, r4, 1
-1772 : 9c9d     |     skip.gte r2, r3
-1774 : 3ff4     |     br divL2_pseudo_ops
-1776 : 969a     |     sub r2, r2, r3
-1778 : 9a61     |     or	r1, r1, r4
-177a : 3fee     |     br divL2_pseudo_ops
+18ac : afe0     |     addskpi.nz r0, r4, -1
+18ae : 200e     |     br divL3_pseudo_ops
+18b0 : dc2e     |     shr r3, r3, 1
+18b2 : dc33     |     shr r4, r4, 1
+18b4 : 9c9d     |     skip.gte r2, r3
+18b6 : 3ff4     |     br divL2_pseudo_ops
+18b8 : 969a     |     sub r2, r2, r3
+18ba : 9a61     |     or	r1, r1, r4
+18bc : 3fee     |     br divL2_pseudo_ops
      :          | divL3_pseudo_ops:
-177c : c205     |     br.r bp ; return
+18be : c205     |     br.r bp ; return
      :          | _mod:
-177e : c003     |     pop r3 ; op1
-1780 : c002     |     pop r2 ; op2
-1782 : 000c     |     ldi r4, 1
+18c0 : c003     |     pop r3 ; op1
+18c2 : c002     |     pop r2 ; op2
+18c4 : 000c     |     ldi r4, 1
      :          | modL1_pseudo_ops:
-1784 : 9c9c     |     skip.gt r2, r3
-1786 : 2006     |     br modL2_pseudo_ops
-1788 : da2e     |     shl r3, r3, 1
-178a : da33     |     shl r4, r4, 1
-178c : 3ff6     |     br modL1_pseudo_ops
+18c6 : 9c9c     |     skip.gt r2, r3
+18c8 : 2006     |     br modL2_pseudo_ops
+18ca : da2e     |     shl r3, r3, 1
+18cc : da33     |     shl r4, r4, 1
+18ce : 3ff6     |     br modL1_pseudo_ops
      :          | modL2_pseudo_ops:
-178e : afe0     |     addskpi.nz r0, r4, -1
-1790 : 200c     |     br modL3_pseudo_ops
-1792 : dc2e     |     shr r3, r3, 1
-1794 : dc33     |     shr r4, r4, 1
-1796 : 9c9d     |     skip.gte r2, r3
-1798 : 3ff4     |     br modL2_pseudo_ops
-179a : 969a     |     sub r2, r2, r3
-179c : 3ff0     |     br modL2_pseudo_ops
+18d0 : afe0     |     addskpi.nz r0, r4, -1
+18d2 : 200c     |     br modL3_pseudo_ops
+18d4 : dc2e     |     shr r3, r3, 1
+18d6 : dc33     |     shr r4, r4, 1
+18d8 : 9c9d     |     skip.gte r2, r3
+18da : 3ff4     |     br modL2_pseudo_ops
+18dc : 969a     |     sub r2, r2, r3
+18de : 3ff0     |     br modL2_pseudo_ops
      :          | modL3_pseudo_ops:
-179e : 9481     |     mov r1, r2
-17a0 : c205     |     br.r bp ; return
+18e0 : 9481     |     mov r1, r2
+18e2 : c205     |     br.r bp ; return
      :          | _mult:
-17a2 : c002     |     pop r2 ; op1
-17a4 : c003     |     pop r3 ; op2
-17a6 : 9401     |     mov r1, r0 ; result reg
-17a8 : 9c9c     |     skip.gt r2, r3
-17aa : 2006     |     br multL2_pseudo_ops
-17ac : 9484     |     mov r4, r2
-17ae : 94c2     |     mov r2, r3
-17b0 : 9503     |     mov r3, r4
+18e4 : c002     |     pop r2 ; op1
+18e6 : c003     |     pop r3 ; op2
+18e8 : 9401     |     mov r1, r0 ; result reg
+18ea : 9c9c     |     skip.gt r2, r3
+18ec : 2006     |     br multL2_pseudo_ops
+18ee : 9484     |     mov r4, r2
+18f0 : 94c2     |     mov r2, r3
+18f2 : 9503     |     mov r3, r4
      :          | multL2_pseudo_ops:
-17b2 : 000c     |     ldi r4, 1
-17b4 : 9ca4     |     skip.gt r2, r4
-17b6 : 200c     |     br multL3_pseudo_ops
-17b8 : a614     |     andi r4, r2, 1
-17ba : afe4     |     addskpi.nz r4, r4, -1
-17bc : 9459     |     add r1, r1, r3
-17be : dc29     |     shr r2, r2, 1
-17c0 : da2e     |     shl r3, r3, 1
-17c2 : 3fee     |     br multL2_pseudo_ops
+18f4 : 000c     |     ldi r4, 1
+18f6 : 9ca4     |     skip.gt r2, r4
+18f8 : 200c     |     br multL3_pseudo_ops
+18fa : a614     |     andi r4, r2, 1
+18fc : afe4     |     addskpi.nz r4, r4, -1
+18fe : 9459     |     add r1, r1, r3
+1900 : dc29     |     shr r2, r2, 1
+1902 : da2e     |     shl r3, r3, 1
+1904 : 3fee     |     br multL2_pseudo_ops
      :          | multL3_pseudo_ops:
-17c4 : a60c     |     andi r4, r1, 1
-17c6 : afe4     |     addskpi.nz r4, r4, -1
-17c8 : 9459     |     add r1, r1, r3
-17ca : c205     |     br.r bp
+1906 : a60c     |     andi r4, r1, 1
+1908 : afe4     |     addskpi.nz r4, r4, -1
+190a : 9459     |     add r1, r1, r3
+190c : c205     |     br.r bp;  Initial process execs /init.
+     :          | _initcodestart:
+190e : 0f41     |     la16 r1, L2_initcode
+1910 : bc30     |     
+1912 : be01     |     push r1
+1914 : 0f01     |     la16 r1, L1_initcode
+1916 : bc30     |     
+1918 : be01     |     push r1
+191a : be00     |     push r0    ; where caller pc would be
+191c : 0039     |     ldi r1, 7 ; syscall 7 = exec
+191e : be01     |     push r1
+1920 : c400     |     syscall
      :          | L2_console:
-17cc : 3031     |     defb 48
-17ce : 3233     |     defb 50
-17d0 : 3435     |     defb 52
-17d2 : 3637     |     defb 54
-17d4 : 3839     |     defb 56
-17d6 : 6162     |     defb 97
-17d8 : 6364     |     defb 99
-17da : 6566     |     defb 101
-17dc : 0028     |     defb 0
-17de : 6e75     |     defb 110
-17e0 : 6c6c     |     defb 108
-17e2 : 2900     |     defb 41
+1922 : 3031     |     defb 48
+1924 : 3233     |     defb 50
+1926 : 3435     |     defb 52
+1928 : 3637     |     defb 54
+192a : 3839     |     defb 56
+192c : 6162     |     defb 97
+192e : 6364     |     defb 99
+1930 : 6566     |     defb 101
+1932 : 0028     |     defb 0
+1934 : 6e75     |     defb 110
+1936 : 6c6c     |     defb 108
+1938 : 2900     |     defb 41
      :          | L2_kalloc0:
-17e4 : 4669     |     defb 70
-17e6 : 6e64     |     defb 110
-17e8 : 6672     |     defb 102
-17ea : 6565     |     defb 101
-17ec : 7067     |     defb 112
-17ee : 3a20     |     defb 58
-17f0 : 4e4f     |     defb 78
-17f2 : 2046     |     defb 32
-17f4 : 5245     |     defb 82
-17f6 : 4520     |     defb 69
-17f8 : 5041     |     defb 80
-17fa : 4745     |     defb 71
-17fc : 2046     |     defb 32
-17fe : 4f55     |     defb 79
-1800 : 4e44     |     defb 78
-1802 : 210a     |     defb 33
-1804 : 0000     |     defb 0
+193a : 4669     |     defb 70
+193c : 6e64     |     defb 110
+193e : 6672     |     defb 102
+1940 : 6565     |     defb 101
+1942 : 7067     |     defb 112
+1944 : 3a20     |     defb 58
+1946 : 4e4f     |     defb 78
+1948 : 2046     |     defb 32
+194a : 5245     |     defb 82
+194c : 4520     |     defb 69
+194e : 5041     |     defb 80
+1950 : 4745     |     defb 71
+1952 : 2046     |     defb 32
+1954 : 4f55     |     defb 79
+1956 : 4e44     |     defb 78
+1958 : 210a     |     defb 33
+195a : 0000     |     defb 0
      :          | _kptb:
-1806 : 0000     |     defw 0x0
+195c : 0000     |     defw 0x0
      :          | L1_proc8:
-1808 : 666f     |     defb 102
-180a : 756e     |     defb 117
-180c : 6420     |     defb 100
-180e : 6672     |     defb 102
-1810 : 6565     |     defb 101
-1812 : 2073     |     defb 32
-1814 : 6c6f     |     defb 108
-1816 : 7420     |     defb 116
-1818 : 6174     |     defb 97
-181a : 3a20     |     defb 58
-181c : 2564     |     defb 37
-181e : 0a00     |     defb 10
+195e : 666f     |     defb 102
+1960 : 756e     |     defb 117
+1962 : 6420     |     defb 100
+1964 : 6672     |     defb 102
+1966 : 6565     |     defb 101
+1968 : 2073     |     defb 32
+196a : 6c6f     |     defb 108
+196c : 7420     |     defb 116
+196e : 6174     |     defb 97
+1970 : 3a20     |     defb 58
+1972 : 2564     |     defb 37
+1974 : 0a00     |     defb 10
      :          | L1_proc7:
-1820 : 616c     |     defb 97
-1822 : 6c6f     |     defb 108
-1824 : 6370     |     defb 99
-1826 : 726f     |     defb 114
-1828 : 633a     |     defb 99
-182a : 206e     |     defb 32
-182c : 6f20     |     defb 111
-182e : 6672     |     defb 102
-1830 : 6565     |     defb 101
-1832 : 2073     |     defb 32
-1834 : 6c6f     |     defb 108
-1836 : 7420     |     defb 116
-1838 : 696e     |     defb 105
-183a : 2070     |     defb 32
-183c : 7461     |     defb 116
-183e : 626c     |     defb 98
-1840 : 6521     |     defb 101
-1842 : 0a00     |     defb 10
+1976 : 616c     |     defb 97
+1978 : 6c6f     |     defb 108
+197a : 6370     |     defb 99
+197c : 726f     |     defb 114
+197e : 633a     |     defb 99
+1980 : 206e     |     defb 32
+1982 : 6f20     |     defb 111
+1984 : 6672     |     defb 102
+1986 : 6565     |     defb 101
+1988 : 2073     |     defb 32
+198a : 6c6f     |     defb 108
+198c : 7420     |     defb 116
+198e : 696e     |     defb 105
+1990 : 2070     |     defb 32
+1992 : 7461     |     defb 116
+1994 : 626c     |     defb 98
+1996 : 6521     |     defb 101
+1998 : 0a00     |     defb 10
      :          | L7_proc:
-1844 : 7069     |     defb 112
-1846 : 6e69     |     defb 110
-1848 : 743a     |     defb 116
-184a : 2070     |     defb 32
-184c : 7461     |     defb 116
-184e : 626c     |     defb 98
-1850 : 6520     |     defb 101
-1852 : 696e     |     defb 105
-1854 : 6974     |     defb 105
-1856 : 6961     |     defb 105
-1858 : 6c69     |     defb 108
-185a : 7365     |     defb 115
-185c : 642e     |     defb 100
-185e : 0a00     |     defb 10
-     :          | L3_kmain:
-1860 : 706f     |     defb 112
-1862 : 7374     |     defb 115
-1864 : 2061     |     defb 32
-1866 : 6c6c     |     defb 108
-1868 : 6f63     |     defb 111
-186a : 7072     |     defb 112
-186c : 6f63     |     defb 111
-186e : 0a00     |     defb 10
+199a : 7069     |     defb 112
+199c : 6e69     |     defb 110
+199e : 743a     |     defb 116
+19a0 : 2070     |     defb 32
+19a2 : 7461     |     defb 116
+19a4 : 626c     |     defb 98
+19a6 : 6520     |     defb 101
+19a8 : 696e     |     defb 105
+19aa : 6974     |     defb 105
+19ac : 6961     |     defb 105
+19ae : 6c69     |     defb 108
+19b0 : 7365     |     defb 115
+19b2 : 642e     |     defb 100
+19b4 : 0a00     |     defb 10
+     :          | L2_trap:
+19b6 : 5472     |     defb 84
+19b8 : 6170     |     defb 97
+19ba : 3a20     |     defb 58
+19bc : 2564     |     defb 37
+19be : 2c20     |     defb 44
+19c0 : 7553     |     defb 117
+19c2 : 503a     |     defb 80
+19c4 : 2025     |     defb 32
+19c6 : 7800     |     defb 120
      :          | L2_kmain:
-1870 : 444d     |     defb 68
-1872 : 4520     |     defb 69
-1874 : 4f53     |     defb 79
-1876 : 2076     |     defb 32
-1878 : 2564     |     defb 37
-187a : 2073     |     defb 32
-187c : 7461     |     defb 116
-187e : 7274     |     defb 114
-1880 : 696e     |     defb 105
-1882 : 672e     |     defb 103
-1884 : 2e2e     |     defb 46
-1886 : 0a00     |     defb 10
+19c8 : 444d     |     defb 68
+19ca : 4520     |     defb 69
+19cc : 4f53     |     defb 79
+19ce : 2076     |     defb 32
+19d0 : 2564     |     defb 37
+19d2 : 2073     |     defb 32
+19d4 : 7461     |     defb 116
+19d6 : 7274     |     defb 114
+19d8 : 696e     |     defb 105
+19da : 672e     |     defb 103
+19dc : 2e2e     |     defb 46
+19de : 0a00     |     defb 10
+     :          | L1_initcode:
+19e0 : 2f69     |     defstr "/init\0"
+19e2 : 6e69     |     
+19e4 : 745c     |     
+19e6 : 3000     |     
+     :          | L2_initcode:
+19e8 : 19e0     |     defw L1_initcode
+19ea : 0000     |     defw 0
      :          | _pframe:
-1888 : 0000     |     defs 32
-188a : 0000     |     
-188c : 0000     |     
-188e : 0000     |     
-1890 : 0000     |     
-1892 : 0000     |     
-1894 : 0000     |     
-1896 : 0000     |     
-1898 : 0000     |     
-189a : 0000     |     
-189c : 0000     |     
-189e : 0000     |     
-18a0 : 0000     |     
-18a2 : 0000     |     
-18a4 : 0000     |     
-18a6 : 0000     |     
-     :          | _nextpid:
-18a8 : 0000     |     defs 2
-     :          | _stable:
-18aa : 0000     |     defs 2
-     :          | _ptable:
-18ac : 0000     |     defs 416
-18ae : 0000     |     
-18b0 : 0000     |     
-18b2 : 0000     |     
-18b4 : 0000     |     
-18b6 : 0000     |     
-18b8 : 0000     |     
-18ba : 0000     |     
-18bc : 0000     |     
-18be : 0000     |     
-18c0 : 0000     |     
-18c2 : 0000     |     
-18c4 : 0000     |     
-18c6 : 0000     |     
-18c8 : 0000     |     
-18ca : 0000     |     
-18cc : 0000     |     
-18ce : 0000     |     
-18d0 : 0000     |     
-18d2 : 0000     |     
-18d4 : 0000     |     
-18d6 : 0000     |     
-18d8 : 0000     |     
-18da : 0000     |     
-18dc : 0000     |     
-18de : 0000     |     
-18e0 : 0000     |     
-18e2 : 0000     |     
-18e4 : 0000     |     
-18e6 : 0000     |     
-18e8 : 0000     |     
-18ea : 0000     |     
-18ec : 0000     |     
-18ee : 0000     |     
-18f0 : 0000     |     
-18f2 : 0000     |     
-18f4 : 0000     |     
-18f6 : 0000     |     
-18f8 : 0000     |     
-18fa : 0000     |     
-18fc : 0000     |     
-18fe : 0000     |     
-1900 : 0000     |     
-1902 : 0000     |     
-1904 : 0000     |     
-1906 : 0000     |     
-1908 : 0000     |     
-190a : 0000     |     
-190c : 0000     |     
-190e : 0000     |     
-1910 : 0000     |     
-1912 : 0000     |     
-1914 : 0000     |     
-1916 : 0000     |     
-1918 : 0000     |     
-191a : 0000     |     
-191c : 0000     |     
-191e : 0000     |     
-1920 : 0000     |     
-1922 : 0000     |     
-1924 : 0000     |     
-1926 : 0000     |     
-1928 : 0000     |     
-192a : 0000     |     
-192c : 0000     |     
-192e : 0000     |     
-1930 : 0000     |     
-1932 : 0000     |     
-1934 : 0000     |     
-1936 : 0000     |     
-1938 : 0000     |     
-193a : 0000     |     
-193c : 0000     |     
-193e : 0000     |     
-1940 : 0000     |     
-1942 : 0000     |     
-1944 : 0000     |     
-1946 : 0000     |     
-1948 : 0000     |     
-194a : 0000     |     
-194c : 0000     |     
-194e : 0000     |     
-1950 : 0000     |     
-1952 : 0000     |     
-1954 : 0000     |     
-1956 : 0000     |     
-1958 : 0000     |     
-195a : 0000     |     
-195c : 0000     |     
-195e : 0000     |     
-1960 : 0000     |     
-1962 : 0000     |     
-1964 : 0000     |     
-1966 : 0000     |     
-1968 : 0000     |     
-196a : 0000     |     
-196c : 0000     |     
-196e : 0000     |     
-1970 : 0000     |     
-1972 : 0000     |     
-1974 : 0000     |     
-1976 : 0000     |     
-1978 : 0000     |     
-197a : 0000     |     
-197c : 0000     |     
-197e : 0000     |     
-1980 : 0000     |     
-1982 : 0000     |     
-1984 : 0000     |     
-1986 : 0000     |     
-1988 : 0000     |     
-198a : 0000     |     
-198c : 0000     |     
-198e : 0000     |     
-1990 : 0000     |     
-1992 : 0000     |     
-1994 : 0000     |     
-1996 : 0000     |     
-1998 : 0000     |     
-199a : 0000     |     
-199c : 0000     |     
-199e : 0000     |     
-19a0 : 0000     |     
-19a2 : 0000     |     
-19a4 : 0000     |     
-19a6 : 0000     |     
-19a8 : 0000     |     
-19aa : 0000     |     
-19ac : 0000     |     
-19ae : 0000     |     
-19b0 : 0000     |     
-19b2 : 0000     |     
-19b4 : 0000     |     
-19b6 : 0000     |     
-19b8 : 0000     |     
-19ba : 0000     |     
-19bc : 0000     |     
-19be : 0000     |     
-19c0 : 0000     |     
-19c2 : 0000     |     
-19c4 : 0000     |     
-19c6 : 0000     |     
-19c8 : 0000     |     
-19ca : 0000     |     
-19cc : 0000     |     
-19ce : 0000     |     
-19d0 : 0000     |     
-19d2 : 0000     |     
-19d4 : 0000     |     
-19d6 : 0000     |     
-19d8 : 0000     |     
-19da : 0000     |     
-19dc : 0000     |     
-19de : 0000     |     
-19e0 : 0000     |     
-19e2 : 0000     |     
-19e4 : 0000     |     
-19e6 : 0000     |     
-19e8 : 0000     |     
-19ea : 0000     |     
-19ec : 0000     |     
+19ec : 0000     |     defs 32
 19ee : 0000     |     
 19f0 : 0000     |     
 19f2 : 0000     |     
@@ -1389,9 +1398,12 @@
 1a06 : 0000     |     
 1a08 : 0000     |     
 1a0a : 0000     |     
-1a0c : 0000     |     
-1a0e : 0000     |     
-1a10 : 0000     |     
+     :          | _nextpid:
+1a0c : 0000     |     defs 2
+     :          | _stable:
+1a0e : 0000     |     defs 2
+     :          | _ptable:
+1a10 : 0000     |     defs 416
 1a12 : 0000     |     
 1a14 : 0000     |     
 1a16 : 0000     |     
@@ -1421,3 +1433,181 @@
 1a46 : 0000     |     
 1a48 : 0000     |     
 1a4a : 0000     |     
+1a4c : 0000     |     
+1a4e : 0000     |     
+1a50 : 0000     |     
+1a52 : 0000     |     
+1a54 : 0000     |     
+1a56 : 0000     |     
+1a58 : 0000     |     
+1a5a : 0000     |     
+1a5c : 0000     |     
+1a5e : 0000     |     
+1a60 : 0000     |     
+1a62 : 0000     |     
+1a64 : 0000     |     
+1a66 : 0000     |     
+1a68 : 0000     |     
+1a6a : 0000     |     
+1a6c : 0000     |     
+1a6e : 0000     |     
+1a70 : 0000     |     
+1a72 : 0000     |     
+1a74 : 0000     |     
+1a76 : 0000     |     
+1a78 : 0000     |     
+1a7a : 0000     |     
+1a7c : 0000     |     
+1a7e : 0000     |     
+1a80 : 0000     |     
+1a82 : 0000     |     
+1a84 : 0000     |     
+1a86 : 0000     |     
+1a88 : 0000     |     
+1a8a : 0000     |     
+1a8c : 0000     |     
+1a8e : 0000     |     
+1a90 : 0000     |     
+1a92 : 0000     |     
+1a94 : 0000     |     
+1a96 : 0000     |     
+1a98 : 0000     |     
+1a9a : 0000     |     
+1a9c : 0000     |     
+1a9e : 0000     |     
+1aa0 : 0000     |     
+1aa2 : 0000     |     
+1aa4 : 0000     |     
+1aa6 : 0000     |     
+1aa8 : 0000     |     
+1aaa : 0000     |     
+1aac : 0000     |     
+1aae : 0000     |     
+1ab0 : 0000     |     
+1ab2 : 0000     |     
+1ab4 : 0000     |     
+1ab6 : 0000     |     
+1ab8 : 0000     |     
+1aba : 0000     |     
+1abc : 0000     |     
+1abe : 0000     |     
+1ac0 : 0000     |     
+1ac2 : 0000     |     
+1ac4 : 0000     |     
+1ac6 : 0000     |     
+1ac8 : 0000     |     
+1aca : 0000     |     
+1acc : 0000     |     
+1ace : 0000     |     
+1ad0 : 0000     |     
+1ad2 : 0000     |     
+1ad4 : 0000     |     
+1ad6 : 0000     |     
+1ad8 : 0000     |     
+1ada : 0000     |     
+1adc : 0000     |     
+1ade : 0000     |     
+1ae0 : 0000     |     
+1ae2 : 0000     |     
+1ae4 : 0000     |     
+1ae6 : 0000     |     
+1ae8 : 0000     |     
+1aea : 0000     |     
+1aec : 0000     |     
+1aee : 0000     |     
+1af0 : 0000     |     
+1af2 : 0000     |     
+1af4 : 0000     |     
+1af6 : 0000     |     
+1af8 : 0000     |     
+1afa : 0000     |     
+1afc : 0000     |     
+1afe : 0000     |     
+1b00 : 0000     |     
+1b02 : 0000     |     
+1b04 : 0000     |     
+1b06 : 0000     |     
+1b08 : 0000     |     
+1b0a : 0000     |     
+1b0c : 0000     |     
+1b0e : 0000     |     
+1b10 : 0000     |     
+1b12 : 0000     |     
+1b14 : 0000     |     
+1b16 : 0000     |     
+1b18 : 0000     |     
+1b1a : 0000     |     
+1b1c : 0000     |     
+1b1e : 0000     |     
+1b20 : 0000     |     
+1b22 : 0000     |     
+1b24 : 0000     |     
+1b26 : 0000     |     
+1b28 : 0000     |     
+1b2a : 0000     |     
+1b2c : 0000     |     
+1b2e : 0000     |     
+1b30 : 0000     |     
+1b32 : 0000     |     
+1b34 : 0000     |     
+1b36 : 0000     |     
+1b38 : 0000     |     
+1b3a : 0000     |     
+1b3c : 0000     |     
+1b3e : 0000     |     
+1b40 : 0000     |     
+1b42 : 0000     |     
+1b44 : 0000     |     
+1b46 : 0000     |     
+1b48 : 0000     |     
+1b4a : 0000     |     
+1b4c : 0000     |     
+1b4e : 0000     |     
+1b50 : 0000     |     
+1b52 : 0000     |     
+1b54 : 0000     |     
+1b56 : 0000     |     
+1b58 : 0000     |     
+1b5a : 0000     |     
+1b5c : 0000     |     
+1b5e : 0000     |     
+1b60 : 0000     |     
+1b62 : 0000     |     
+1b64 : 0000     |     
+1b66 : 0000     |     
+1b68 : 0000     |     
+1b6a : 0000     |     
+1b6c : 0000     |     
+1b6e : 0000     |     
+1b70 : 0000     |     
+1b72 : 0000     |     
+1b74 : 0000     |     
+1b76 : 0000     |     
+1b78 : 0000     |     
+1b7a : 0000     |     
+1b7c : 0000     |     
+1b7e : 0000     |     
+1b80 : 0000     |     
+1b82 : 0000     |     
+1b84 : 0000     |     
+1b86 : 0000     |     
+1b88 : 0000     |     
+1b8a : 0000     |     
+1b8c : 0000     |     
+1b8e : 0000     |     
+1b90 : 0000     |     
+1b92 : 0000     |     
+1b94 : 0000     |     
+1b96 : 0000     |     
+1b98 : 0000     |     
+1b9a : 0000     |     
+1b9c : 0000     |     
+1b9e : 0000     |     
+1ba0 : 0000     |     
+1ba2 : 0000     |     
+1ba4 : 0000     |     
+1ba6 : 0000     |     
+1ba8 : 0000     |     
+1baa : 0000     |     
+1bac : 0000     |     
+1bae : 0000     |     

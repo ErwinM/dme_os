@@ -8,8 +8,10 @@ OBJS = \
 	proc.ss\
 	trapasm.s\
 	swtch.s\
+	trap.ss\
 	kmain.ss\
 	pseudo_ops.s\
+	initcode.s\
 
 
 kernel: $(OBJS)

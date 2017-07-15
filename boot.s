@@ -40,10 +40,10 @@ wptb r3
 ; turn on paging (not yet)
 lcr r1
 ori r1, r1, 4
-scr r1
+wcr r1
 
 ; setup IVEC
-la16 r1, _trapret
+la16 r1, _alltraps
 wivec r1
 
 ; setup SP

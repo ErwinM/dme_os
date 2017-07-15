@@ -11,7 +11,8 @@ struct scheduler stable;
 
 int nextpid;
 
-extern trapret;
+extern cntxret;
+extern initcodestart;
 
 void
 pinit()
@@ -32,7 +33,6 @@ struct proc* allocproc()
 {
 	struct proc *p;
 	char *sp;
-	uint *builder;
 
 	for(p=ptable;p<&ptable[16];p++) {
 		if(p->state == UNUSED)
@@ -43,20 +43,21 @@ struct proc* allocproc()
 found:
 	kprintf("found free slot at: %d\n", p->ptb);
 	/* acquire and map into address space a new page for kstack of new process */
-	p->kspage = getkstack();
+	p->kstackpage = addpage(62, 0x3);
 	p->state = EMBRYO;
 	p->pid = nextpid;
 	nextpid++;
 
 	/* get the right pointers into ptable */
-	sp = (char*)KSTACKTOP;
+	sp = (char*)KSTACKSCAFFOLD;
 	sp -= (uint)sizeof *p->tf;
-	p->tf = (struct trapframe*)sp;
-  sp -= 4;
-	p->kstack = (uint*)sp;
+	p->tf = (struct trapframe*)(sp+0x800);
+  sp -= 2;
+	*(uint*)sp = (uint)&cntxret;
+	sp -= 2;
+	p->kstack = (uint*)(sp+0x800);
 
-	builder = (uint*)0xf6ee;
-	*builder = (uint)&trapret;
+
 	return p;
 }
 
@@ -64,7 +65,19 @@ void
 userinit()
 {
 	struct proc *p;
+	struct trapframe *tf;
 
+	p = allocproc();
+	setupkvm(p->ptb, p->kstackpage);
+	inituvm(p->ptb, (uint)&initcodestart);
+
+	tf=(struct trapframe*)((char*)KSTACKSCAFFOLD - (uint)sizeof(*tf));
+	tf->sp = PGSIZE;
+	tf->ip = 0;
+	tf->cr = CR_PG | CR_IRQ;
+	p->state = RUNNABLE;
+
+	swtch(&stable.kstack, p->ptb, p->kstack );
 }
 
 

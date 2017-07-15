@@ -2,12 +2,10 @@
 
 kalloc
 ------
-
 allocating memory will also mean allocatng a page (since the available memory is bigger than the address space)
 
 VM
 --
-
 building a new address space is done by:
 - reserving one of the 16 (512/32) address spaces (OS)
 - this address space is identified by its PTB
@@ -19,3 +17,10 @@ user space part:
 - allocate x pages
 - map them
 - copy in code
+
+
+To implement on hardware:
+-------------------------
+- pop.u
+- wcr.u / lcr.u
+- can syscall store its argument in sR2 easily?
