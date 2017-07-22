@@ -15,6 +15,7 @@ _initcodestart:
   ldi r1, 7 ; syscall 7 = exec
 	push r1
   syscall
+	hlt
 
 ;# for(;;) exit();
 ;exit:

@@ -9,17 +9,9 @@ _alltraps:
 	ldi r3, 0x20
 	and r4, r1, r3
 	skip.eq r4, r3
-	br tohandler
+	br simpletrap
 	hlt
 
-tohandler:
-	push.u sp
-	push r1 	;trapnr
-	la16 r3, _trap
-	addi r1, pc, 2
-	br.r r3
-
-; when we return from a trap
 _cntxret:
 ; we are returning from a trap after a context switch
 ; this means we need to restore the user registers which were saved
@@ -36,7 +28,14 @@ _cntxret:
 	wcr.u r1
 	reti
 
+simpletrap:
+	push.u sp
+	push r1 	;trapnr
+	la16 r3, _trap
+	addi r1, pc, 2
+	br.r r3
 
-_trapret:
+; when we return from a (non context switch) trap
+trapret:
 	; we prob need to pop some more stuff of the stack but lets see
-	brk
+	reti

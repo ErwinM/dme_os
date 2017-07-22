@@ -1,0 +1,8 @@
+thoughts on ramdisk implementation:
+
+what is needed:
+- a chunk of memory (page!) that is read/write
+- that is preloaded with binary information
+
+- it should be loaded at a specific spot?
+- you do it in boot.s ?

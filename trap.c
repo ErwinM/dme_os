@@ -6,4 +6,5 @@ void trap(uint trapnr, uint usp)
 	if(trapnr==0x10){
 		kprintf("SYSCALL!");
 	}
+	breek();
 }

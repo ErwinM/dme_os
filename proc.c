@@ -72,6 +72,7 @@ userinit()
 	inituvm(p->ptb, (uint)&initcodestart);
 
 	tf=(struct trapframe*)((char*)KSTACKSCAFFOLD - (uint)sizeof(*tf));
+	tf->bp = PGSIZE;
 	tf->sp = PGSIZE;
 	tf->ip = 0;
 	tf->cr = CR_PG | CR_IRQ;
