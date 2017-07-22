@@ -441,7 +441,7 @@ _inituart:
 	stw 1(bp), r1   ; port + 1 0x00 - disable all interrupts
 	ldi r1, 0x80
 	stw 3(bp), r1   ; port + 3 0x80 enable dlab
-	ldi r1, 32
+	ldi r1, 52
 	stw 0(bp), r1		; port + 0 set divisor to 1 LSB
 	ldi r1, 0
 	stw 1(bp), r1		; port + 1 set divisor to 1 MSB
@@ -1011,7 +1011,7 @@ L3_proc:
 L5_proc:
 	ldw	r4,-2(bp)
 	la16	r3,_ptable+416
-	skip.ult	r3,r4
+	skip.ulte	r3,r4
 	br	L2_proc
 	la16	r4,L7_proc
 	push	r4
@@ -1055,7 +1055,7 @@ L1_proc0:
 L1_proc2:
 	ldw	r4,-2(bp)
 	la16	r3,_ptable+416
-	skip.ult	r3,r4
+	skip.ulte	r3,r4
 	br	L9_proc
 	la16	r4,L1_proc7
 	push	r4
