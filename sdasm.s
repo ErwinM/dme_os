@@ -12,6 +12,8 @@ _sdreadasm:
 	ld16	r3, 0x8851
 	stw	r0(r4),r3
 
+	; wait for finish here...
+
 	la16 r3, 0xffa8
 	la16 r4, 0xffaa
 L4:

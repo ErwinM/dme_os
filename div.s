@@ -1,6 +1,7 @@
 
 ; http://www.tofla.iconbar.com/tofla/arm/arm02/index.htm
-; !! need to add skipi instruction to make usable (uses too many regs atm)
+;
+; THIS DOES NOT WORK FOR HIGH 16B NUMBERS!!!!
 
 	ldi r4, 1
 	ldi r2, 87

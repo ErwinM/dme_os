@@ -21,11 +21,15 @@ pinit()
 	struct proc *p;
 
 	memset(&ptable,0,(uint)sizeof(ptable));
-	for(p=ptable;p<&ptable[16];p++) {
+	/* address space 0 (ptb = 0) is the sched address space */
+	p=ptable;
+	p->kstackpage = 15;
+	p++;
+	for(;p<&ptable[16];p++) {
 		p->ptb = i;
 		i++;
 	}
-	kprintf("pinit: ptable initialised.\n");
+	kprintf("pinit: ptable initialised at 0x%x.\n", (uint)&ptable);
 	nextpid = 0;
 }
 

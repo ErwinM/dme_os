@@ -2,62 +2,98 @@
 ; !! need to add skipi instruction to make usable (uses too many regs atm)
 
 ; DIVIDE -------------------------
-;
 _div:
-	pop r3 ; op1
-	pop r2 ; op2
-	mov r1, r0
-	ldi r4, 1
+; normal function conventions to keep life simple
+; we will not args to locals, since we kow what we are doing (he..)
+; N is be in bp+6, D is in bp+4
+; create 1 local to hold Q: bp-2
+; r1 temp
+; r2 cntr
+; r3 load/store N/Q/D
+; r4 R
+	push r1
+	push bp
+	mov bp, sp
+	ldi r2, 16
+	mov r4, r0
+	stw -2(bp), r0
 divL1:
-	skip.gt r2, r3
+	subi r2, r2, 1
+	shl r4,r4,1
+
+	ld16 r1, 0xfffe
+	and r4, r4, r1
+
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, 6(bp)
+	and r1, r3, r1
+
+	shr.r r1, r1, r2
+	or r4, r4, r1
+
+	ldw r3, 4(bp)
+	skip.ulte r3, r4
 	br divL2
-	shl r3, r3, 1
-	shl r4, r4, 1
-	br divL1
+
+	sub r4, r4, r3
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, -2(bp)
+	or r3, r3, r1
+	stw -2(bp), r3
 
 divL2:
-	addskpi.nz r0, r4, -1
-	br divL3
-	shr r3, r3, 1
-	shr r4, r4, 1
-
-	skip.gte r2, r3
-	br divL2
-	sub r2, r2, r3
-	or	r1, r1, r4
-	br divL2
-
-divL3:
-	br.r bp ; return
+	skip.eq r2, r0
+	br divL1
+	ldw r1, -2(bp)
+	mov	sp, bp
+	pop	bp
+	pop	pc
 
 ; MODULO -------------------------
-;
+; UNSIGNED
 ; (same algo as div, just returning remainer)
 _mod:
-	pop r3 ; op1
-	pop r2 ; op2
-	ldi r4, 1
+	push r1
+	push bp
+	mov bp, sp
+	ldi r2, 16
+	mov r4, r0
+	stw -2(bp), r0
 modL1:
-	skip.gt r2, r3
+	subi r2, r2, 1
+	shl r4,r4,1
+
+	ld16 r1, 0xfffe
+	and r4, r4, r1
+
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, 6(bp)
+	and r1, r3, r1
+
+	shr.r r1, r1, r2
+	or r4, r4, r1
+
+	ldw r3, 4(bp)
+	skip.ulte r3, r4
 	br modL2
-	shl r3, r3, 1
-	shl r4, r4, 1
-	br modL1
+
+	sub r4, r4, r3
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, -2(bp)
+	or r3, r3, r1
+	stw -2(bp), r3
 
 modL2:
-	addskpi.nz r0, r4, -1
-	br modL3
-	shr r3, r3, 1
-	shr r4, r4, 1
-
-	skip.gte r2, r3
-	br modL2
-	sub r2, r2, r3
-	br modL2
-
-modL3:
-	mov r1, r2
-	br.r bp ; return
+	skip.eq r2, r0
+	br modL1
+	mov r1, r4 ; transfer result to r1
+	mov	sp, bp
+	pop	bp
+	pop	pc
 
 ; MULTIPLY  -------------------------
 ;

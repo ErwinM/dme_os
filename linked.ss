@@ -1,7 +1,4 @@
-
-
-
-
+include(pseudo_ops.h)
 
 ; boot.s
 ; there is no need to load the kernel high at boot
@@ -143,13 +140,7 @@ L8_console:
 	stw	-24(bp),r3
 	ldw	r2,6(bp)
 	stw	-26(bp),r2
-
-push r3
-push r2
-addi r1, pc, 2
-br _mod
-; result will be in r1
-
+MOD16(r1,r3,r2)
 	la16	r4,L2_console
 	add	r4,r1,r4
 	ldb	r4,r0(r4)
@@ -158,13 +149,7 @@ br _mod
 L9_console:
 	ldw	r4,-4(bp)
 	ldw	r3,6(bp)
-
-push r4
-push r3
-addi r1, pc, 2
-br _div
-; result will be in r1
-
+DIV16(r1,r4,r3)
 	stw	-4(bp),r1
 	skip.eq r1,r0
 	br L8_console
@@ -673,13 +658,7 @@ _kalloc:
 	stw	-8(bp),r4
 	ld16	r3, 16
 	stw	-10(bp),r3
-
-push r4
-push r3
-addi r1, pc, 2
-br _div
-; result will be in r1
-
+DIV16(r1,r4,r3)
 	stw	-4(bp),r1
 	ld16	r4, 1
 	stw	-16(bp),r4
@@ -688,13 +667,7 @@ br _div
 	ldw	r2,-8(bp)
 	stw	-12(bp),r2
 	ldw	r1,-10(bp)
-
-push r2
-push r1
-addi r1, pc, 2
-br _mod
-; result will be in r1
-
+MOD16(r1,r2,r1)
 	ldw	r4,-14(bp)
 	sub	r4,r4,r1
 	ldw	r3,-16(bp)
@@ -1530,13 +1503,7 @@ _kmain:
 	stw	-4(bp),r4
 	ldw	r4,-2(bp)
 	ldw	r3,-4(bp)
-
-push r4
-push r3
-addi r1, pc, 2
-br _div
-; result will be in r1
-
+DIV16(r1,r4,r3)
 	push	r1
 	la16	r4,L2_kmain
 	push	r4
@@ -1547,13 +1514,7 @@ br _div
 	add	sp,sp,r2
 	ldw	r4,-2(bp)
 	ldw	r3,-4(bp)
-
-push r4
-push r3
-addi r1, pc, 2
-br _mod
-; result will be in r1
-
+MOD16(r1,r4,r3)
 	push	r1
 	la16	r4,L3_kmain
 	push	r4

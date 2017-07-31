@@ -6,11 +6,19 @@ extern struct scheduler stable;
 
 int kmain() {
 
-	struct proc *p;
+	uint x,y;
 
-	kprintf("DME OS v%d starting...\n");
-	initkmem();
+	/*kprintf("DME OS v%d starting...\n"); */
+	breek();
+	x = 12;
+	y = 5;
+	kprintf("div: %d", (x/y));
+	kprintf("mod: %d", (x%y));
+
+	/*initkmem();
 	pinit();
+	halt();
+	breek();
 
 	userinit();
 

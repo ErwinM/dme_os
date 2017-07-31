@@ -4,18 +4,20 @@
 #define PGFRAME(a) (a/16)
 #define PGBIT(a) (a%16)
 
+/* SRAM is 512kb or 256 pages in size; requiring 16 words (of 16 bits) to map */
 uint pframe[16];
 
 void
 initkmem()
 {
 	int i;
-	for(i=1;i<=14;i++){
-	pframe[i]=0xffff;
+	for(i=0;i<=15;i++){
+		pframe[i]=0xffff;
 	}
-	/* kernel code is in physical page 0 and 1 so these are never available */
-	pframe[0] = 0x0fff;
-	pframe[15] = 0xfffe;
+	/* kernel code + stack will occupy the first 16 pages so we mark the first
+	 * 16 pages unavailable.
+	 * FIXME: optimise this later when actual size of kernel is known */
+	pframe[0] = 0x0;
 }
 
 uint
@@ -43,5 +45,6 @@ kalloc()
 	framenr = freepg / 16;
 	mask = ~(0x1 << (15-freepg%16));
 	pframe[framenr] &= mask;
+	kprintf("Allocated page: %d", freepg);
 	return freepg;
 }

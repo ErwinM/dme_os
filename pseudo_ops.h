@@ -14,24 +14,20 @@ pop bp
 
 define(DIV16,
 `
-push bp
 push $2
 push $3
-addi bp, pc, 2
+addi r1, pc, 2
 br _div
-; result should be in $1
-pop bp
+; result will be in $1
 ')
 
 define(MOD16,
 `
-push bp
 push $2
 push $3
-addi bp, pc, 2
+addi r1, pc, 2
 br _mod
-; result should be in $1
-pop bp
+; result will be in $1
 ')
 
 divert

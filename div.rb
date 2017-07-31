@@ -1,14 +1,17 @@
 tick = 0
 r0 = 0
 r1 = 1
-r2 = 8787
-r3 = 5
+r2 = 0x8a90
+r3 = 0x10
+
+
+puts "#{r2} / #{r3} \n\n"
 
 # setup for division
 while (r2 > r3) do
-  puts "r3: #{r3.to_s(2)}\n"
   r3 = r3 << 1
   r1 = r1 << 1
+   puts "r3: " + ("%016b" % r3) + " (#{r3.to_s(16)})\n"
   tick += 3
 end
 

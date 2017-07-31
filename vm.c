@@ -14,7 +14,7 @@ void
 setupkvm(uint ptb, uint kstackpg)
 {
 	pte_t pte;
-	/* map the kernel code and scheduler kstack which already has its physical pages */
+	/* map the kernel code which are already allocated to physical pages */
 	writepte(ptb + KCODE/PGSIZE, 0x1);
 	writepte(ptb + (KCODE+PGSIZE)/PGSIZE, 0x101);
 	writepte(ptb + (KCODE+2*PGSIZE)/PGSIZE, 0x201);

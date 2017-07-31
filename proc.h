@@ -6,7 +6,7 @@ struct proc {
   uint sz;                     // Size of process memory (bytes)
   uint ptb;                	   // Page table base (e.g. address space)
   uint *kstack;                // Bottom of kernel stack for this process
-	uint kstackpage;                  // page that holds the stack for this process
+	uint kstackpage;             // page that holds the stack for this process
   enum procstate state;        // Process state
   int pid;                     // Process ID
 

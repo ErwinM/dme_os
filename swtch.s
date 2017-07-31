@@ -15,7 +15,7 @@ _swtch:
 	ldw r2, 6(bp) ; ptb
 	ldw r3, 8(bp) ; context (= new SP)
 	; i dont think i need to save much except sp and bp...
-	; the registers all all clear after switch is called..
+	; the registers are all clear after switch is called..
 
 	stw r0(r1), sp  ; store old sp in sched->context
 	wptb r2					; switch to new address space
