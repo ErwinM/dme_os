@@ -14,7 +14,7 @@ initkmem()
 	for(i=0;i<=15;i++){
 		pframe[i]=0xffff;
 	}
-	/* kernel code + stack will occupy the first 16 pages so we mark the first
+	/* kernel code + stack will occupy the first phys pages so we mark the first
 	 * 16 pages unavailable.
 	 * FIXME: optimise this later when actual size of kernel is known */
 	pframe[0] = 0x0;
@@ -34,6 +34,7 @@ findfreepg()
 		}
 	}
 	kprintf("Findfreepg: NO FREE PAGE FOUND!\n");
+	halt();
 }
 
 uint

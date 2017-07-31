@@ -8,10 +8,11 @@
 
 struct proc ptable[15];
 struct scheduler sched;
+struct proc *currproc;
 
 int nextpid;
 
-extern cntxret;
+extern contextret;
 extern initcodestart;
 
 void
@@ -35,7 +36,7 @@ struct proc* allocproc()
 	struct proc *p;
 	char *sp;
 
-	for(p=ptable;p<&ptable[16];p++) {
+	for(p=ptable;p<&ptable[15];p++) {
 		if(p->state == UNUSED)
 			goto found;
 	}
@@ -51,10 +52,10 @@ found:
 
 	/* get the right pointers into ptable */
 	sp = (char*)KSTACKSCAFF_SP;
-	sp -= (uint)sizeof *p->tf;
-	p->tf = (struct trapframe*)(sp+0x800);
+	sp -= (uint)sizeof *p->cf;
+	p->cf = (struct contextframe*)(sp+0x800);
   sp -= 2;
-	*(uint*)sp = (uint)&cntxret;
+	*(uint*)sp = (uint)&contextret;
 	sp -= 2;
 	p->kstack = (uint*)(sp+0x800);
 
@@ -65,19 +66,36 @@ void
 userinit()
 {
 	struct proc *p;
-	struct trapframe *tf;
+	struct contextframe *cf;
 
 	p = allocproc();
 	setupkvm(p->ptb, p->kstackpage);
 	inituvm(p->ptb, (uint)&initcodestart);
 
-	tf=(struct trapframe*)((char*)KSTACKSCAFF_SP - (uint)sizeof(*tf));
-	tf->bp = PGSIZE;
-	tf->sp = PGSIZE;
-	tf->ip = 0;
-	tf->cr = CR_PG | CR_IRQ;
+	cf=(struct contextframe*)((char*)KSTACKSCAFF_SP - (uint)sizeof(*cf));
+	cf->bp = PGSIZE;
+	cf->sp = PGSIZE;
+	cf->ip = 0;
+	cf->cr = CR_PG | CR_IRQ;
 	p->state = RUNNABLE;
-	kprintf("userinit: starting first user process..\n");
-	breek();
-	swtch(&sched.kstack, p->ptb, p->kstack );
+	kprintf("userinit: first user process ready to run..\n");
+}
+
+void
+scheduler()
+{
+	/* endless loop searching for RUNNABLE processes */
+	struct proc *p;
+	while(1){
+		for(p=ptable;p<&ptable[15];p++) {
+			if(p->state != RUNNABLE)
+				continue;
+
+			/* runnable process found */
+			currproc = p;
+			p->state = RUNNING;
+			swtch(&sched.kstack, p->ptb, p->kstack );
+			currproc = 0;
+		}
+	}
 }

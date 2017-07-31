@@ -651,6 +651,9 @@ L8_kalloc:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
+	la16	r2,_halt
+	addi	r1,pc,2
+	br.r	r2
 	mov	r1,r0
 L6_kalloc:
 	mov	sp, bp
@@ -726,6 +729,7 @@ L2_kalloc0:
 	pop	bp
 	pop	pc
 
+;	.extern _halt
 ;	.extern _kprintf
 	.bss
 ;	.global _pframe
@@ -1027,7 +1031,7 @@ _pinit:
 	sub	sp, sp, r4
 	ld16	r4, 1
 	stw	-4(bp),r4
-	ld16	r4, 390
+	ld16	r4, 420
 	push	r4
 	push	r0
 	la16	r4,_ptable
@@ -1052,12 +1056,12 @@ L2_proc:
 	stw	-4(bp),r4
 L3_proc:
 	ldw	r4,-2(bp)
-	ld16	r3, 26
+	ld16	r3, 28
 	add	r4,r4,r3
 	stw	-2(bp),r4
 L5_proc:
 	ldw	r4,-2(bp)
-	la16	r3,_ptable+390
+	la16	r3,_ptable+420
 	skip.ulte	r3,r4
 	br	L2_proc
 	la16	r4,_ptable
@@ -1098,12 +1102,12 @@ L9_proc:
 L1_proc4:
 L1_proc0:
 	ldw	r4,-2(bp)
-	ld16	r3, 26
+	ld16	r3, 28
 	add	r4,r4,r3
 	stw	-2(bp),r4
 L1_proc2:
 	ldw	r4,-2(bp)
-	la16	r3,_ptable+416
+	la16	r3,_ptable+420
 	skip.ulte	r3,r4
 	br	L9_proc
 	la16	r4,L1_proc7
@@ -1163,7 +1167,7 @@ L1_proc6:
 	add	r4,r4,r3
 	stw	-4(bp),r4
 	ldw	r4,-2(bp)
-	ld16	r3, 12
+	ld16	r3, 14
 	add	r4,r4,r3
 	ldw	r3,-4(bp)
 	ld16	r2, 2048
@@ -1173,7 +1177,7 @@ L1_proc6:
 	addi	r4,r4,-2
 	stw	-4(bp),r4
 	ldw	r4,-4(bp)
-	la16	r3,_cntxret
+	la16	r3,_contextret
 	stw	r0(r4),r3
 	ldw	r4,-4(bp)
 	addi	r4,r4,-2
@@ -1200,8 +1204,8 @@ _userinit:
 	la16	r2,_allocproc ; jaddr
 	addi	r1,pc,2
 	br.r	r2
-	stw	-2(bp),r1
-	ldw	r4,-2(bp)
+	stw	-4(bp),r1
+	ldw	r4,-4(bp)
 	ld16	r3, 6
 	add	r3,r4,r3
 	ldw	r3,r0(r3)
@@ -1216,7 +1220,7 @@ _userinit:
 	add	sp,sp,r2
 	la16	r4,_initcodestart
 	push	r4
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	addi	r4,r4,2
 	ldw	r4,r0(r4)
 	push	r4
@@ -1226,26 +1230,26 @@ _userinit:
 	ldi	r2,4
 	add	sp,sp,r2
 	ld16	r4, 0xf6f0
-	stw	-4(bp),r4
-	ldw	r4,-4(bp)
+	stw	-2(bp),r4
+	ldw	r4,-2(bp)
 	addi	r4,r4,8
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 10
 	add	r4,r4,r3
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	stw	r0(r4),r0
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 14
 	add	r4,r4,r3
 	ld16	r3, 12
 	stw	r0(r4),r3
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	addi	r4,r4,8
 	ld16	r3, 3
 	stw	r0(r4),r3
@@ -1256,9 +1260,41 @@ _userinit:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r2,_breek
-	addi	r1,pc,2
-	br.r	r2
+L1_proc9:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _scheduler
+_scheduler:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	la16	r4,L2_proc3
+	br.r r4
+L2_proc2:
+	la16	r4,_ptable
+	stw	-2(bp),r4
+	la16	r4,L2_proc8
+	br.r r4
+L2_proc5:
+	ldw	r4,-2(bp)
+	addi	r4,r4,8
+	ldw	r4,r0(r4)
+	ld16	r3, 3
+	skip.ne	r4,r3
+	br	L3_proc0
+	la16	r4,L2_proc6
+	br.r r4
+L3_proc0:
+	ldw	r4,-2(bp)
+	la16	r3,_currproc
+	stw	r0(r3),r4
+	addi	r4,r4,8
+	ld16	r3, 4
+	stw	r0(r4),r3
 	ldw	r4,-2(bp)
 	addi	r3,r4,4
 	ldw	r3,r0(r3)
@@ -1273,13 +1309,27 @@ _userinit:
 	br.r	r2
 	ldi	r2,6
 	add	sp,sp,r2
-L1_proc9:
+	la16	r4,_currproc
+	stw	r0(r4),r0
+L2_proc6:
+	ldw	r4,-2(bp)
+	ld16	r3, 28
+	add	r4,r4,r3
+	stw	-2(bp),r4
+L2_proc8:
+	ldw	r4,-2(bp)
+	la16	r3,_ptable+420
+	skip.ulte	r3,r4
+	br	L2_proc5
+L2_proc3:
+	la16	r4,L2_proc2
+	br.r r4
+L2_proc1:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
 ;	.extern _swtch
-;	.extern _breek
 ;	.extern _inituvm
 ;	.extern _setupkvm
 ;	.extern _addpage
@@ -1287,17 +1337,20 @@ L1_proc9:
 ;	.extern _kprintf
 ;	.extern _memset
 ;	.extern _initcodestart
-;	.extern _cntxret
+;	.extern _contextret
 	.bss
 ;	.global _nextpid
 _nextpid:
+	defs 2
+;	.global _currproc
+_currproc:
 	defs 2
 ;	.global _sched
 _sched:
 	defs 6
 ;	.global _ptable
 _ptable:
-	defs 390
+	defs 420
 	.data
 L2_proc0:
 	defb 117
@@ -1309,15 +1362,6 @@ L2_proc0:
 	defb 105
 	defb 116
 	defb 58
-	defb 32
-	defb 115
-	defb 116
-	defb 97
-	defb 114
-	defb 116
-	defb 105
-	defb 110
-	defb 103
 	defb 32
 	defb 102
 	defb 105
@@ -1337,6 +1381,19 @@ L2_proc0:
 	defb 101
 	defb 115
 	defb 115
+	defb 32
+	defb 114
+	defb 101
+	defb 97
+	defb 100
+	defb 121
+	defb 32
+	defb 116
+	defb 111
+	defb 32
+	defb 114
+	defb 117
+	defb 110
 	defb 46
 	defb 46
 	defb 10
@@ -1456,7 +1513,7 @@ _alltraps:
 	br simpletrap_trapasm
 	hlt
 
-_cntxret:
+_contextret:
 ; we are returning from a trap after a context switch
 ; this means we need to restore the user registers which were saved
 ; to the kstack as a trapframe when we trapped
@@ -1475,15 +1532,20 @@ _cntxret:
 simpletrap_trapasm:
 	push.u sp
 	push r1 	;trapnr
+	mov r1, sp  ; GOTCHA_trapasm: pushing sp pushing the updated value not the old value!!
+	push r1
 	la16 r3, _trap
 	addi r1, pc, 2
 	br.r r3
 
 ; when we return from a (non context switch) trap
 trapret_trapasm:
-	; we prob need to pop some more stuff of the stack but lets see
-	reti
-;
+; we prob need to pop some more stuff of the stack but lets see
+	addi sp, sp, 2
+	pop.u r1
+	pop.u sp
+	brk
+	reti;
 ; to make a context switch on dme:
 ; - INSIGHT: a context switch is just a SP switch... ip just keeps processing
 ; 	- save context on old stack
@@ -1520,9 +1582,11 @@ _trap:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldw	r4,6(bp)
-	push	r4
 	ldw	r4,4(bp)
+	addi	r3,r4,2
+	ldw	r3,r0(r3)
+	push	r3
+	ldw	r4,r0(r4)
 	push	r4
 	la16	r4,L2_trap
 	push	r4
@@ -1532,6 +1596,7 @@ _trap:
 	ldi	r2,6
 	add	sp,sp,r2
 	ldw	r4,4(bp)
+	ldw	r4,r0(r4)
 	ld16	r3, 16
 	skip.eq r4,r3
 	br L3_trap
@@ -1542,18 +1607,49 @@ _trap:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
-L3_trap:
-	la16	r2,_breek
+	ldw	r4,4(bp)
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,L6_trap
+	push	r4
+	la16	r2,_kprintf
 	addi	r1,pc,2
 	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ldw	r4,4(bp)
+	ld16	r3, 0xbabe
+	stw	r0(r4),r3
+L3_trap:
 L1_trap:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
-;	.extern _breek
 ;	.extern _kprintf
+;	.extern _currproc
 	.data
+L6_trap:
+	defb 117
+	defb 115
+	defb 112
+	defb 32
+	defb 112
+	defb 111
+	defb 105
+	defb 110
+	defb 116
+	defb 115
+	defb 32
+	defb 116
+	defb 111
+	defb 58
+	defb 32
+	defb 37
+	defb 120
+	defb 10
+	defb 0
 L5_trap:
 	defb 83
 	defb 89
@@ -1563,6 +1659,9 @@ L5_trap:
 	defb 76
 	defb 76
 	defb 33
+	defb 32
+	defb 45
+	defb 32
 	defb 0
 L2_trap:
 	defb 84
@@ -1572,7 +1671,7 @@ L2_trap:
 	defb 58
 	defb 32
 	defb 37
-	defb 100
+	defb 120
 	defb 44
 	defb 32
 	defb 117
@@ -1611,6 +1710,9 @@ _kmain:
 	la16	r2,_userinit
 	addi	r1,pc,2
 	br.r	r2
+	la16	r2,_scheduler
+	addi	r1,pc,2
+	br.r	r2
 	la16	r2,_halt
 	addi	r1,pc,2
 	br.r	r2
@@ -1621,6 +1723,7 @@ L1_kmain:
 	pop	pc
 
 ;	.extern _halt
+;	.extern _scheduler
 ;	.extern _userinit
 ;	.extern _pinit
 ;	.extern _initkmem
@@ -1788,7 +1891,7 @@ multL3_pseudo_ops:
 ; include "traps.h"
 ;
 ;
-;  exec(init, argv)
+;  exec(init, argv) = args according to C function call convention (pushed from right to left)
 
 _initcodestart:
   la16 r1, L2_initcode
@@ -1796,7 +1899,7 @@ _initcodestart:
 	la16 r1, L1_initcode
   push r1
 	push r0    ; where caller pc would be
-  ldi r1, 7 ; syscall 7 = exec
+  ldi r1, 7  ; syscall 7 = exec
 	push r1
   syscall
 	hlt

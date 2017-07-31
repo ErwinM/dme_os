@@ -4,7 +4,7 @@
 ; include "traps.h"
 ;
 ;
-;  exec(init, argv)
+;  exec(init, argv) = args according to C function call convention (pushed from right to left)
 
 _initcodestart:
   la16 r1, L2
@@ -12,7 +12,7 @@ _initcodestart:
 	la16 r1, L1
   push r1
 	push r0    ; where caller pc would be
-  ldi r1, 7 ; syscall 7 = exec
+  ldi r1, 7  ; syscall 7 = exec
 	push r1
   syscall
 	hlt

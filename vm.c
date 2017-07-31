@@ -16,7 +16,7 @@ setupkvm(uint ptb, uint kstackpg)
 	pte_t pte;
 	int i;
 	kprintf("setupkvm: building address space for ptb: %d\n", ptb);
-	/* map the kernel code in new address space */
+	/* map the kernel code in new address space to pg 16 and above*/
 	for(i=0;i<=14;i++){
 		writepte(ptb+i+16, ((i<<8)|0x1));
 	}

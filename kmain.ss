@@ -24,6 +24,9 @@ _kmain:
 	la16	r2,_userinit
 	addi	r1,pc,2
 	br.r	r2
+	la16	r2,_scheduler
+	addi	r1,pc,2
+	br.r	r2
 	la16	r2,_halt
 	addi	r1,pc,2
 	br.r	r2
@@ -34,6 +37,7 @@ L1:
 	pop	pc
 
 ;	.extern _halt
+;	.extern _scheduler
 ;	.extern _userinit
 ;	.extern _pinit
 ;	.extern _initkmem

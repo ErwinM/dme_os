@@ -1,10 +1,16 @@
 #include "types.h"
+#include "proc.h"
 
-void trap(uint trapnr, uint usp)
+extern struct proc *currproc;
+
+void trap(struct trapframe *tf)
 {
-	kprintf("Trap: %d, uSP: %x\n", trapnr, usp);
-	if(trapnr==0x10){
-		kprintf("SYSCALL!");
+	kprintf("Trap: %x, uSP: %x\n", tf->r1, tf->sp);
+	/* if timer IRQ: tf else: */
+
+	if(tf->r1==0x10){
+		kprintf("SYSCALL! - ");
+		kprintf("usp points to: %x\n", tf->sp);
+		tf->r1 = 0xbabe;
 	}
-	breek();
 }

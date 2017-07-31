@@ -97,6 +97,9 @@ L8:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
+	la16	r2,_halt
+	addi	r1,pc,2
+	br.r	r2
 	mov	r1,r0
 L6:
 	mov	sp, bp
@@ -160,6 +163,7 @@ L20:
 	pop	bp
 	pop	pc
 
+;	.extern _halt
 ;	.extern _kprintf
 	.bss
 ;	.global _pframe

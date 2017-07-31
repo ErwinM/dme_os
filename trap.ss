@@ -8,9 +8,11 @@ _trap:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldw	r4,6(bp)
-	push	r4
 	ldw	r4,4(bp)
+	addi	r3,r4,2
+	ldw	r3,r0(r3)
+	push	r3
+	ldw	r4,r0(r4)
 	push	r4
 	la16	r4,L2
 	push	r4
@@ -20,6 +22,7 @@ _trap:
 	ldi	r2,6
 	add	sp,sp,r2
 	ldw	r4,4(bp)
+	ldw	r4,r0(r4)
 	ld16	r3, 16
 	skip.eq r4,r3
 	br L3
@@ -30,18 +33,49 @@ _trap:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
-L3:
-	la16	r2,_breek
+	ldw	r4,4(bp)
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,L6
+	push	r4
+	la16	r2,_kprintf
 	addi	r1,pc,2
 	br.r	r2
+	ldi	r2,4
+	add	sp,sp,r2
+	ldw	r4,4(bp)
+	ld16	r3, 0xbabe
+	stw	r0(r4),r3
+L3:
 L1:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
-;	.extern _breek
 ;	.extern _kprintf
+;	.extern _currproc
 	.data
+L6:
+	defb 117
+	defb 115
+	defb 112
+	defb 32
+	defb 112
+	defb 111
+	defb 105
+	defb 110
+	defb 116
+	defb 115
+	defb 32
+	defb 116
+	defb 111
+	defb 58
+	defb 32
+	defb 37
+	defb 120
+	defb 10
+	defb 0
 L5:
 	defb 83
 	defb 89
@@ -51,6 +85,9 @@ L5:
 	defb 76
 	defb 76
 	defb 33
+	defb 32
+	defb 45
+	defb 32
 	defb 0
 L2:
 	defb 84
@@ -60,7 +97,7 @@ L2:
 	defb 58
 	defb 32
 	defb 37
-	defb 100
+	defb 120
 	defb 44
 	defb 32
 	defb 117

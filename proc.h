@@ -9,9 +9,8 @@ struct proc {
 	uint kstackpage;             // page that holds the stack for this process
   enum procstate state;        // Process state
   int pid;                     // Process ID
-
-	struct trapframe *tf;
-
+	struct trapframe *tf;				 // ptr to tf; only used in timer-irq switch traps
+	struct contextframe *cf;
 	void *chan;                  // If non-zero, sleeping on chan
   int killed;                  // If non-zero, have been killed
 
@@ -19,6 +18,11 @@ struct proc {
 };
 
 struct trapframe {
+	uint r1;
+	uint sp;
+};
+
+struct contextframe {
 	uint r1;
 	uint r2;
 	uint r3;

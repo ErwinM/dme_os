@@ -12,7 +12,7 @@ _pinit:
 	sub	sp, sp, r4
 	ld16	r4, 1
 	stw	-4(bp),r4
-	ld16	r4, 390
+	ld16	r4, 420
 	push	r4
 	push	r0
 	la16	r4,_ptable
@@ -37,12 +37,12 @@ L2:
 	stw	-4(bp),r4
 L3:
 	ldw	r4,-2(bp)
-	ld16	r3, 26
+	ld16	r3, 28
 	add	r4,r4,r3
 	stw	-2(bp),r4
 L5:
 	ldw	r4,-2(bp)
-	la16	r3,_ptable+390
+	la16	r3,_ptable+420
 	skip.ulte	r3,r4
 	br	L2
 	la16	r4,_ptable
@@ -83,12 +83,12 @@ L9:
 L14:
 L10:
 	ldw	r4,-2(bp)
-	ld16	r3, 26
+	ld16	r3, 28
 	add	r4,r4,r3
 	stw	-2(bp),r4
 L12:
 	ldw	r4,-2(bp)
-	la16	r3,_ptable+416
+	la16	r3,_ptable+420
 	skip.ulte	r3,r4
 	br	L9
 	la16	r4,L17
@@ -148,7 +148,7 @@ L16:
 	add	r4,r4,r3
 	stw	-4(bp),r4
 	ldw	r4,-2(bp)
-	ld16	r3, 12
+	ld16	r3, 14
 	add	r4,r4,r3
 	ldw	r3,-4(bp)
 	ld16	r2, 2048
@@ -158,7 +158,7 @@ L16:
 	addi	r4,r4,-2
 	stw	-4(bp),r4
 	ldw	r4,-4(bp)
-	la16	r3,_cntxret
+	la16	r3,_contextret
 	stw	r0(r4),r3
 	ldw	r4,-4(bp)
 	addi	r4,r4,-2
@@ -185,8 +185,8 @@ _userinit:
 	la16	r2,_allocproc ; jaddr
 	addi	r1,pc,2
 	br.r	r2
-	stw	-2(bp),r1
-	ldw	r4,-2(bp)
+	stw	-4(bp),r1
+	ldw	r4,-4(bp)
 	ld16	r3, 6
 	add	r3,r4,r3
 	ldw	r3,r0(r3)
@@ -201,7 +201,7 @@ _userinit:
 	add	sp,sp,r2
 	la16	r4,_initcodestart
 	push	r4
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	addi	r4,r4,2
 	ldw	r4,r0(r4)
 	push	r4
@@ -211,26 +211,26 @@ _userinit:
 	ldi	r2,4
 	add	sp,sp,r2
 	ld16	r4, 0xf6f0
-	stw	-4(bp),r4
-	ldw	r4,-4(bp)
+	stw	-2(bp),r4
+	ldw	r4,-2(bp)
 	addi	r4,r4,8
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 10
 	add	r4,r4,r3
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	stw	r0(r4),r0
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	ld16	r3, 14
 	add	r4,r4,r3
 	ld16	r3, 12
 	stw	r0(r4),r3
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	addi	r4,r4,8
 	ld16	r3, 3
 	stw	r0(r4),r3
@@ -241,9 +241,41 @@ _userinit:
 	br.r	r2
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r2,_breek
-	addi	r1,pc,2
-	br.r	r2
+L19:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _scheduler
+_scheduler:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	la16	r4,L23
+	br.r r4
+L22:
+	la16	r4,_ptable
+	stw	-2(bp),r4
+	la16	r4,L28
+	br.r r4
+L25:
+	ldw	r4,-2(bp)
+	addi	r4,r4,8
+	ldw	r4,r0(r4)
+	ld16	r3, 3
+	skip.ne	r4,r3
+	br	L30
+	la16	r4,L26
+	br.r r4
+L30:
+	ldw	r4,-2(bp)
+	la16	r3,_currproc
+	stw	r0(r3),r4
+	addi	r4,r4,8
+	ld16	r3, 4
+	stw	r0(r4),r3
 	ldw	r4,-2(bp)
 	addi	r3,r4,4
 	ldw	r3,r0(r3)
@@ -258,13 +290,27 @@ _userinit:
 	br.r	r2
 	ldi	r2,6
 	add	sp,sp,r2
-L19:
+	la16	r4,_currproc
+	stw	r0(r4),r0
+L26:
+	ldw	r4,-2(bp)
+	ld16	r3, 28
+	add	r4,r4,r3
+	stw	-2(bp),r4
+L28:
+	ldw	r4,-2(bp)
+	la16	r3,_ptable+420
+	skip.ulte	r3,r4
+	br	L25
+L23:
+	la16	r4,L22
+	br.r r4
+L21:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
 ;	.extern _swtch
-;	.extern _breek
 ;	.extern _inituvm
 ;	.extern _setupkvm
 ;	.extern _addpage
@@ -272,17 +318,20 @@ L19:
 ;	.extern _kprintf
 ;	.extern _memset
 ;	.extern _initcodestart
-;	.extern _cntxret
+;	.extern _contextret
 	.bss
 ;	.global _nextpid
 _nextpid:
+	defs 2
+;	.global _currproc
+_currproc:
 	defs 2
 ;	.global _sched
 _sched:
 	defs 6
 ;	.global _ptable
 _ptable:
-	defs 390
+	defs 420
 	.data
 L20:
 	defb 117
@@ -294,15 +343,6 @@ L20:
 	defb 105
 	defb 116
 	defb 58
-	defb 32
-	defb 115
-	defb 116
-	defb 97
-	defb 114
-	defb 116
-	defb 105
-	defb 110
-	defb 103
 	defb 32
 	defb 102
 	defb 105
@@ -322,6 +362,19 @@ L20:
 	defb 101
 	defb 115
 	defb 115
+	defb 32
+	defb 114
+	defb 101
+	defb 97
+	defb 100
+	defb 121
+	defb 32
+	defb 116
+	defb 111
+	defb 32
+	defb 114
+	defb 117
+	defb 110
 	defb 46
 	defb 46
 	defb 10

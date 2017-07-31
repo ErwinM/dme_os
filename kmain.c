@@ -13,6 +13,7 @@ int kmain() {
 	pinit();
 
 	userinit();
+	scheduler();
 
 	/*
 	p = allocproc();
