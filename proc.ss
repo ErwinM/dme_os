@@ -10,8 +10,9 @@ _pinit:
 	mov	bp, sp
 	ldi	r4, 4
 	sub	sp, sp, r4
-	stw	-4(bp),r0
-	ld16	r4, 416
+	ld16	r4, 1
+	stw	-4(bp),r4
+	ld16	r4, 390
 	push	r4
 	push	r0
 	la16	r4,_ptable
@@ -23,21 +24,13 @@ _pinit:
 	add	sp,sp,r2
 	la16	r4,_ptable
 	stw	-2(bp),r4
-	ldw	r4,-2(bp)
-	ld16	r3, 6
-	add	r4,r4,r3
-	ld16	r3, 15
-	stw	r0(r4),r3
-	ldw	r4,-2(bp)
-	ld16	r3, 26
-	add	r4,r4,r3
-	stw	-2(bp),r4
 	la16	r4,L5
 	br.r r4
 L2:
 	ldw	r4,-2(bp)
 	addi	r4,r4,2
 	ldw	r3,-4(bp)
+	shl	r3, r3, 5
 	stw	r0(r4),r3
 	ldw	r4,-4(bp)
 	addi	r4,r4,1
@@ -49,7 +42,7 @@ L3:
 	stw	-2(bp),r4
 L5:
 	ldw	r4,-2(bp)
-	la16	r3,_ptable+416
+	la16	r3,_ptable+390
 	skip.ulte	r3,r4
 	br	L2
 	la16	r4,_ptable
@@ -122,7 +115,7 @@ L16:
 	add	sp,sp,r2
 	ld16	r4, 3
 	push	r4
-	ld16	r4, 62
+	ld16	r4, 30
 	push	r4
 	la16	r2,_addpage
 	addi	r1,pc,2
@@ -241,6 +234,16 @@ _userinit:
 	addi	r4,r4,8
 	ld16	r3, 3
 	stw	r0(r4),r3
+	la16	r4,L20
+	push	r4
+	la16	r2,_kprintf
+	addi	r1,pc,2
+	br.r	r2
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r2,_breek
+	addi	r1,pc,2
+	br.r	r2
 	ldw	r4,-2(bp)
 	addi	r3,r4,4
 	ldw	r3,r0(r3)
@@ -248,7 +251,7 @@ _userinit:
 	addi	r4,r4,2
 	ldw	r4,r0(r4)
 	push	r4
-	la16	r4,_stable
+	la16	r4,_sched
 	push	r4
 	la16	r2,_swtch
 	addi	r1,pc,2
@@ -261,6 +264,7 @@ L19:
 	pop	pc
 
 ;	.extern _swtch
+;	.extern _breek
 ;	.extern _inituvm
 ;	.extern _setupkvm
 ;	.extern _addpage
@@ -273,13 +277,55 @@ L19:
 ;	.global _nextpid
 _nextpid:
 	defs 2
-;	.global _stable
-_stable:
-	defs 2
+;	.global _sched
+_sched:
+	defs 6
 ;	.global _ptable
 _ptable:
-	defs 416
+	defs 390
 	.data
+L20:
+	defb 117
+	defb 115
+	defb 101
+	defb 114
+	defb 105
+	defb 110
+	defb 105
+	defb 116
+	defb 58
+	defb 32
+	defb 115
+	defb 116
+	defb 97
+	defb 114
+	defb 116
+	defb 105
+	defb 110
+	defb 103
+	defb 32
+	defb 102
+	defb 105
+	defb 114
+	defb 115
+	defb 116
+	defb 32
+	defb 117
+	defb 115
+	defb 101
+	defb 114
+	defb 32
+	defb 112
+	defb 114
+	defb 111
+	defb 99
+	defb 101
+	defb 115
+	defb 115
+	defb 46
+	defb 46
+	defb 10
+	defb 0
 L18:
 	defb 102
 	defb 111
@@ -371,6 +417,7 @@ L7:
 	defb 32
 	defb 97
 	defb 116
+	defb 58
 	defb 32
 	defb 48
 	defb 120

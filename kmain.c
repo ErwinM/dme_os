@@ -8,17 +8,9 @@ int kmain() {
 
 	uint x,y;
 
-	/*kprintf("DME OS v%d starting...\n"); */
-	breek();
-	x = 12;
-	y = 5;
-	kprintf("div: %d", (x/y));
-	kprintf("mod: %d", (x%y));
-
-	/*initkmem();
+	kprintf("DME OS v%d starting...\n");
+	initkmem();
 	pinit();
-	halt();
-	breek();
 
 	userinit();
 

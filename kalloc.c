@@ -45,6 +45,6 @@ kalloc()
 	framenr = freepg / 16;
 	mask = ~(0x1 << (15-freepg%16));
 	pframe[framenr] &= mask;
-	kprintf("Allocated page: %d", freepg);
+	kprintf("kalloc: allocated page: %d\n", freepg);
 	return freepg;
 }

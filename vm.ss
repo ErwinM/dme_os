@@ -25,20 +25,26 @@ _setupkvm:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ld16	r4, 1
-	push	r4
+	ldi	r4, 2
+	sub	sp, sp, r4
 	ldw	r4,4(bp)
-	addi	r4,r4,2
 	push	r4
-	la16	r2,_writepte
+	la16	r4,L3
+	push	r4
+	la16	r2,_kprintf
 	addi	r1,pc,2
 	br.r	r2
 	ldi	r2,4
 	add	sp,sp,r2
-	ld16	r4, 257
-	push	r4
-	ldw	r4,4(bp)
-	ld16	r3, 3
+	stw	-2(bp),r0
+L4:
+	ldw	r4,-2(bp)
+	shl	r3, r4, 8
+	ori	r3,r3,1
+	push	r3
+	ldw	r3,4(bp)
+	add	r4,r3,r4
+	ld16	r3, 16
 	add	r4,r4,r3
 	push	r4
 	la16	r2,_writepte
@@ -46,16 +52,14 @@ _setupkvm:
 	br.r	r2
 	ldi	r2,4
 	add	sp,sp,r2
-	ld16	r4, 513
-	push	r4
-	ldw	r4,4(bp)
-	addi	r4,r4,4
-	push	r4
-	la16	r2,_writepte
-	addi	r1,pc,2
-	br.r	r2
-	ldi	r2,4
-	add	sp,sp,r2
+L5:
+	ldw	r4,-2(bp)
+	addi	r4,r4,1
+	stw	-2(bp),r4
+	ldw	r4,-2(bp)
+	ld16	r3, 14
+	skip.gt	r4,r3
+	br	L4
 	ldw	r4,6(bp)
 	shl	r4, r4, 8
 	ld16	r3, 3
@@ -71,38 +75,6 @@ _setupkvm:
 	ldi	r2,4
 	add	sp,sp,r2
 L2:
-	mov	sp, bp
-	pop	bp
-	pop	pc
-
-;	.global _getkstack
-_getkstack:
-	push	r1
-	push	bp
-	mov	bp, sp
-	ldi	r4, 4
-	sub	sp, sp, r4
-	la16	r2,_kalloc
-	addi	r1,pc,2
-	br.r	r2
-	mov	r4,r1
-	stw	-2(bp),r4
-	ldw	r4,-2(bp)
-	shl	r4, r4, 8
-	ld16	r3, 3
-	or	r4,r4,r3
-	stw	-4(bp),r4
-	ldw	r4,-4(bp)
-	push	r4
-	ld16	r4, 62
-	push	r4
-	la16	r2,_writepte
-	addi	r1,pc,2
-	br.r	r2
-	ldi	r2,4
-	add	sp,sp,r2
-	ldw	r1,-2(bp)
-L3:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -136,7 +108,7 @@ _addpage:
 	ldi	r2,4
 	add	sp,sp,r2
 	ldw	r1,-2(bp)
-L4:
+L8:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -157,8 +129,7 @@ _inituvm:
 	shl	r4, r4, 8
 	ori	r4,r4,1
 	push	r4
-	ld16	r4, 32
-	push	r4
+	push	r0
 	la16	r2,_writepte
 	addi	r1,pc,2
 	br.r	r2
@@ -175,7 +146,7 @@ _inituvm:
 	br.r	r2
 	ldi	r2,4
 	add	sp,sp,r2
-	ld16	r4, 50
+	ld16	r4, 22
 	push	r4
 	ldw	r4,6(bp)
 	push	r4
@@ -185,7 +156,7 @@ _inituvm:
 	br.r	r2
 	ldi	r2,6
 	add	sp,sp,r2
-L5:
+L9:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -193,5 +164,54 @@ L5:
 ;	.extern _memmove
 ;	.extern _kalloc
 ;	.extern _writepte
+;	.extern _kprintf
 ;	.extern _initkmem
+	.data
+L3:
+	defb 115
+	defb 101
+	defb 116
+	defb 117
+	defb 112
+	defb 107
+	defb 118
+	defb 109
+	defb 58
+	defb 32
+	defb 98
+	defb 117
+	defb 105
+	defb 108
+	defb 100
+	defb 105
+	defb 110
+	defb 103
+	defb 32
+	defb 97
+	defb 100
+	defb 100
+	defb 114
+	defb 101
+	defb 115
+	defb 115
+	defb 32
+	defb 115
+	defb 112
+	defb 97
+	defb 99
+	defb 101
+	defb 32
+	defb 102
+	defb 111
+	defb 114
+	defb 32
+	defb 112
+	defb 116
+	defb 98
+	defb 58
+	defb 32
+	defb 37
+	defb 100
+	defb 10
+	defb 0
 ;	.end

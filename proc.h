@@ -31,4 +31,6 @@ struct trapframe {
 
 struct scheduler {
 	uint *kstack;
+	uint ptb;
+	uint kstackpage;
 };

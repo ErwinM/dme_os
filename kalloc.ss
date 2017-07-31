@@ -167,7 +167,15 @@ _pframe:
 	defs 32
 	.data
 L21:
-	defb 65
+	defb 107
+	defb 97
+	defb 108
+	defb 108
+	defb 111
+	defb 99
+	defb 58
+	defb 32
+	defb 97
 	defb 108
 	defb 108
 	defb 111
@@ -185,6 +193,7 @@ L21:
 	defb 32
 	defb 37
 	defb 100
+	defb 10
 	defb 0
 L19:
 	defb 70

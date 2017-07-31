@@ -1,5 +1,5 @@
-; http://www.tofla.iconbar.com/tofla/arm/arm02/index.htm
-; !! need to add skipi instruction to make usable (uses too many regs atm)
+; https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_.28unsigned.29_with_remainder
+
 
 ; DIVIDE -------------------------
 _div:

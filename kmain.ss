@@ -8,37 +8,22 @@ _kmain:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldi	r4, 4
-	sub	sp, sp, r4
-	la16	r2,_breek
-	addi	r1,pc,2
-	br.r	r2
-	ld16	r4, 12
-	stw	-2(bp),r4
-	ld16	r4, 5
-	stw	-4(bp),r4
-	ldw	r4,-2(bp)
-	ldw	r3,-4(bp)
-DIV16(r1,r4,r3)
-	push	r1
 	la16	r4,L2
 	push	r4
 	la16	r2,_kprintf
 	addi	r1,pc,2
 	br.r	r2
-	ldi	r2,4
+	ldi	r2,2
 	add	sp,sp,r2
-	ldw	r4,-2(bp)
-	ldw	r3,-4(bp)
-MOD16(r1,r4,r3)
-	push	r1
-	la16	r4,L3
-	push	r4
-	la16	r2,_kprintf
+	la16	r2,_initkmem
 	addi	r1,pc,2
 	br.r	r2
-	ldi	r2,4
-	add	sp,sp,r2
+	la16	r2,_pinit
+	addi	r1,pc,2
+	br.r	r2
+	la16	r2,_userinit
+	addi	r1,pc,2
+	br.r	r2
 	la16	r2,_halt
 	addi	r1,pc,2
 	br.r	r2
@@ -49,27 +34,36 @@ L1:
 	pop	pc
 
 ;	.extern _halt
+;	.extern _userinit
+;	.extern _pinit
+;	.extern _initkmem
 ;	.extern _kprintf
-;	.extern _breek
 ;	.extern _stable
 ;	.extern _allocproc
 	.data
-L3:
-	defb 109
-	defb 111
-	defb 100
-	defb 58
-	defb 32
-	defb 37
-	defb 100
-	defb 0
 L2:
-	defb 100
-	defb 105
-	defb 118
-	defb 58
+	defb 68
+	defb 77
+	defb 69
 	defb 32
+	defb 79
+	defb 83
+	defb 32
+	defb 118
 	defb 37
 	defb 100
+	defb 32
+	defb 115
+	defb 116
+	defb 97
+	defb 114
+	defb 116
+	defb 105
+	defb 110
+	defb 103
+	defb 46
+	defb 46
+	defb 46
+	defb 10
 	defb 0
 ;	.end

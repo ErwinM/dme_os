@@ -8,7 +8,8 @@
 
 #define KCODE	0x1000
 #define KSTACKTOP 0xff00
-#define KSTACKSCAFFOLD 0xf700
+#define KSTACKSCAFF_PG 30
+#define KSTACKSCAFF_SP 0xf700
 #define UARTBASE 0xff90
 
 #define PGSIZE 0x800
