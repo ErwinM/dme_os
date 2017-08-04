@@ -30,8 +30,8 @@ _contextret:
 
 simpletrap:
 	push.u sp
-	push r1 	;trapnr
-	mov r1, sp  ; GOTCHA: pushing sp pushing the updated value not the old value!!
+	push r1 				;trapnr
+	mov r1, sp  		; GOTCHA: pushing sp pushing the updated value not the old value!!
 	push r1
 	la16 r3, _trap
 	addi r1, pc, 2
@@ -40,8 +40,8 @@ simpletrap:
 ; when we return from a (non context switch) trap
 trapret:
 ; we prob need to pop some more stuff of the stack but lets see
-	addi sp, sp, 2 ; pops sp of (used to pass argument to trap(*tf))
-	pop.u r1			 ; load return value to r1
-	pop.u sp			 ; pop sp (will not have changed)
+	addi sp, sp, 2 	; pops sp of (used to pass argument to trap(*tf))
+	pop.u r1			 	; load return value to r1
+	pop.u sp			 	; pop sp (will not have changed)
 	brk
 	reti

@@ -4,7 +4,7 @@
 #include "buf.h"
 
 struct {
-	struct buf buf[NBUF];
+	struct buf buf[3];
 	struct buf head;
 } bcache;
 
@@ -12,34 +12,37 @@ struct {
 void binit(void)
 {
   struct buf *b;
-
+	breek();
   // Create linked list of buffers
   bcache.head.prev = &bcache.head;
   bcache.head.next = &bcache.head;
   for(b = bcache.buf; b < bcache.buf+NBUF; b++){
     b->next = bcache.head.next;
     b->prev = &bcache.head;
-    b->dev = -1;
     bcache.head.next->prev = b;
     bcache.head.next = b;
   }
+	kprintf("binit: buffer cache initialised...\n");
 }
 
 // Look through buffer cache for block on device dev.
 // If not found, allocate a buffer.
 // In either case, return B_BUSY buffer.
-static struct buf* bget(uint dev, uint blockno)
+static struct buf* bget(uint blockno)
 {
   struct buf *b;
 
  loop:
   // Is the block already cached?
+ kprintf("iget: looking for buf with blockno: %x\n", blockno);
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
-    if(b->dev == dev && b->blockno == blockno){
+    if(b->blockno == blockno){
       if(!(b->flags & B_BUSY)){
         b->flags |= B_BUSY;
         return b;
       }
+			kprintf("iget: found block with blockno: %x at %x\n", blockno, b);
+			breek();
       kprintf("sleep(b, &bcache.lock)\n");
 			halt();
       goto loop;
@@ -51,24 +54,25 @@ static struct buf* bget(uint dev, uint blockno)
   // hasn't yet committed the changes to the buffer.
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
     if((b->flags & B_BUSY) == 0 && (b->flags & B_DIRTY) == 0){
-      b->dev = dev;
       b->blockno = blockno;
       b->flags = B_BUSY;
+			kprintf("bget: allocating new buffer at %x\n", (uint)b);
       return b;
     }
   }
-  //panic("bget: no buffers");
+ 	kprintf("bget: no buffers");
+	halt();
 }
 
 
 // Return a B_BUSY buf with the contents of the indicated block.
-struct buf* bread(uint dev, uint blockno)
+struct buf* bread(uint blockno)
 {
   struct buf *b;
 
-  b = bget(dev, blockno);
+  b = bget(blockno);
   if(!(b->flags & B_VALID)) {
-    //iderw(b);
+    sdrw(b);
   }
   return b;
 }

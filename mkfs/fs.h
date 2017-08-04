@@ -40,6 +40,7 @@ struct superblock {
 #define NINDIRECT (BSIZE / sizeof(uint))
 #define MAXFILE (NDIRECT + NINDIRECT)
 
+
 // On-disk inode structure
 struct dinode {
   uint16_t type;           // File type

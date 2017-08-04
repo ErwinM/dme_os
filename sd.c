@@ -1,60 +1,29 @@
-// sdcard driver routines
-// FIXME: move sdread/sdwrite to assembler for performance
+// sdcard driver
+//
 
 #include "types.h"
 #include "buf.h"
 
-uint *sdcmd = (uint *)0xffa2;
-uint *sddata = (uint *)0xffa6;
-uint *sdfifo0H = (uint *)0xffa8;
-uint *sdfifo0L = (uint *)0xffaa;
 
-void sdread(struct buf *b);
+struct buf *sdqueue;
 
-struct buf bf;
-
-void main()
+void sdrw(struct buf *bf)
 {
-	bf.blockno = 47;
-	sdreadasm(bf.blockno, &bf);
-	halt();
+	/* we need to do some error checking, and add disk queue mechanics
+	 * but lets try to get it to work */
+	sdwork(bf);
 }
 
-/*
-void sdread(struct buf *b)
+void
+sdwork(struct buf *b)
 {
-	int i;
-	uint hibyte, lobyte;
-	*(sddata) = 47;
-	*(sdcmd) = 0x8851; // read block into fifo[0]
-
-	for(i=0;i<512;i+=4){
-		hibyte = *sdfifo0H;
-		lobyte = *sdfifo0L;
-
-		b->data[i] = hibyte >> 8;
-		b->data[i+1] = hibyte & 0xff;
-		b->data[i+2] = lobyte >> 8;
-		b->data[i+3] = lobyte & 0xff;
-	}
+	/* implement read */
+	kprintf("sdwork: retrieving block %x\n", b->blockno);
+	sdreadb(b->blockno, b->data);
+	b->flags |= B_VALID;
+	// fsim reads are (near) instant, in reality they take milliseconds
+	// need to work with interrupts, but that requires:
+	// - sd irq implemented in fsim
+	// - sd irq interface researched
+	// - proper sleep/wake functionality
 }
-/*
-void sdrw(struct buf *b)
-{
-	if(!(b->flags & B_BUSY))
-		panic("buffer not busy!");
-	if((b->flags & (B_VALID|B_DIRTY))==B_VALID) {
-		// buf is valid and not dirty..
-		panic("nothing to do!");
-	}
-
-	if(b->flags & B_DIRTY) {
-		// need to write block to disk
-		kprintf("need to write dirty block!");
-	} else {
-		// need to read block from disk
-		sdread(b);
-		b->flags |= B_VALID;
-	}
-}
-*/

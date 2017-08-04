@@ -25,7 +25,7 @@ _initcodestart:
 ;
 ;# char init[] = "/init\0";
 L1:
- defstr "/init\0"
+ defstr "/init"
 ;
 ;# char *argv[] = { init, 0 };
 ;.p2align 2

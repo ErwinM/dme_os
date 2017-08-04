@@ -1,10 +1,10 @@
 
 struct buf {
 	int flags;
-	uint dev;
 	uint blockno;
 	struct buf *prev;
 	struct buf *next;
+	struct buf *dnext; // next to be processed by disk driver
 	uchar data[512];
 };
 
@@ -12,4 +12,4 @@ struct buf {
 #define B_VALID 0x2  // buffer has been read from disk
 #define B_DIRTY 0x4  // buffer needs to be written to disk
 
-#define NBUF	10
+#define NBUF	3

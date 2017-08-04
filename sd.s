@@ -2,60 +2,76 @@
 
  ; INT_MAX: ffffffff
 
-	.data 0x1000
-;	.global _sdcmd
-_sdcmd:
-defw 0xffa2
-;	.global _sddata
-_sddata:
-defw 0xffa6
-;	.global _sdfifo0H
-_sdfifo0H:
-defw 0xffa8
-;	.global _sdfifo0L
-_sdfifo0L:
-defw 0xffaa
 ;	.global _main
 ;	.code
-_main:
-la16 r1, 0x2000
+
+la16 r1, 0x1000
 mov sp, r1
+
+_main:
 	push	r1
 	push	bp
 	mov	bp, sp
-	la16	r4,_bf+4
-	ld16	r3, 47
-	stw	r0(r4),r3
-	la16	r4,_bf
+	la16	r4,_b+10
 	push	r4
-	la16	r4,_bf+4
-	ldw	r4,r0(r4)
+	ld16	r4, 1
 	push	r4
-	la16	r2,_sdreadasm
+	la16	r4,_sdreadb
 	addi	r1,pc,2
-	br.r	r2
+	br.r	r4
 	ldi	r2,4
 	add	sp,sp,r2
-	hlt
 L1:
+	hlt
+
+;	.global _sdwork
+_sdwork:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldw	r4,4(bp)
+	push	r4
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_sdreadb
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+L3:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
-;	.global _sdread
-_sdreadasm:
+;	.extern _breek
+;	.extern _sdreadb
+	.bss
+;	.global _b
+_b:
+	defs 522
+;	.global _sdqueue
+_sdqueue:
+	defs 2
+;	.end
+
+;	reads a single block identified by blockno
+; into buffer pointed to by ptr
+; usage: sdreadb(bf.blockno, &bf)
+_sdreadb:
 	push	r1
 	push	bp
 	mov	bp, sp
 	ldw r1, 4(bp) ; blockno
 	ldw r2, 6(bp) ; buf ptr
-	brk
 	la16	r4,0xffa6
 	stw	r0(r4),r1
 
 	la16	r4,0xffa2
 	ld16	r3, 0x8851
 	stw	r0(r4),r3
+
+	; FIXME: wait for finish here...
 
 	la16 r3, 0xffa8
 	la16 r4, 0xffaa
@@ -76,11 +92,3 @@ L3:
 	mov	sp, bp
 	pop	bp
 	pop	pc
-;	.extern _halt
-;	.extern _sdreadasm
-	.bss
-;	.global _bf
-_bf:
-	defs 522
-;	.extern _sdread
-;	.end

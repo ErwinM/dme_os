@@ -1,6 +1,7 @@
 OBJS = \
 	boot.s\
 	console.ss\
+	common.ss\
 	uart.s\
 	kernel.s\
 	kalloc.ss\
@@ -9,6 +10,12 @@ OBJS = \
 	trapasm.s\
 	swtch.s\
 	trap.ss\
+	syscall.ss\
+	sys_proc.ss\
+	fs.ss\
+	bio.ss\
+	sd.ss\
+	sdasm.s\
 	kmain.ss\
 	pseudo_ops.s\
 	initcode.s\
