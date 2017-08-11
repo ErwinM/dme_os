@@ -44,7 +44,7 @@ static uint (*syscalls[8])(void)={
 };
 
 /* Fetch the nth 16-bit system call argument.
- * ustack: syscallnr - ret addr - *exec - *argv
+ * ustack: syscallnr - ret addr - arg1 - arg2 - arg3
  */
 
 int
@@ -55,7 +55,7 @@ argint(int n, int *ip)
 	addr = currproc->tf->sp + 4 + 2*n;
 	*ip = *(int*)addr;
 
-	return 1;
+	return 0;
 }
 
 int
@@ -68,7 +68,20 @@ argstr(int n, char **str)
 	kprintf("argstr: addr is %x", addr);
 	*str = (char*)addr;
 	kprintf("argstr: str is %x", *str);
-	return 1;
+	return 0;
+}
+
+int
+argptr(int n, char **p, int sz)
+{
+	int i;
+
+	if(argint(n, &i) < 0)
+		halt();
+	if( n>currproc->sz || i+sz>currproc->sz)
+		halt();
+	*p = (char*)i;
+	return 0;
 }
 
 void syscall(void)

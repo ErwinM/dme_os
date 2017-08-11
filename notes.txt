@@ -24,3 +24,8 @@ To implement on hardware:
 - pop.u
 - wcr.u / lcr.u
 - can syscall store its argument in sR2 easily?
+
+
+process life cycle:
+-------------------
+P(fork) -> C(exec) -> C(runs program) -> C(calls exit = state: zombie) -> P(wait cleans up)

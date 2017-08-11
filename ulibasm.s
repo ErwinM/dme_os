@@ -1,0 +1,2 @@
+_halt
+	hlt

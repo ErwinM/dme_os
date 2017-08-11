@@ -12,7 +12,7 @@ _initcodestart:
 	la16 r1, L1
   push r1
 	push r0    ; where caller pc would be
-  ldi r1, 1  ; syscall 7 = exec
+  ldi r1, 7  ; syscall 7 = exec
 	push r1
 	brk
 	syscall

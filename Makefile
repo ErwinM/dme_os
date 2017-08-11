@@ -13,6 +13,7 @@ OBJS = \
 	trap.ss\
 	syscall.ss\
 	sys_proc.ss\
+	sys_file.ss\
 	fs.ss\
 	bio.ss\
 	sd.ss\
@@ -21,12 +22,21 @@ OBJS = \
 	pseudo_ops.s\
 	initcode.s\
 
+USER = \
+	usys.s\
+	init.ss\
+	ulic.ss\
+	ulibasm.s\
 
 kernel: $(OBJS)
 	ruby link.rb $(OBJS)
 	m4 linked.ss > linked.s
 	asm.rb -f=linked.s
 
+user: $(USER)
+	ruby link.rb $(USER)
+	m4 linked.ss > linked.s
+	asm.rb -f=linked.s
 
 %.ss: %.c
 	gcc -E $< | rcc -target=dme > $@

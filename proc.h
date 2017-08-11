@@ -7,6 +7,7 @@ struct proc {
   uint ptb;                	   // Page table base (e.g. address space)
   uint *kstack;                // Bottom of kernel stack for this process
 	uint kstackpage;             // page that holds the stack for this process
+	struct proc *parent;				 // parent process
 	struct inode *cwd;           // pointer to current working dir
   enum procstate state;        // Process state
   int pid;                     // Process ID

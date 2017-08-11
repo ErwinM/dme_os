@@ -124,11 +124,73 @@ fork(void)
 	// contextreturn can pop them
 	mapkernelvm(child->ptb, child->kstackpage);
 	kprintf("fork: *tf: %x", (uint)currproc->tf->r1);
-	child->tf->r1 = 0xaa; // return 0 in the child
+	child->tf->r1 = 0; // return 0 in the child
 	child->sz = currproc->sz;
 	child->state = RUNNABLE;
 	// copy contents to new process
 	copyuvm(currproc->ptb, child->ptb, currproc->sz);
 	kprintf("HWG: ptb: %x, kstack: %x, pid: %x\n", child->ptb, child->kstack, child->pid);
-	return 0xbb;
+	return child->pid;
+}
+
+// switch out current user proces for scheduler
+void
+tosched()
+{
+	swtch(currproc->kstack, sched.ptb, &sched.kstack );
+}
+
+void
+sleep(void *chan)
+{
+	// log channel, set process state to SLEEPING, switch to scheduler
+	currproc->chan = chan;
+	currproc->state = SLEEPING;
+	tosched();
+}
+
+void
+wakeup(void *chan)
+{
+	struct proc *p;
+
+	for(p=ptable;p<&ptable[15];p++) {
+		if(p->chan == chan)
+			p->state = RUNNABLE;
+	}
+}
+
+// Wait for a child process to exit and return its pid.
+// Return -1 if this process has no children.
+uint
+wait()
+{
+	// check if we have children that have exited
+	struct proc *p;
+	int activechild;
+
+	activechild = 0;
+	for(p=ptable;p<&ptable[15];p++) {
+		if(p->parent) {
+			if(p->state == ZOMBIE)
+				freeproc(p);
+			else
+				activechild++;
+		}
+	}
+
+	if(activechild > 0)
+		sleep(&ptable);
+	else
+		return -1;
+}
+
+// exit the current process:
+// state = zombie and wake-up parent
+void
+exit()
+{
+	currproc->state = ZOMBIE;
+	wakeup(&ptable);
+	tosched();
 }
