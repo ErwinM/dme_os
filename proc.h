@@ -33,9 +33,3 @@ struct contextframe {
 	uint ip;
 	uint cr;
 };
-
-struct scheduler {
-	uint *kstack;
-	uint ptb;
-	uint kstackpage;
-};

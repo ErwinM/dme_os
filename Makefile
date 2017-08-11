@@ -9,6 +9,7 @@ OBJS = \
 	proc.ss\
 	trapasm.s\
 	swtch.s\
+	forkasm.s\
 	trap.ss\
 	syscall.ss\
 	sys_proc.ss\

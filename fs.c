@@ -41,7 +41,7 @@ iget(uint inum)
 	freeinode->inum = inum;
 	freeinode->ref = 1;
 	freeinode->flags = 0;
-	kprintf("iget: allocated inode at: %x\n", (uint)freeinode);
+	kprintf("iget: allocated inode at: %x for inum: %x", (uint)freeinode, inum);
 	breek();
 	return freeinode;
 }
@@ -75,9 +75,24 @@ ilock(struct inode *ip)
   ip->flags |= I_VALID;
 }
 
+void iunlock(struct inode *ip)
+{
+	if(ip->flags != I_BUSY) {
+		kprintf("iunlock: inode not flagged busy!\n");
+		halt();
+	}
+	ip->flags &= ~I_BUSY;
+}
+
+void iput(struct inode *ip)
+{
+	ip->ref--;
+}
+
 // Return the disk block address of the nth block in inode ip.
 // If there is no such block, bmap allocates one.
-int bmap(struct inode *ip, uint n)
+int
+bmap(struct inode *ip, uint n)
 {
 	uint blockno;
 	struct buf *b;
@@ -103,7 +118,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 	// cache said buffer in bcache
 	b = bread(bn);
 	// read the bytes requested
-	kprintf("readi: from %x for %x(%x) bytes",b->data+(off%BSIZE), off%BSIZE, n );
+	kprintf("readi: from %x for %x(%x) bytes\n",b->data+(off%BSIZE), off%BSIZE, n );
 	memmove(dst, b->data+(off%BSIZE), n);
 	brelse(b);
 }
@@ -136,8 +151,11 @@ nextelem(char *path, char *name)
 	while(*path =='/')
 		path++;
 
+	if(*path == 0)
+		return 0;
+
 	p = path;
-	while(*path != '/')
+	while(*path != '/' && *path != 0)
 		path++;
 
 	len = path - p;
@@ -150,8 +168,9 @@ nextelem(char *path, char *name)
 struct inode*
 namei(char *path)
 {
-	struct inode *ip;
-	int inum;
+	struct inode *ip, *next;
+	int inum, i;
+	char name[DIRSIZE];
 
 	// find where to begin
 	if(path[0]=='/')
@@ -159,7 +178,19 @@ namei(char *path)
 	else
 		ip = currproc->cwd;
 
-	// traverse path and find the corresponding inode
-
+	// traverse path and find the corresponding target inode
+	while((path = nextelem(path, (char*)&name)) != 0) {
+		// lookup name in ip
+		ilock(ip);
+		if(ip->type != T_DIR) {
+			kprintf("namei: path element != type dir\n");
+			halt();
+		}
+		next = dirlookup(ip, name);
+		// unlock ip;
+		ip = next;
+	}
+	// ip now points to our target file
+	return ip;
 }
 

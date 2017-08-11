@@ -3,8 +3,16 @@ int
 exec(char *path, char **argv)
 {
 
+	struct inode *ip;
 	/* lookup inode */
-  // Check ELF header
+	if ((ip = namei(ip))==0){
+		kprintf("exec: file not found!\n");
+		halt();
+	}
+
+  // Check header
+
+
 
   // Load program into memory.
 

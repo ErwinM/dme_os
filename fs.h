@@ -54,7 +54,7 @@ struct dinode {
 
 // In-memory inode structure
 struct inode {
-	uint ref;
+	uint ref;							 // zero references means available
 	uint flags;
 	uint inum;
 

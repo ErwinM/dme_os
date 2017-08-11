@@ -27,12 +27,14 @@
 */
 
 extern uint sys_exec(void);
+extern uint sys_fork(void);
 extern uint sys_exit(void);
 
 extern struct proc *currproc;
 
 static uint (*syscalls[8])(void)={
-	0, 0,
+	0,
+	sys_fork,
 	sys_exit,
 	0,
 	0,

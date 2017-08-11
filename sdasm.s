@@ -1,6 +1,6 @@
 ;	reads a single block identified by blockno
 ; into buffer pointed to by ptr
-; usage: sdreadb(bf.blockno, &bf)
+; usage: sdreadb(bf.blockno, &bf.data)
 _sdreadb:
 	push	r1
 	push	bp

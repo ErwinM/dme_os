@@ -1,7 +1,8 @@
 ; when we trap we need to check if it is a timer irq (0x20)
 ; if it is we push all user space registers, if not than we don't...'
 ; the trap number is in sr1
-
+; actually, we would also need to push everything on a fork syscall...
+; lets try to implement a separate asm routine for that, the uregs are frozen anyway..
 
 _alltraps:
 	; if r1 == 0x20 then push.u everything else not
