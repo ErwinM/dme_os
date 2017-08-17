@@ -70,7 +70,7 @@ struct inode {
 #define I_VALID 0x2
 
 // header for files on disk
-struct fheader {
+struct binhdr {
 	uint magic;
 	uint size;
 	uint entry;

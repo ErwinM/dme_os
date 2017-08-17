@@ -17,15 +17,14 @@ OBJS = \
 	fs.ss\
 	bio.ss\
 	sd.ss\
+	exec.ss\
 	sdasm.s\
 	kmain.ss\
 	pseudo_ops.s\
 	initcode.s\
 
-USER = \
+ULIB = \
 	usys.s\
-	init.ss\
-	ulic.ss\
 	ulibasm.s\
 
 kernel: $(OBJS)
@@ -33,13 +32,18 @@ kernel: $(OBJS)
 	m4 linked.ss > linked.s
 	asm.rb -f=linked.s
 
-user: $(USER)
-	ruby link.rb $(USER)
+_%: %.ss $(ULIB)
+	ruby link.rb $@.ss $(ULIB)
 	m4 linked.ss > linked.s
 	asm.rb -f=linked.s
+	cp A.bin mkfs/$@
 
 %.ss: %.c
 	gcc -E $< | rcc -target=dme > $@
 
 clean:
 	rm *.ss
+
+UPROG= \
+	fs.h\
+	_init\

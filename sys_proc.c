@@ -14,6 +14,7 @@ uint sys_exec(void) {
 	if(argstr(0, &path) < 0)
 		halt();
 	kprintf("sys_exec: path is %s\n", path);
+	exec(path, argv);
 }
 
 uint sys_fork(void) {

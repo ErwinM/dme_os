@@ -1,2 +1,2 @@
-_halt
+_halt:
 	hlt

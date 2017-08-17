@@ -11,6 +11,17 @@ struct dirent direntry;
 
 extern struct proc *currproc;
 
+
+/* initialize the file and block structures and read the superblock
+ * FIXME: only reads the superblock at boot. If micro sd gets switched this will fail */
+
+void
+fsinit(void)
+{
+	binit();
+	readsb();
+}
+
 /* read the superblock */
 void readsb()
 {
@@ -107,6 +118,7 @@ bmap(struct inode *ip, uint n)
 
 
 // Read data from inode.
+// FIXME: currently reads one block max at a time
 int
 readi(struct inode *ip, char *dst, uint off, uint n)
 {
@@ -119,8 +131,12 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 	b = bread(bn);
 	// read the bytes requested
 	kprintf("readi: from %x for %x(%x) bytes\n",b->data+(off%BSIZE), off%BSIZE, n );
+
 	memmove(dst, b->data+(off%BSIZE), n);
 	brelse(b);
+
+	// FIXME: n should be adjusted in certain cases (too long, etc)
+	return n;
 }
 
 

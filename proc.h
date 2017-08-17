@@ -22,6 +22,7 @@ struct proc {
 struct trapframe {
 	uint r1;
 	uint sp;
+	uint pc;
 };
 
 struct contextframe {

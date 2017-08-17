@@ -67,4 +67,35 @@ copyuvm(uint parentptb, uint childptb, uint size)
 	}
 }
 
+// load image into current user memory
+int
+loaduvm(struct inode *ip, uint doff, uint size)
+{
+	uint dst;
+
+	dst = 0;
+	memset(0, 0, PGSIZE);
+	dst += readi(ip, (char*)dst, doff, size);
+	return 1;
+}
+// grow uvm
+
+// shrink uvm
+
+void
+freevm(uint ptb)
+{
+	// do we read the ptb and free each entry?
+	// i think we do, for otherwise we have to track mappings in the kernel...
+	uint pgtable[32], i, page;
+
+	readpt(ptb, &pgtable);
+	for(i=0;i<=31;i++){
+		if( (pgtable[i] & PG_PR) == PG_PR ){
+			page = (pgtable[i] >> 8);
+			kfree(page);
+		}
+	}
+}
+
 

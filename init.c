@@ -1,4 +1,6 @@
-// fork and exec sh
+// setup default in/out/err-io
+// fork and exec sh in an endless loop
+// clean up any zombie processes
 
 
 char *argv[] = { "sh", 0 };
@@ -9,19 +11,21 @@ main()
 	// TODO: setup default read,write,error
 	int pid;
 
-	for(;;)
-		if((pid=fork()) < 0);
-			halt();
+	for(;;) {
+		pid=fork();
 
-		if(i == 0) {
-			// we are returning in the child process
-			exec('/sh', argv);
-			// exit();
+		if(pid < 0) {
 			halt();
+		}
+
+		if(pid == 0) {
+			// we are returning in the child process
+			exec("/sh", argv);
+			//halt(); // control will never get here; exec replaces memory contents of this process
 		} else {
 			// we are returning in the parent
-			// wait();
-
+			wait();
+			// check for zombies
 		}
 	}
 }

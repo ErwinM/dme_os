@@ -34,14 +34,14 @@ static struct buf* bget(uint blockno)
 
  loop:
   // Is the block already cached?
- kprintf("iget: looking for buf with blockno: %x\n", blockno);
+ kprintf("bget: looking for buf with blockno: %x\n", blockno);
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->blockno == blockno){
       if(!(b->flags & B_BUSY)){
         b->flags |= B_BUSY;
         return b;
       }
-			kprintf("iget: found block with blockno: %x at %x\n", blockno, b);
+			kprintf("bget: found block with blockno: %x at %x\n", blockno, b);
 			breek();
       kprintf("sleep(b, &bcache.lock)\n");
 			halt();

@@ -30,6 +30,7 @@ _contextret:
 	reti
 
 simpletrap:
+	push.u pc
 	push.u sp
 	push r1 				;trapnr
 	mov r1, sp  		; GOTCHA: pushing sp pushing the updated value not the old value!!
@@ -44,5 +45,5 @@ trapret:
 	addi sp, sp, 2 	; pops sp of (used to pass argument to trap(*tf))
 	pop.u r1			 	; load return value to r1
 	pop.u sp			 	; pop sp (will not have changed)
-	brk
+	pop.u pc			 	; will only have changed for exec syscall
 	reti

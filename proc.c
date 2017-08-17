@@ -173,7 +173,7 @@ wait()
 	for(p=ptable;p<&ptable[15];p++) {
 		if(p->parent) {
 			if(p->state == ZOMBIE)
-				freeproc(p);
+				freevm(p->ptb);
 			else
 				activechild++;
 		}

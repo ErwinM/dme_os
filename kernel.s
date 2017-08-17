@@ -59,6 +59,25 @@ _writepte:
 	pop bp
 	pop pc
 
+_readpt:
+; readpt(ptb, pointer to uint[32])
+	push r1
+	push bp
+	mov bp, sp
+	ldw r1, 4(bp) ; ptb
+	ldw r2, 6(bp) ; ptr to pgtable array
+	ldi r3, 32 ; one extra cause we sub 1 in loop
+_readptL1:
+	subi r3, r3, 1
+	add r4, r1, r3
+	lpte r4, r4
+	stw r3(r2), r4
+	skip.eq r3, r0
+	br _readptL1
+	pop bp
+	pop pc
+
+
 _switchptb:
 	push r1
 	push bp

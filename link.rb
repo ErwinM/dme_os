@@ -15,7 +15,13 @@ filenr = 0
 ARGV.each do |fname|
   filenr +=1;
   name, ext = fname.split(".")
-  puts name
+  if name[0]=='_' then
+    name[0] = ''
+    filename = fname[1..-1]
+  else
+    filename = fname
+  end
+  puts name, filename
   syms = []
 
   # two passes:
@@ -24,7 +30,7 @@ ARGV.each do |fname|
   #
   # pass #1
 
-  f = File.open(fname, "r")
+  f = File.open(filename, "r")
   f.readlines.each do |line|
     #puts line
     if line.strip[0]==";" then
@@ -42,7 +48,7 @@ ARGV.each do |fname|
   f.close
 
   # # pass #2 write to output while replacing symbols
-  f = File.open(fname, "r")
+  f = File.open(filename, "r")
   f.readlines.each do |line|
     if line.strip[0]==";" then
       output.write(line)
@@ -55,6 +61,7 @@ ARGV.each do |fname|
 
     output.write(line)
   end
+  output.write("\n\n")
 
 
 

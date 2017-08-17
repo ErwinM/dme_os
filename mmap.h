@@ -22,5 +22,8 @@
 #define CR_PG          0x04      // Paging
 #define CR_IRQ         0x08      // IRQ enable
 
+#define PG_PR					 0x01
+#define PG_SYS				 0x02
+
 
 #endif

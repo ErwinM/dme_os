@@ -27,7 +27,7 @@ int kmain() {
 	//kprintf("name: %s\n", name);
 	//kprintf("path: %s", p);
 	//ip=namei((char*)&path);
-
+	fsinit();
 	userinit();
 	scheduler();
 
