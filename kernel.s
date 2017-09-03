@@ -49,6 +49,11 @@ _breek:
 	brk
 	pop pc
 
+_rsi:
+	push r1
+	rsi
+	pop pc
+
 _writepte:
 	push r1
 	push bp

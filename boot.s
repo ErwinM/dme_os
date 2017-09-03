@@ -28,8 +28,7 @@ mappages:
 	addskpi.z bp, bp, -1
 	br mappages
 
-
-	; map physical p16 to end of address space p31/0xf800
+	; map physical p31 to end of address space p31/0xf800
 	ldi r1, 31
 	ld16 r2, 0xf03
 	wpte r1, r2

@@ -29,22 +29,34 @@
 extern uint sys_exec(void);
 extern uint sys_fork(void);
 extern uint sys_exit(void);
+extern uint sys_wait(void);
+extern uint sys_write(void);
+
 
 extern struct proc *currproc;
 
-static uint (*syscalls[8])(void)={
+static uint (*syscalls[17])(void)={
 	0,
 	sys_fork,
 	sys_exit,
+	sys_wait,
+	0,
+	0,
+	0,
+	sys_exec,
 	0,
 	0,
 	0,
 	0,
-	sys_exec
+	0,
+	0,
+	0,
+	0,
+	sys_write
 };
 
 /* Fetch the nth 16-bit system call argument.
- * ustack: syscallnr - ret addr - arg1 - arg2 - arg3
+ * ustack: syscallnr - bp - ret addr - arg1 - arg2 - arg3
  */
 
 int
@@ -52,7 +64,8 @@ argint(int n, int *ip)
 {
   int addr;
 
-	addr = currproc->tf->sp + 4 + 2*n;
+	addr = currproc->tf->sp + 6 + 2*n;
+	kprintf("argint: addr %x\n", addr);
 	*ip = *(int*)addr;
 
 	return 0;
@@ -89,9 +102,10 @@ void syscall(void)
 	uint callnr;
 	callnr = *(uint*)currproc->tf->sp;
 	if(!syscalls[callnr]) {
-		kprintf("unknown syscall nr %d", callnr);
+		kprintf("unknown syscall nr %d\n", callnr);
 		halt();
 	} else {
+		kprintf("syscall: call id: %x\n", callnr);
 		currproc->tf->r1 = syscalls[callnr]();
 	}
 }

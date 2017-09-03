@@ -11,6 +11,7 @@ uint sys_exec(void) {
  * ustack: syscallnr - ret addr - *exec - *argv
  */
 	char *path, *argv;
+	//breek();
 	if(argstr(0, &path) < 0)
 		halt();
 	kprintf("sys_exec: path is %s\n", path);
@@ -21,4 +22,8 @@ uint sys_fork(void) {
 /* fork does not take any arguments */
 	kprintf("sys_fork: called\n");
 	return fork();
+}
+
+uint sys_wait(void){
+	return wait();
 }

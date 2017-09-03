@@ -29,3 +29,30 @@ To implement on hardware:
 process life cycle:
 -------------------
 P(fork) -> C(exec) -> C(runs program) -> C(calls exit = state: zombie) -> P(wait cleans up)
+
+
+Line discipline thoughts:
+-------------------------
+- we are working across a slow (UART) connection
+- we don't want to trigger too many syscalls
+->
+- writing: write n characters to a buffer which will be send across UART by an interrupt mechanism
+- reading: receive characters will be wait until input buffer has n characters or last char is \n (implement with n=1 to start)
+
+IRQ handling while in bank 1
+----------------------------
+We do not service IRQs when we are running in bank 1; doing so would polute the register and make the interrupted process unrecoverable
+
+The issue with this is that all processes could be waiting on IRQ and reside in kernel mode this would deadlock the OS
+
+There are two solutions I see now:
+1. when no runnable processes are found, the OS runs both IRQ handlers once. This would require a new instuction that is able to reset the prio_encoder to prevent IRQs from being handled again after returning to user space.
+
+2. Alternatively, we could implement a second trapping mechanism that handles hardware IRQs when we are in bank 1
+
+Option 1 is easy to implement (famous last words). Option 2 is harder.
+
+Option 2 is theoretically more responsive and will utilise the IO (uart and disk) better..
+
+Lets do option 1. Lets first test in sim
+

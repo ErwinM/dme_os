@@ -17,8 +17,8 @@ int kmain() {
 	char name[13];
 	char *p;
 	struct inode *ip;
-
-	kprintf("DME OS v%d starting...\n", 1);
+	inituart();
+	kprintf("DME OS starting...\n");
 	initkmem();
 	pinit();
 	//binit();

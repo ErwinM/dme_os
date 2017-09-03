@@ -30,8 +30,8 @@ _copyuregs:
 	; what is going on here:
 	; we are pushing user reg r1 onto the kstack (only instruction for getting a ureg in trap mode)
 	; we then immediately pop it of the kstack into r2 and store it in its intended location
-	push.u r1
-	pop r2
+	; r1 should be set to 0 so we return 0 in the child (as a PID)
+	mov r2, r0
 	stw 0(r1), r2
 
 	push.u r2

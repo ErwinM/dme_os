@@ -1,6 +1,8 @@
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+#define NOFILE	3							 // nr of files a single process can have open
+
 // Per-process state
 struct proc {
   uint sz;                     // Size of process memory (bytes)
@@ -11,8 +13,9 @@ struct proc {
 	struct inode *cwd;           // pointer to current working dir
   enum procstate state;        // Process state
   int pid;                     // Process ID
-	struct trapframe *tf;				 // ptr to tf; only used in timer-irq switch traps
-	struct contextframe *cf;
+	struct trapframe *tf;				 // ptr to tf;
+	struct contextframe *cf;		 // ptr to cf; only used in timer-irq switch traps
+	struct file *ofile[NOFILE];  // open files for process
 	void *chan;                  // If non-zero, sleeping on chan
   int killed;                  // If non-zero, have been killed
 

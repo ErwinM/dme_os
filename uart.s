@@ -1,6 +1,5 @@
 _putc:
 	; satisfy calling convention
-	; we are not using stack so we can ommit some
 	push r1
 	push bp
 	mov bp, sp

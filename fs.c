@@ -18,6 +18,7 @@ extern struct proc *currproc;
 void
 fsinit(void)
 {
+	sdinit();
 	binit();
 	readsb();
 }
@@ -53,7 +54,7 @@ iget(uint inum)
 	freeinode->ref = 1;
 	freeinode->flags = 0;
 	kprintf("iget: allocated inode at: %x for inum: %x", (uint)freeinode, inum);
-	breek();
+	//breek();
 	return freeinode;
 }
 
@@ -153,7 +154,6 @@ dirlookup(struct inode *ip, char *name)
 		if(strcmp(direntry.name, name, DIRSIZE)==0) {
 			return iget(direntry.inum);
 		}
-		breek();
 	}
 }
 

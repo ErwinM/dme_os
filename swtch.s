@@ -11,6 +11,7 @@ _swtch:
 	push r1
 	push bp
 	mov bp, sp
+
 	ldw r1, 4(bp) ; sched->context (to save SP)
 	ldw r2, 6(bp) ; ptb
 	ldw r3, 8(bp) ; context (= new SP)

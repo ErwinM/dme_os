@@ -117,13 +117,13 @@ multL2:
 	br multL3
 ; check if r1 is even/odd
 	andi r4, r2, 1
-	addskpi.nz r4, r4, -1
+	skip.eq r4, r0
 	add r1, r1, r3
 	shr r2, r2, 1
 	shl r3, r3, 1
 	br multL2
 multL3:
-	andi r4, r1, 1
-	addskpi.nz r4, r4, -1
+	andi r4, r2, 1
+	skip.eq r4, r0
 	add r1, r1, r3
 	br.r bp

@@ -8,11 +8,13 @@ struct {
 	struct buf head;
 } bcache;
 
+extern struct buf *sdqueue;
 
 void binit(void)
 {
   struct buf *b;
-	breek();
+
+	memset(&bcache, 0, (uint)sizeof(bcache));
   // Create linked list of buffers
   bcache.head.prev = &bcache.head;
   bcache.head.next = &bcache.head;
@@ -22,6 +24,7 @@ void binit(void)
     bcache.head.next->prev = b;
     bcache.head.next = b;
   }
+	sdqueue = 0;
 	kprintf("binit: buffer cache initialised...\n");
 }
 
@@ -42,7 +45,6 @@ static struct buf* bget(uint blockno)
         return b;
       }
 			kprintf("bget: found block with blockno: %x at %x\n", blockno, b);
-			breek();
       kprintf("sleep(b, &bcache.lock)\n");
 			halt();
       goto loop;

@@ -3,7 +3,7 @@
 // clean up any zombie processes
 
 
-char *argv[] = { "sh", 0 };
+char *argv[] = { "/sh", 0 };
 
 void
 main()
@@ -20,6 +20,7 @@ main()
 
 		if(pid == 0) {
 			// we are returning in the child process
+			breek();
 			exec("/sh", argv);
 			//halt(); // control will never get here; exec replaces memory contents of this process
 		} else {

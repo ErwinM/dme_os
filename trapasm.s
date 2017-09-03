@@ -18,6 +18,7 @@ _contextret:
 ; this means we need to restore the user registers which were saved
 ; to the kstack as a trapframe when we trapped
 ; sp is pointing at the bottom of tf (r1)
+
 	pop.u r1
 	pop.u r2
 	pop.u r3

@@ -4,7 +4,7 @@ struct buf {
 	uint blockno;
 	struct buf *prev;
 	struct buf *next;
-	struct buf *dnext; // next to be processed by disk driver
+	struct buf *qnext; // next to be processed by disk driver
 	uchar data[512];
 };
 
