@@ -64,7 +64,7 @@ sdirq(int forced)
 	// we need to wake every proc that is sleeping on disk
 	// and possible start the next action in the disk queu (lets hold off on this)
 	if(forced) {
-		kprintf("sdirq: forced disk irq\n");
+		//kprintf("sdirq: forced disk irq\n");
 		if((sdreadcmd() & 0x4000) == 0x4000) {
 			//kprintf("sdirq: disk still busy..\n");
 			return;

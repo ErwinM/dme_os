@@ -89,9 +89,9 @@ userinit()
 	cf->sp = PGSIZE;
 	cf->ip = 0;
 	cf->cr = CR_PG | CR_IRQ;
+	p->sz = PGSIZE;
 	p->state = RUNNABLE;
 	kprintf("userinit: first user process ready to run..\n");
-	//breek();
 }
 
 void
@@ -119,6 +119,7 @@ scheduler()
 		// so we force i/o irqs
 		if(norunnable){
 			sdirq(1);
+			uartirq();
 			rsi();
 		}
 	}
@@ -143,7 +144,7 @@ fork(void)
 	child->state = 3;
 	// copy contents to new process
 	copyuvm(currproc->ptb, child->ptb, currproc->sz);
-	kprintf("HWG: ptb: %x, kstack: %x, pid: %x\n", child->ptb, child->kstack, child->pid);
+	//kprintf("HWG: ptb: %x, kstack: %x, pid: %x\n", child->ptb, child->kstack, child->pid);
 	return child->pid;
 }
 
@@ -208,4 +209,13 @@ exit()
 	currproc->state = ZOMBIE;
 	wakeup(&ptable);
 	tosched();
+}
+
+int
+growproc(int sz)
+{
+	int i;
+
+	i = allocuvm(sz);
+	currproc->sz = i;
 }

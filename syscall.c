@@ -31,6 +31,7 @@ extern uint sys_fork(void);
 extern uint sys_exit(void);
 extern uint sys_wait(void);
 extern uint sys_write(void);
+extern uint sys_read(void);
 
 
 extern struct proc *currproc;
@@ -41,7 +42,7 @@ static uint (*syscalls[17])(void)={
 	sys_exit,
 	sys_wait,
 	0,
-	0,
+	sys_read,
 	0,
 	sys_exec,
 	0,
@@ -65,7 +66,7 @@ argint(int n, int *ip)
   int addr;
 
 	addr = currproc->tf->sp + 6 + 2*n;
-	kprintf("argint: addr %x\n", addr);
+	//kprintf("argint: addr %x\n", addr);
 	*ip = *(int*)addr;
 
 	return 0;
@@ -91,8 +92,10 @@ argptr(int n, char **p, int sz)
 
 	if(argint(n, &i) < 0)
 		halt();
-	if( n>currproc->sz || i+sz>currproc->sz)
+	if( n>currproc->sz || i+sz>currproc->sz) {
+		kprintf("hiero komt de halt: n(%x) proc.sz(%x), i+sz(%x)\n", n, currproc->sz, i+sz);
 		halt();
+	}
 	*p = (char*)i;
 	return 0;
 }

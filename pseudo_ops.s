@@ -99,8 +99,12 @@ modL2:
 ;
 ; (unsigned)
 _mult:
-	pop r2 ; op1
-	pop r3 ; op2
+	push r1
+	push bp
+	mov bp, sp
+	ldw r2, 4(bp)
+	ldw r2, 6(bp)
+
 	mov r1, r0 ; result reg
 ; if a > b
 	skip.gt r2, r3
@@ -126,4 +130,6 @@ multL3:
 	andi r4, r2, 1
 	skip.eq r4, r0
 	add r1, r1, r3
-	br.r bp
+	mov	sp, bp
+	pop	bp
+	pop	pc

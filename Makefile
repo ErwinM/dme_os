@@ -2,7 +2,8 @@ OBJS = \
 	boot.s\
 	console.ss\
 	common.ss\
-	uart.s\
+	uart.ss\
+	uartasm.s\
 	kernel.s\
 	kalloc.ss\
 	vm.ss\
@@ -16,6 +17,7 @@ OBJS = \
 	sys_file.ss\
 	fs.ss\
 	bio.ss\
+	cio.ss\
 	sd.ss\
 	exec.ss\
 	sdasm.s\
@@ -25,7 +27,10 @@ OBJS = \
 
 ULIB = \
 	usys.s\
+	ulib.ss\
 	ulibasm.s\
+
+.PRECIOUS: %.ss
 
 kernel: $(OBJS)
 	ruby link.rb $(OBJS)
@@ -43,6 +48,9 @@ _%: %.ss $(ULIB)
 
 clean:
 	rm *.ss
+
+mkfs: $(ULIB)
+	./mkfs/mkfs fs.img fs.h _init
 
 UPROG= \
 	fs.h\

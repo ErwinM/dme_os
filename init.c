@@ -11,16 +11,16 @@ main()
 	// TODO: setup default read,write,error
 	int pid;
 
+	printf(1, "init running!!!\n");
+	breek();
 	for(;;) {
 		pid=fork();
-
 		if(pid < 0) {
 			halt();
 		}
 
 		if(pid == 0) {
 			// we are returning in the child process
-			breek();
 			exec("/sh", argv);
 			//halt(); // control will never get here; exec replaces memory contents of this process
 		} else {

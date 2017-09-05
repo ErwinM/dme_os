@@ -69,7 +69,7 @@ int
 main(int argc, char *argv[])
 {
   int i, cc, fd;
-  uint rootino, inum, off;
+  uint rootino, inum, off, termino;
   struct dirent de;
   char buf[BSIZE];
   struct dinode din;
@@ -135,6 +135,13 @@ main(int argc, char *argv[])
   de.inum = xint(rootino);
   strcpy(de.name, "..");
   iappend(rootino, &de, sizeof(de));
+
+	// here we should add 1 device to the root called /term
+	 termino = ialloc(T_DEV);
+   memset(&de, 0 , sizeof(de));
+   de.inum = xint(termino);
+   strcpy(de.name, "console");
+   iappend(rootino, &de, sizeof(de));
 
   for(i = 2; i < argc; i++){
     assert(index(argv[i], '/') == 0);

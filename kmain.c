@@ -12,12 +12,13 @@ static char path[] = "/fs.h";
 
 int kmain() {
 
-	uint x,y;
+	uint x,y, r;
 
-	char name[13];
+  char name[13];
 	char *p;
 	struct inode *ip;
 	inituart();
+	cinit();
 	kprintf("DME OS starting...\n");
 	initkmem();
 	pinit();

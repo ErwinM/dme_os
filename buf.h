@@ -1,3 +1,4 @@
+#define CLIST	32
 
 struct buf {
 	int flags;
@@ -8,8 +9,15 @@ struct buf {
 	uchar data[512];
 };
 
+struct clist {
+	int in;
+	int out;
+	char data[CLIST];
+};
+
 #define B_BUSY  0x1  // buffer is locked by some process
 #define B_VALID 0x2  // buffer has been read from disk
 #define B_DIRTY 0x4  // buffer needs to be written to disk
 
 #define NBUF	3
+

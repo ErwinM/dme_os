@@ -22,6 +22,22 @@ _exec:
 	ldi r1, 7
 	br dosyscall
 
+_read:
+	push r1
+	push bp
+	mov bp, sp
+
+	ldi r1, 5
+	br dosyscall
+
+_write:
+	push r1
+	push bp
+	mov bp, sp
+
+	ldi r1, 16
+	br dosyscall
+
 dosyscall:
 	push r1
 	syscall

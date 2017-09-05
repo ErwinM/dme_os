@@ -124,20 +124,21 @@ int
 readi(struct inode *ip, char *dst, uint off, uint n)
 {
 	struct buf *b;
-	uint bn;
+	uint bn, tot, m;
 
-	// determine which block of the inode to read
-	bn = bmap(ip, off/BSIZE);
-	// cache said buffer in bcache
-	b = bread(bn);
-	// read the bytes requested
-	kprintf("readi: from %x for %x(%x) bytes\n",b->data+(off%BSIZE), off%BSIZE, n );
 
-	memmove(dst, b->data+(off%BSIZE), n);
-	brelse(b);
-
-	// FIXME: n should be adjusted in certain cases (too long, etc)
-	return n;
+	for(tot=0; tot<n; tot+=m, off+=m, dst+=m) {
+		b = bread(bmap(ip, off/BSIZE));
+		// how much to copy...
+		if ((n-tot) > BSIZE)
+			m = BSIZE-off%BSIZE;
+		else
+			m = n-tot;
+		kprintf("readi: from %x for %x(%x) bytes\n",b->data+(off%BSIZE), off%BSIZE, m);
+		memmove(dst, b->data+(off%BSIZE), m);
+		brelse(b);
+	}
+	return tot;
 }
 
 

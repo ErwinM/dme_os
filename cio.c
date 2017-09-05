@@ -8,53 +8,60 @@
  * Queue is full when in == (out-1)&63
  */
 
-struct {
-	char buf[64];
-	int in;
-	int out;
-} cout;
+#include "types.h"
+#include "buf.h"
+
+struct clist wterm;
+struct clist rterm;
 
 int txactive;
 
 void
 cinit()
 {
-	cout.in = 0;
-	cout.out = 0;
-	txactive = 0;
-	kprintf("cinit: initialised char buffer at: %x", &cout);
+	rterm.in = 0;
+	rterm.out = 0;
+	memset(&rterm.data, 0, 32);
+	kprintf("cinit: initialised char buffer at: %x", &rterm);
 }
 
 int
 pushc(char *c)
 {
-	char c;
-
-	if(cout.in == ((cout.out-1)&63)){
+	if(rterm.in == ((rterm.out-1)&63)){
 		kprintf("charput: cbuf is full!\n");
 		halt();
 	}
 
-	cout.buf[cout.in] = *c;
-	cout.in = (cout.in + 1) & 63;
-	if(!txactive) {
-		popc(&c);
-		putc(c);		// kick off the uart since it is not running
-	}
+	rterm.data[rterm.in] = *c;
+	rterm.in = (rterm.in + 1) & 63;
+
 	return 1;
 }
 
 int
-popc(char *c)
+writeterm(char *str, int n)
 {
-	if(cout.in == cout.out){
-		kprintf("popc: buffer is empty!\n");
-		halt();
-	}
+	int i;
+	for(i=0;i<=n;i++)
+		putc(*(str+i));
+}
 
-	*c = cout.buf[cout.out];
-	cout.out = (cout.out+1)&63;
-	return 1;
+int
+readterm(char *str, int n)
+{
+loopreadterm:
+	if(rterm.in==rterm.out){
+		// no input received
+		sleep(&rterm);
+		goto loopreadterm;
+	}
+	if(n > rterm.in - rterm.out)
+		n = rterm.in-rterm.out;
+
+	memmove(str, &rterm.data[rterm.out], n);
+	rterm.out = (rterm.out + 1)&63;
+	return n;
 }
 
 /* each write to uart triggers an irq (tx done)

@@ -1,14 +1,5 @@
 #include "types.h"
 
-void kprintfold(char *buf) {
-	int i = 0;
-	while( buf[i] != 0)
-	{
-		putc(buf[i]);
-		i++;
-	}
-}
-
 static void
 printint(int xx, int base, int sign)
 {

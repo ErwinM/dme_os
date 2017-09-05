@@ -79,47 +79,8 @@ mappages_boot:
 
  ; INT_MAX: ffffffff
 
-;	.global _kprintfold
-;	.code
-_kprintfold:
-	push	r1
-	push	bp
-	mov	bp, sp
-	ldi	r4, 2
-	sub	sp, sp, r4
-	stw	-2(bp),r0
-	la16	r4,L3_console
-	br.r r4
-L2_console:
-	ldw	r4,-2(bp)
-	ldw	r3,4(bp)
-	add	r4,r4,r3
-	ldb	r4,r0(r4)
-	sext	r4,r4
-	push	r4
-	la16	r4,_putc
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,2
-	add	sp,sp,r2
-	ldw	r4,-2(bp)
-	addi	r4,r4,1
-	stw	-2(bp),r4
-L3_console:
-	ldw	r4,-2(bp)
-	ldw	r3,4(bp)
-	add	r4,r4,r3
-	ldb	r4,r0(r4)
-	sext	r4,r4
-	skip.eq r4,r0
-	br L2_console
-L1_console:
-	mov	sp, bp
-	pop	bp
-	pop	pc
-
 	.data 0x1000
-L6_console:
+L2_console:
 	defb 48
 	defb 49
 	defb 50
@@ -146,32 +107,32 @@ _printint:
 	sub	sp, sp, r4
 	ldw	r3,8(bp)
 	skip.ne	r3,r0
-	br	L7_console
+	br	L3_console
 	ldw	r3,4(bp)
 	skip.lt r3, r0
-	br L1_console0
+	br L6_console
 	ld16	r4, 1
 	stw	-22(bp),r4
-	la16	r4,L1_console1
+	la16	r4,L7_console
 	br.r r4
-L1_console0:
+L6_console:
 	stw	-22(bp),r0
-L1_console1:
+L7_console:
 	ldw	r4,-22(bp)
 	stw	8(bp),r4
 	skip.ne	r4,r0
-	br	L7_console
+	br	L3_console
 	ldw	r4,4(bp)
 sub	r4,r0,r4
 	stw	-4(bp),r4
-	la16	r4,L8_console
+	la16	r4,L4_console
 	br.r r4
-L7_console:
+L3_console:
 	ldw	r4,4(bp)
 	stw	-4(bp),r4
-L8_console:
+L4_console:
 	stw	-2(bp),r0
-L1_console2:
+L8_console:
 	ldw	r4,-2(bp)
 	addi	r3,r4,1
 	stw	-2(bp),r3
@@ -190,14 +151,16 @@ ldi r2, 6
 add r1, pc, r2
 la16 r2, _mod
 br.r r2
+; clean stack
+addi sp, sp, 4
 ; result will be in r1
 
-	la16	r4,L6_console
+	la16	r4,L2_console
 	add	r4,r1,r4
 	ldb	r4,r0(r4)
 	ldw	r3,-28(bp)
 	stb	r0(r3),r4
-L1_console3:
+L9_console:
 	ldw	r4,-4(bp)
 	ldw	r3,6(bp)
 
@@ -207,14 +170,16 @@ ldi r2, 6
 add r1, pc, r2
 la16 r2, _div
 br.r r2
+; clean stack
+addi sp, sp, 4
 ; result will be in r1
 
 	stw	-4(bp),r1
 	skip.eq r1,r0
-	br L1_console2
+	br L8_console
 	ldw	r4,8(bp)
 	skip.ne	r4,r0
-	br	L1_console8
+	br	L1_console4_console
 	ldw	r4,-2(bp)
 	addi	r3,r4,1
 	stw	-2(bp),r3
@@ -223,9 +188,9 @@ br.r r2
 	add	r4,r4,r3
 	ld16	r3, 45
 	stb	r0(r4),r3
-	la16	r4,L1_console8
+	la16	r4,L1_console4_console
 	br.r r4
-L1_console7:
+L1_console3_console:
 	ldw	r4,-2(bp)
 	ldi	r3, -20
 	add	r3, r3, bp
@@ -238,13 +203,13 @@ L1_console7:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-L1_console8:
+L1_console4_console:
 	ldw	r4,-2(bp)
 	subi	r4,r4,1
 	stw	-2(bp),r4
 	skip.lt r4, r0
-	br L1_console7
-L5_console:
+	br L1_console3_console
+L1_console:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -260,13 +225,13 @@ _kprintf:
 	add	r4, r4, bp
 	stw	-8(bp),r4
 	stw	-6(bp),r0
-	la16	r4,L2_console5
+	la16	r4,L2_console1
 	br.r r4
-L2_console2:
+L1_console8:
 	ldw	r4,-2(bp)
 	ld16	r3, 37
 	skip.ne	r4,r3
-	br	L2_console6
+	br	L2_console2
 	ldw	r4,-2(bp)
 	push	r4
 	la16	r4,_putc
@@ -274,9 +239,9 @@ L2_console2:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r4,L2_console3
+	la16	r4,L1_console9
 	br.r r4
-L2_console6:
+L2_console2:
 	ldw	r4,-6(bp)
 	addi	r4,r4,1
 	stw	-6(bp),r4
@@ -289,48 +254,48 @@ L2_console6:
 	stw	-2(bp),r4
 	ldw	r4,-2(bp)
 	skip.eq r4,r0
-	br L2_console8
-	la16	r4,L2_console4
+	br L2_console4
+	la16	r4,L2_console0
 	br.r r4
-L2_console8:
+L2_console4:
 	ldw	r4,-2(bp)
 	ld16	r3, 104
 	skip.ne	r4,r3
-	br	L3_console3
+	br	L2_console9
 	skip.lte	r4,r3
-	br	L44_console
-L43_console:
+	br	L4_console0
+L3_console9:
 	ldw	r4,-2(bp)
 	ld16	r3, 37
 	skip.ne	r4,r3
-	br	L42_console
+	br	L3_console8
 	skip.gte	r4,r3
-	br	L3_console0
-L45_console:
+	br	L2_console6
+L4_console1:
 	ldw	r4,-2(bp)
 	ld16	r3, 100
 	skip.ne	r4,r3
-	br	L3_console2
-	la16	r4,L3_console0
+	br	L2_console8
+	la16	r4,L2_console6
 	br.r r4
-L44_console:
+L4_console0:
 	ldw	r4,-2(bp)
 	ld16	r3, 112
 	skip.ne	r4,r3
-	br	L3_console3
+	br	L2_console9
 	ld16	r2, 115
 	skip.ne	r4,r2
-	br	L3_console4
-	skip.gte	r4,r3
 	br	L3_console0
-L46_console:
+	skip.gte	r4,r3
+	br	L2_console6
+L4_console2:
 	ldw	r4,-2(bp)
 	ld16	r3, 120
 	skip.ne	r4,r3
-	br	L3_console3
-	la16	r4,L3_console0
+	br	L2_console9
+	la16	r4,L2_console6
 	br.r r4
-L3_console2:
+L2_console8:
 	ld16	r4, 1
 	push	r4
 	ld16	r4, 10
@@ -345,9 +310,9 @@ L3_console2:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
-	la16	r4,L3_console1
+	la16	r4,L2_console7
 	br.r r4
-L3_console3:
+L2_console9:
 	push	r0
 	ld16	r4, 16
 	push	r4
@@ -361,21 +326,21 @@ L3_console3:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
-	la16	r4,L3_console1
+	la16	r4,L2_console7
 	br.r r4
-L3_console4:
+L3_console0:
 	ldw	r4,-8(bp)
 	addi	r3,r4,2
 	stw	-8(bp),r3
 	ldw	r4,r0(r4)
 	stw	-4(bp),r4
 	skip.eq r4,r0
-	br L41_console
-	la16	r4,L3_console7
+	br L3_console7
+	la16	r4,L3_console3
 	stw	-4(bp),r4
-	la16	r4,L41_console
+	la16	r4,L3_console7
 	br.r r4
-L3_console8:
+L3_console4:
 	ldw	r4,-4(bp)
 	ldb	r4,r0(r4)
 	sext	r4,r4
@@ -385,19 +350,19 @@ L3_console8:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-L3_console9:
+L3_console5:
 	ldw	r4,-4(bp)
 	addi	r4,r4,1
 	stw	-4(bp),r4
-L41_console:
+L3_console7:
 	ldw	r4,-4(bp)
 	ldb	r4,r0(r4)
 	sext	r4,r4
 	skip.eq r4,r0
-	br L3_console8
-	la16	r4,L3_console1
+	br L3_console4
+	la16	r4,L2_console7
 	br.r r4
-L42_console:
+L3_console8:
 	ld16	r4, 37
 	push	r4
 	la16	r4,_putc
@@ -405,9 +370,9 @@ L42_console:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r4,L3_console1
+	la16	r4,L2_console7
 	br.r r4
-L3_console0:
+L2_console6:
 	ld16	r4, 37
 	push	r4
 	la16	r4,_putc
@@ -422,12 +387,12 @@ L3_console0:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-L3_console1:
-L2_console3:
+L2_console7:
+L1_console9:
 	ldw	r4,-6(bp)
 	addi	r4,r4,1
 	stw	-6(bp),r4
-L2_console5:
+L2_console1:
 	ldw	r4,-6(bp)
 	ldw	r3,4(bp)
 	add	r4,r4,r3
@@ -437,16 +402,16 @@ L2_console5:
 	and	r4,r4,r3
 	stw	-2(bp),r4
 	skip.eq r4,r0
-	br L2_console2
-L2_console4:
+	br L1_console8
 L2_console0:
+L1_console6:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
 ;	.extern _putc
 	.data
-L3_console7:
+L3_console3:
 	defb 40
 	defb 110
 	defb 117
@@ -517,6 +482,81 @@ L1_common:
 ;	.end
 
 
+;	DME assembly file, generated by lcc 4.2
+
+ ; INT_MAX: ffffffff
+
+;	.global _uartw
+;	.code
+_uartw:
+	push	r1
+	push	bp
+	mov	bp, sp
+L1_uart:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _uartirq
+_uartirq:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	ld16	r4, 0xff95
+	ldw	r4,r0(r4)
+	stb	-2(bp),r4
+	ldb	r4,-2(bp)
+	andi	r4,r4,1
+	skip.eq r4,r0
+	br L3_uart
+	la16	r4,L2_uart
+	br.r r4
+L3_uart:
+	ld16	r4, 0xff90
+	ldb	r4,r0(r4)
+	stb	-1(bp),r4
+	ldi	r4, -1
+	add	r4, r4, bp
+	push	r4
+	la16	r4,_pushc
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r4,_rterm
+	push	r4
+	la16	r4,_wakeup
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+L2_uart:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _wakeup
+;	.extern _rterm
+;	.extern _wterm
+;	.extern _loaduvm
+;	.extern _dirlookup
+;	.extern _namei
+;	.extern _nextelem
+;	.extern _ilock
+;	.extern _iget
+;	.extern _fsinit
+;	.extern _pushc
+;	.extern _popc
+;	.extern _bread
+;	.extern _binit
+;	.end
+
+
+; putc is to be used by the kernel for outputting
+; it waits for the UART to become available after each char
+; not using the interrupt mechanics (for now)
 _putc:
 	; satisfy calling convention
 	push r1
@@ -526,14 +566,14 @@ _putc:
 	la16 r4, 0xff90
 
 	; wait until tx is free
-check_tx_free_uart:
+check_tx_free_uartasm:
 	ldi r1, 5
 	add r1, r1, r4
 	ldw r1, r0(r1)
 	ldi r2, 0x60
 	and r1, r1, r2
 	skip.eq r2, r1
-	br check_tx_free_uart
+	br check_tx_free_uartasm
 	; tx is free, load char (SP+2) and write to UART
 	addi r1, bp, 4
 	ldw r3, r0(r1)
@@ -541,7 +581,7 @@ check_tx_free_uart:
 	pop	bp
 	pop	pc
 
-
+; initialise the UART 14450 controller
 _inituart:
 	push r1
 	push bp
@@ -559,6 +599,8 @@ _inituart:
 	stw 3(bp), r1		; port + 3 set LCR - validate
 	pop	bp
 	pop	pc
+
+
 
 ; MEMSET (char *dst, int c, uint n)
 ; bp + 8 has n
@@ -854,6 +896,8 @@ ldi r2, 6
 add r1, pc, r2
 la16 r2, _div
 br.r r2
+; clean stack
+addi sp, sp, 4
 ; result will be in r1
 
 	stw	-4(bp),r1
@@ -871,6 +915,8 @@ ldi r2, 6
 add r1, pc, r2
 la16 r2, _mod
 br.r r2
+; clean stack
+addi sp, sp, 4
 ; result will be in r1
 
 	ldw	r4,-14(bp)
@@ -1098,7 +1144,7 @@ L5_vm:
 	addi	r4,r4,1
 	stw	-2(bp),r4
 	ldw	r4,-2(bp)
-	ld16	r3, 14
+	ld16	r3, 13
 	skip.gt	r4,r3
 	br	L4_vm
 	ldw	r4,6(bp)
@@ -1127,11 +1173,9 @@ _mappage:
 	mov	bp, sp
 	ldi	r4, 2
 	sub	sp, sp, r4
-	ldw	r4,10(bp)
-	stb	10(bp),r4
 	ldw	r4,6(bp)
 	shl	r4, r4, 8
-	ldb	r3,10(bp)
+	ldw	r3,10(bp)
 	or	r4,r4,r3
 	stw	-2(bp),r4
 	ldw	r4,-2(bp)
@@ -1205,9 +1249,6 @@ _copyuvm:
 	mov	bp, sp
 	ldi	r4, 6
 	sub	sp, sp, r4
-	ldw	r4,8(bp)
-	shr	r4, r4, 11
-	stw	-6(bp),r4
 	ldw	r4,-6(bp)
 	push	r4
 	ldw	r4,6(bp)
@@ -1243,23 +1284,10 @@ L1_vm2:
 	add	sp,sp,r2
 	ld16	r4, 2048
 	push	r4
-	ldw	r3,-2(bp)
-	shl	r3, r3, 11
-	push	r3
-	ld16	r3, 30
-
-push bp
-push r3
-push r4
-ldi r2, 6
-add bp, pc, r2
-la16 r2, _mult
-br.r r2
-; result should be in r1
-pop bp
-
-brk
-	push	r1
+	ldw	r4,-2(bp)
+	push	r4
+	ld16	r4, 0xf000
+	push	r4
 	la16	r4,_memmove
 	addi	r1,pc,2
 	br.r	r4
@@ -1268,6 +1296,7 @@ brk
 	ld16	r4, 1
 	push	r4
 	ldw	r4,-2(bp)
+	shr	r4, r4, 11
 	push	r4
 	ldw	r4,-4(bp)
 	push	r4
@@ -1280,12 +1309,13 @@ brk
 	add	sp,sp,r2
 L1_vm3:
 	ldw	r4,-2(bp)
-	addi	r4,r4,1
+	ld16	r3, 2048
+	add	r4,r4,r3
 	stw	-2(bp),r4
 L1_vm5:
 	ldw	r4,-2(bp)
-	ldw	r3,-6(bp)
-	skip.ult	r3,r4
+	ldw	r3,8(bp)
+	skip.ulte	r3,r4
 	br	L1_vm2
 L1_vm0:
 	mov	sp, bp
@@ -1335,6 +1365,91 @@ L1_vm6:
 	pop	bp
 	pop	pc
 
+;	.global _allocuvm
+_allocuvm:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 4
+	sub	sp, sp, r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,L1_vm8
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r4,r0(r4)
+	stw	-2(bp),r4
+	la16	r4,L2_vm2
+	br.r r4
+L1_vm9:
+	la16	r4,_kalloc
+	addi	r1,pc,2
+	br.r	r4
+	stw	-4(bp),r1
+	ld16	r4, 1
+	push	r4
+	ldw	r4,-2(bp)
+	ld16	r3, 2048
+
+push r4
+push r3
+ldi r2, 6
+add r1, pc, r2
+la16 r2, _div
+br.r r2
+; clean stack
+addi sp, sp, 4
+; result will be in r1
+
+	mov	r4,r1
+	push	r4
+	ldw	r4,-4(bp)
+	push	r4
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	addi	r4,r4,2
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_mappage
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,8
+	add	sp,sp,r2
+L2_vm0:
+	ldw	r4,-2(bp)
+	ld16	r3, 2048
+	add	r4,r4,r3
+	stw	-2(bp),r4
+L2_vm2:
+	ldw	r4,-2(bp)
+	ldw	r3,4(bp)
+	skip.ulte	r3,r4
+	br	L1_vm9
+	ldw	r4,-2(bp)
+	push	r4
+	la16	r4,L2_vm3
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	ldw	r1,-2(bp)
+L1_vm7:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
 ;	.global _freevm
 _freevm:
 	push	r1
@@ -1353,9 +1468,9 @@ _freevm:
 	ldi	r2,4
 	add	sp,sp,r2
 	stw	-2(bp),r0
-	la16	r4,L2_vm1
+	la16	r4,L2_vm8
 	br.r r4
-L1_vm8:
+L2_vm5:
 	ld16	r4, 1
 	ldw	r3,-2(bp)
 	shl	r3, r3, 1 ; [via index]
@@ -1364,7 +1479,7 @@ L1_vm8:
 	ldw	r3,r3(r2)
 	and	r3,r3,r4
 	skip.eq r3,r4
-	br L2_vm2
+	br L2_vm9
 	ldi	r4, -68
 	add	r4, r4, bp
 	ldw	r3,-2(bp)
@@ -1383,17 +1498,17 @@ L1_vm8:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-L2_vm2:
-L1_vm9:
+L2_vm9:
+L2_vm6:
 	ldw	r4,-2(bp)
 	addi	r4,r4,1
 	stw	-2(bp),r4
-L2_vm1:
+L2_vm8:
 	ldw	r4,-2(bp)
 	ld16	r3, 31
 	skip.ult	r3,r4
-	br	L1_vm8
-L1_vm7:
+	br	L2_vm5
+L2_vm4:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -1407,7 +1522,65 @@ L1_vm7:
 ;	.extern _writepte
 ;	.extern _kprintf
 ;	.extern _initkmem
+;	.extern _currproc
 	.data
+L2_vm3:
+	defb 97
+	defb 108
+	defb 108
+	defb 111
+	defb 99
+	defb 117
+	defb 118
+	defb 109
+	defb 58
+	defb 32
+	defb 114
+	defb 101
+	defb 116
+	defb 117
+	defb 114
+	defb 110
+	defb 105
+	defb 110
+	defb 103
+	defb 32
+	defb 37
+	defb 120
+	defb 10
+	defb 0
+L1_vm8:
+	defb 97
+	defb 108
+	defb 108
+	defb 111
+	defb 99
+	defb 117
+	defb 118
+	defb 109
+	defb 58
+	defb 32
+	defb 99
+	defb 117
+	defb 114
+	defb 114
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 32
+	defb 116
+	defb 111
+	defb 32
+	defb 110
+	defb 101
+	defb 119
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 10
+	defb 0
 L1_vm1:
 	defb 99
 	defb 111
@@ -1494,7 +1667,7 @@ L3_vm:
 	defb 58
 	defb 32
 	defb 37
-	defb 100
+	defb 120
 	defb 10
 	defb 0
 ;	.end
@@ -1734,8 +1907,8 @@ _userinit:
 	la16	r4,_allocproc
 	addi	r1,pc,2
 	br.r	r4
-	stw	-4(bp),r1
-	ldw	r4,-4(bp)
+	stw	-2(bp),r1
+	ldw	r4,-2(bp)
 	ld16	r3, 6
 	add	r3,r4,r3
 	ldw	r3,r0(r3)
@@ -1750,7 +1923,7 @@ _userinit:
 	add	sp,sp,r2
 	la16	r4,_initcodestart
 	push	r4
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
 	addi	r4,r4,2
 	ldw	r4,r0(r4)
 	push	r4
@@ -1760,26 +1933,29 @@ _userinit:
 	ldi	r2,4
 	add	sp,sp,r2
 	ld16	r4, 0xf6f0
-	stw	-2(bp),r4
-	ldw	r4,-2(bp)
+	stw	-4(bp),r4
+	ldw	r4,-4(bp)
 	addi	r4,r4,8
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	ld16	r3, 10
 	add	r4,r4,r3
 	ld16	r3, 2048
 	stw	r0(r4),r3
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	stw	r0(r4),r0
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	ld16	r3, 14
 	add	r4,r4,r3
 	ld16	r3, 12
 	stw	r0(r4),r3
-	ldw	r4,-4(bp)
+	ldw	r4,-2(bp)
+	ld16	r3, 2048
+	stw	r0(r4),r3
+	ldw	r4,-2(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	ld16	r3, 3
@@ -1878,6 +2054,9 @@ L3_proc1:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
+	la16	r4,_uartirq
+	addi	r1,pc,2
+	br.r	r4
 	la16	r4,_rsi
 	addi	r1,pc,2
 	br.r	r4
@@ -1966,24 +2145,6 @@ _fork:
 	add	sp,sp,r2
 	ldw	r4,-2(bp)
 	ld16	r3, 14
-	add	r3,r4,r3
-	ldw	r3,r0(r3)
-	push	r3
-	addi	r3,r4,4
-	ldw	r3,r0(r3)
-	push	r3
-	addi	r4,r4,2
-	ldw	r4,r0(r4)
-	push	r4
-	la16	r4,L41_proc
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,8
-	add	sp,sp,r2
-	ldw	r4,-2(bp)
-	ld16	r3, 14
 	add	r4,r4,r3
 	ldw	r4,r0(r4)
 	mov	r1,r4
@@ -1999,7 +2160,7 @@ _tosched:
 	mov	bp, sp
 	la16	r4,_sched
 	push	r4
-	la16	r4,L43_proc
+	la16	r4,L42_proc
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -2021,7 +2182,7 @@ _tosched:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
-L42_proc:
+L41_proc:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -2046,7 +2207,7 @@ _sleep:
 	la16	r4,_tosched
 	addi	r1,pc,2
 	br.r	r4
-L46_proc:
+L45_proc:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -2060,33 +2221,33 @@ _wakeup:
 	sub	sp, sp, r4
 	la16	r4,_ptable
 	stw	-2(bp),r4
-	la16	r4,L5_proc1
+	la16	r4,L5_proc0
 	br.r r4
-L48_proc:
+L47_proc:
 	ldw	r4,-2(bp)
 	ld16	r3, 26
 	add	r4,r4,r3
 	ldw	r4,r0(r4)
 	ldw	r3,4(bp)
 	skip.eq r4,r3
-	br L5_proc3
+	br L5_proc2
 	ldw	r4,-2(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	ld16	r3, 3
 	stw	r0(r4),r3
-L5_proc3:
-L49_proc:
+L5_proc2:
+L48_proc:
 	ldw	r4,-2(bp)
 	ld16	r3, 38
 	add	r4,r4,r3
 	stw	-2(bp),r4
-L5_proc1:
+L5_proc0:
 	ldw	r4,-2(bp)
 	la16	r3,_ptable+570
 	skip.ulte	r3,r4
-	br	L48_proc
-L47_proc:
+	br	L47_proc
+L46_proc:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -2101,23 +2262,23 @@ _wait:
 	stw	-4(bp),r0
 	la16	r4,_ptable
 	stw	-2(bp),r4
-	la16	r4,L5_proc9
+	la16	r4,L5_proc8
 	br.r r4
-L5_proc6:
+L5_proc5:
 	ldw	r4,-2(bp)
 	addi	r4,r4,8
 	ldw	r4,r0(r4)
 	la16	r3,_currproc
 	ldw	r3,r0(r3)
 	skip.eq r4,r3
-	br L61_proc
+	br L60_proc
 	ldw	r4,-2(bp)
 	ld16	r3, 12
 	add	r4,r4,r3
 	ldw	r4,r0(r4)
 	ld16	r3, 5
 	skip.eq r4,r3
-	br L63_proc
+	br L62_proc
 	ldw	r4,-2(bp)
 	addi	r4,r4,2
 	ldw	r4,r0(r4)
@@ -2127,27 +2288,27 @@ L5_proc6:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r4,L64_proc
+	la16	r4,L63_proc
 	br.r r4
-L63_proc:
+L62_proc:
 	ldw	r4,-4(bp)
 	addi	r4,r4,1
 	stw	-4(bp),r4
-L64_proc:
-L61_proc:
-L5_proc7:
+L63_proc:
+L60_proc:
+L5_proc6:
 	ldw	r4,-2(bp)
 	ld16	r3, 38
 	add	r4,r4,r3
 	stw	-2(bp),r4
-L5_proc9:
+L5_proc8:
 	ldw	r4,-2(bp)
 	la16	r3,_ptable+570
 	skip.ulte	r3,r4
-	br	L5_proc6
+	br	L5_proc5
 	ldw	r4,-4(bp)
 	push	r4
-	la16	r4,L65_proc
+	la16	r4,L64_proc
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -2156,7 +2317,7 @@ L5_proc9:
 	add	sp,sp,r2
 	ldw	r4,-4(bp)
 	skip.gt	r4,r0
-	br	L66_proc
+	br	L65_proc
 	la16	r4,_ptable
 	push	r4
 	la16	r4,_sleep
@@ -2164,15 +2325,15 @@ L5_proc9:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	la16	r4,L67_proc
+	la16	r4,L66_proc
+	br.r r4
+L65_proc:
+	ld16	r1, -1
+	la16	r4,L5_proc4
 	br.r r4
 L66_proc:
-	ld16	r1, -1
-	la16	r4,L5_proc5
-	br.r r4
-L67_proc:
 	mov	r1,r0
-L5_proc5:
+L5_proc4:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -2198,14 +2359,41 @@ _exit:
 	la16	r4,_tosched
 	addi	r1,pc,2
 	br.r	r4
+L67_proc:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _growproc
+_growproc:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,_allocuvm
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	stw	-2(bp),r1
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r3,-2(bp)
+	stw	r0(r4),r3
+	mov	r1,r0
 L68_proc:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
+;	.extern _allocuvm
 ;	.extern _freevm
 ;	.extern _copyuvm
 ;	.extern _rsi
+;	.extern _uartirq
 ;	.extern _sdirq
 ;	.extern _swtch
 ;	.extern _inituvm
@@ -2232,7 +2420,7 @@ _sched:
 _ptable:
 	defs 570
 	.data
-L65_proc:
+L64_proc:
 	defb 119
 	defb 97
 	defb 105
@@ -2256,7 +2444,7 @@ L65_proc:
 	defb 120
 	defb 10
 	defb 0
-L43_proc:
+L42_proc:
 	defb 116
 	defb 111
 	defb 115
@@ -2291,42 +2479,6 @@ L43_proc:
 	defb 32
 	defb 97
 	defb 116
-	defb 32
-	defb 37
-	defb 120
-	defb 10
-	defb 0
-L41_proc:
-	defb 72
-	defb 87
-	defb 71
-	defb 58
-	defb 32
-	defb 112
-	defb 116
-	defb 98
-	defb 58
-	defb 32
-	defb 37
-	defb 120
-	defb 44
-	defb 32
-	defb 107
-	defb 115
-	defb 116
-	defb 97
-	defb 99
-	defb 107
-	defb 58
-	defb 32
-	defb 37
-	defb 120
-	defb 44
-	defb 32
-	defb 112
-	defb 105
-	defb 100
-	defb 58
 	defb 32
 	defb 37
 	defb 120
@@ -2746,28 +2898,15 @@ _trap:
 	ldw	r3,4(bp)
 	stw	r0(r4),r3
 	ldw	r4,4(bp)
-	addi	r3,r4,2
-	ldw	r3,r0(r3)
-	push	r3
-	ldw	r4,r0(r4)
-	push	r4
-	la16	r4,L2_trap
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,6
-	add	sp,sp,r2
-	ldw	r4,4(bp)
 	ldw	r4,r0(r4)
 	ld16	r3, 2
 	skip.eq r4,r3
-	br L3_trap
+	br L2_trap
 	ldw	r4,4(bp)
 	addi	r4,r4,4
 	ldw	r4,r0(r4)
 	push	r4
-	la16	r4,L5_trap
+	la16	r4,L4_trap
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -2777,46 +2916,37 @@ _trap:
 	la16	r4,_halt
 	addi	r1,pc,2
 	br.r	r4
-L3_trap:
+L2_trap:
+	ldw	r4,4(bp)
+	ldw	r4,r0(r4)
+	ld16	r3, 4
+	skip.eq r4,r3
+	br L5_trap
+	la16	r4,_uartirq
+	addi	r1,pc,2
+	br.r	r4
+L5_trap:
 	ldw	r4,4(bp)
 	ldw	r4,r0(r4)
 	ld16	r3, 16
 	skip.eq r4,r3
-	br L6_trap
-	la16	r4,L8_trap
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,2
-	add	sp,sp,r2
-	ldw	r4,4(bp)
-	addi	r4,r4,2
-	ldw	r4,r0(r4)
-	push	r4
-	la16	r4,L9_trap
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,4
-	add	sp,sp,r2
+	br L7_trap
 	la16	r4,_syscall
 	addi	r1,pc,2
 	br.r	r4
-L6_trap:
+L7_trap:
 	ldw	r4,4(bp)
 	ldw	r4,r0(r4)
 	ld16	r3, 8
 	skip.eq r4,r3
-	br L1_trap0_trap
+	br L9_trap
 	push	r0
 	la16	r4,_sdirq
 	addi	r1,pc,2
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-L1_trap0_trap:
+L9_trap:
 L1_trap:
 	mov	sp, bp
 	pop	bp
@@ -2824,44 +2954,12 @@ L1_trap:
 
 ;	.extern _sdirq
 ;	.extern _syscall
+;	.extern _uartirq
 ;	.extern _halt
 ;	.extern _kprintf
 ;	.extern _currproc
 	.data
-L9_trap:
-	defb 117
-	defb 115
-	defb 112
-	defb 32
-	defb 112
-	defb 111
-	defb 105
-	defb 110
-	defb 116
-	defb 115
-	defb 32
-	defb 116
-	defb 111
-	defb 58
-	defb 32
-	defb 37
-	defb 120
-	defb 10
-	defb 0
-L8_trap:
-	defb 83
-	defb 89
-	defb 83
-	defb 67
-	defb 65
-	defb 76
-	defb 76
-	defb 33
-	defb 32
-	defb 45
-	defb 32
-	defb 0
-L5_trap:
+L4_trap:
 	defb 80
 	defb 65
 	defb 71
@@ -2896,26 +2994,6 @@ L5_trap:
 	defb 37
 	defb 120
 	defb 0
-L2_trap:
-	defb 84
-	defb 114
-	defb 97
-	defb 112
-	defb 58
-	defb 32
-	defb 37
-	defb 120
-	defb 44
-	defb 32
-	defb 117
-	defb 83
-	defb 80
-	defb 58
-	defb 32
-	defb 37
-	defb 120
-	defb 10
-	defb 0
 ;	.end
 
 
@@ -2930,7 +3008,7 @@ defw 0x0
 	defw _sys_exit ; DEFADDRESS
 	defw _sys_wait ; DEFADDRESS
 defw 0x0
-defw 0x0
+	defw _sys_read ; DEFADDRESS
 defw 0x0
 	defw _sys_exec ; DEFADDRESS
 defw 0x0
@@ -2963,15 +3041,6 @@ _argint:
 	shl	r3, r3, 1
 	add	r4,r4,r3
 	stw	-2(bp),r4
-	ldw	r4,-2(bp)
-	push	r4
-	la16	r4,L2_syscall
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,4
-	add	sp,sp,r2
 	ldw	r4,6(bp)
 	ldw	r3,-2(bp)
 	ldw	r3,r0(r3)
@@ -3000,14 +3069,14 @@ _argstr:
 	ldi	r2,4
 	add	sp,sp,r2
 	skip.lt r1, r0
-	br L4_syscall
+	br L3_syscall
 	ld16	r1, -1
-	la16	r4,L3_syscall
+	la16	r4,L2_syscall
 	br.r r4
-L4_syscall:
+L3_syscall:
 	ldw	r4,-2(bp)
 	push	r4
-	la16	r4,L6_syscall
+	la16	r4,L5_syscall
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -3020,7 +3089,7 @@ L4_syscall:
 	ldw	r4,6(bp)
 	ldw	r4,r0(r4)
 	push	r4
-	la16	r4,L7_syscall
+	la16	r4,L6_syscall
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -3028,7 +3097,7 @@ L4_syscall:
 	ldi	r2,4
 	add	sp,sp,r2
 	mov	r1,r0
-L3_syscall:
+L2_syscall:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -3051,32 +3120,49 @@ _argptr:
 	ldi	r2,4
 	add	sp,sp,r2
 	skip.lt r1, r0
-	br L9_syscall
+	br L8_syscall
 	la16	r4,_halt
 	addi	r1,pc,2
 	br.r	r4
-L9_syscall:
+L8_syscall:
 	la16	r4,_currproc
 	ldw	r4,r0(r4)
 	ldw	r4,r0(r4)
 	ldw	r3,4(bp)
 	skip.ulte	r3,r4
-	br	L1_syscall3
+	br	L1_syscall2
 	ldw	r3,-2(bp)
 	ldw	r2,8(bp)
 	add	r3,r3,r2
 	skip.ult	r4,r3
-	br	L1_syscall1
-L1_syscall3:
+	br	L1_syscall0
+L1_syscall2:
+	ldw	r4,-2(bp)
+	ldw	r3,8(bp)
+	add	r4,r4,r3
+	push	r4
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r4,r0(r4)
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,L1_syscall3
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,8
+	add	sp,sp,r2
 	la16	r4,_halt
 	addi	r1,pc,2
 	br.r	r4
-L1_syscall1:
+L1_syscall0:
 	ldw	r4,6(bp)
 	ldw	r3,-2(bp)
 	stw	r0(r4),r3
 	mov	r1,r0
-L8_syscall:
+L7_syscall:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -3150,6 +3236,7 @@ L1_syscall4:
 ;	.extern _halt
 ;	.extern _kprintf
 ;	.extern _currproc
+;	.extern _sys_read
 ;	.extern _sys_write
 ;	.extern _sys_wait
 ;	.extern _sys_exit
@@ -3203,24 +3290,55 @@ L1_syscall7:
 	defb 100
 	defb 10
 	defb 0
-L7_syscall:
-	defb 97
+L1_syscall3:
+	defb 104
+	defb 105
+	defb 101
 	defb 114
-	defb 103
-	defb 115
+	defb 111
+	defb 32
+	defb 107
+	defb 111
+	defb 109
 	defb 116
-	defb 114
+	defb 32
+	defb 100
+	defb 101
+	defb 32
+	defb 104
+	defb 97
+	defb 108
+	defb 116
 	defb 58
 	defb 32
-	defb 115
-	defb 116
-	defb 114
-	defb 32
-	defb 105
-	defb 115
-	defb 32
+	defb 110
+	defb 40
 	defb 37
 	defb 120
+	defb 41
+	defb 32
+	defb 112
+	defb 114
+	defb 111
+	defb 99
+	defb 46
+	defb 115
+	defb 122
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 44
+	defb 32
+	defb 105
+	defb 43
+	defb 115
+	defb 122
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 10
 	defb 0
 L6_syscall:
 	defb 97
@@ -3231,6 +3349,25 @@ L6_syscall:
 	defb 114
 	defb 58
 	defb 32
+	defb 115
+	defb 116
+	defb 114
+	defb 32
+	defb 105
+	defb 115
+	defb 32
+	defb 37
+	defb 120
+	defb 0
+L5_syscall:
+	defb 97
+	defb 114
+	defb 103
+	defb 115
+	defb 116
+	defb 114
+	defb 58
+	defb 32
 	defb 97
 	defb 100
 	defb 100
@@ -3241,24 +3378,6 @@ L6_syscall:
 	defb 32
 	defb 37
 	defb 120
-	defb 0
-L2_syscall:
-	defb 97
-	defb 114
-	defb 103
-	defb 105
-	defb 110
-	defb 116
-	defb 58
-	defb 32
-	defb 97
-	defb 100
-	defb 100
-	defb 114
-	defb 32
-	defb 37
-	defb 120
-	defb 10
 	defb 0
 ;	.end
 
@@ -3457,7 +3576,7 @@ _sys_write:
 	addi	r1,pc,2
 	br.r	r4
 L2_sys_file:
-	ldi	r4, -4
+	ldi	r4, -2
 	add	r4, r4, bp
 	push	r4
 	ld16	r4, 2
@@ -3473,9 +3592,10 @@ L2_sys_file:
 	addi	r1,pc,2
 	br.r	r4
 L4_sys_file:
-	ldw	r4,-4(bp)
-	push	r4
 	ldw	r4,-2(bp)
+	push	r4
+	ldi	r4, -4
+	add	r4, r4, bp
 	push	r4
 	ld16	r4, 1
 	push	r4
@@ -3492,9 +3612,20 @@ L4_sys_file:
 L6_sys_file:
 	ldw	r4,-2(bp)
 	push	r4
+	ldw	r4,-4(bp)
+	push	r4
 	la16	r4,L8_sys_file
 	push	r4
 	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	ldw	r4,-2(bp)
+	push	r4
+	ldw	r4,-4(bp)
+	push	r4
+	la16	r4,_writeterm
 	addi	r1,pc,2
 	br.r	r4
 	ldi	r2,4
@@ -3505,11 +3636,102 @@ L1_sys_file:
 	pop	bp
 	pop	pc
 
+;	.global _sys_read
+_sys_read:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 6
+	sub	sp, sp, r4
+	ldi	r4, -6
+	add	r4, r4, bp
+	push	r4
+	push	r0
+	la16	r4,_argint
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	skip.lt r1, r0
+	br L1_sys_file0
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L1_sys_file0:
+	ldi	r4, -2
+	add	r4, r4, bp
+	push	r4
+	ld16	r4, 2
+	push	r4
+	la16	r4,_argint
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	skip.lt r1, r0
+	br L1_sys_file2
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L1_sys_file2:
+	ldw	r4,-2(bp)
+	push	r4
+	ldi	r4, -4
+	add	r4, r4, bp
+	push	r4
+	ld16	r4, 1
+	push	r4
+	la16	r4,_argptr
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	skip.lt r1, r0
+	br L1_sys_file4
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L1_sys_file4:
+	la16	r4,L1_sys_file6
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	ldw	r4,-2(bp)
+	push	r4
+	ldw	r4,-4(bp)
+	push	r4
+	la16	r4,_readterm
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	mov	r4,r1
+L9_sys_file:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _readterm
+;	.extern _writeterm
 ;	.extern _kprintf
 ;	.extern _argptr
 ;	.extern _halt
 ;	.extern _argint
 	.data
+L1_sys_file6:
+	defb 115
+	defb 121
+	defb 115
+	defb 95
+	defb 114
+	defb 101
+	defb 97
+	defb 100
+	defb 10
+	defb 0
 L8_sys_file:
 	defb 115
 	defb 121
@@ -3538,7 +3760,14 @@ L8_sys_file:
 	defb 58
 	defb 32
 	defb 37
-	defb 115
+	defb 120
+	defb 44
+	defb 32
+	defb 110
+	defb 40
+	defb 37
+	defb 120
+	defb 41
 	defb 10
 	defb 0
 ;	.end
@@ -3905,8 +4134,12 @@ _readi:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldi	r4, 4
+	ldi	r4, 6
 	sub	sp, sp, r4
+	stw	-6(bp),r0
+	la16	r4,L4_fs0
+	br.r r4
+L3_fs7_fs:
 	ldw	r4,8(bp)
 	shr	r4, r4, 9
 	push	r4
@@ -3918,39 +4151,57 @@ _readi:
 	ldi	r2,4
 	add	sp,sp,r2
 	mov	r4,r1
-	stw	-4(bp),r4
-	ldw	r4,-4(bp)
 	push	r4
 	la16	r4,_bread
 	addi	r1,pc,2
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	stw	-2(bp),r1
+	stw	-4(bp),r1
 	ldw	r4,10(bp)
+	ldw	r3,-6(bp)
+	sub	r4,r4,r3
+	ld16	r3, 512
+	skip.ult	r3,r4
+	br	L4_fs1
+	ld16	r4, 512
+	ldw	r3,8(bp)
+	ld16	r2, 511
+	and	r3,r3,r2
+	sub	r4,r4,r3
+	stw	-2(bp),r4
+	la16	r4,L4_fs2
+	br.r r4
+L4_fs1:
+	ldw	r4,10(bp)
+	ldw	r3,-6(bp)
+	sub	r4,r4,r3
+	stw	-2(bp),r4
+L4_fs2:
+	ldw	r4,-2(bp)
 	push	r4
 	ldw	r4,8(bp)
 	ld16	r3, 511
 	and	r4,r4,r3
 	push	r4
-	ldw	r3,-2(bp)
+	ldw	r3,-4(bp)
 	ld16	r2, 10
 	add	r3,r3,r2
 	add	r4,r4,r3
 	push	r4
-	la16	r4,L3_fs7_fs
+	la16	r4,L4_fs3
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
 	br.r	r4
 	ldi	r2,8
 	add	sp,sp,r2
-	ldw	r4,10(bp)
+	ldw	r4,-2(bp)
 	push	r4
 	ldw	r4,8(bp)
 	ld16	r3, 511
 	and	r4,r4,r3
-	ldw	r3,-2(bp)
+	ldw	r3,-4(bp)
 	ld16	r2, 10
 	add	r3,r3,r2
 	add	r4,r4,r3
@@ -3962,14 +4213,30 @@ _readi:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
-	ldw	r4,-2(bp)
+	ldw	r4,-4(bp)
 	push	r4
 	la16	r4,_brelse
 	addi	r1,pc,2
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
-	ldw	r4,10(bp)
+L3_fs8_fs:
+	ldw	r4,-2(bp)
+	ldw	r3,-6(bp)
+	add	r3,r3,r4
+	stw	-6(bp),r3
+	ldw	r3,8(bp)
+	add	r3,r3,r4
+	stw	8(bp),r3
+	ldw	r3,6(bp)
+	add	r4,r4,r3
+	stw	6(bp),r4
+L4_fs0:
+	ldw	r4,-6(bp)
+	ldw	r3,10(bp)
+	skip.ulte	r3,r4
+	br	L3_fs7_fs
+	ldw	r4,-6(bp)
 	mov	r1,r4
 L3_fs6_fs:
 	mov	sp, bp
@@ -3984,14 +4251,14 @@ _dirlookup:
 	ldi	r4, 18
 	sub	sp, sp, r4
 	stw	-2(bp),r0
-	la16	r4,L4_fs2
+	la16	r4,L4_fs8
 	br.r r4
-L3_fs9_fs:
+L4_fs5:
 	ldw	r4,-2(bp)
 	push	r4
 	la16	r4,_direntry
 	push	r4
-	la16	r4,L4_fs3
+	la16	r4,L4_fs9
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -4023,7 +4290,7 @@ L3_fs9_fs:
 	ldi	r2,6
 	add	sp,sp,r2
 	skip.eq r1,r0
-	br L4_fs4
+	br L5_fs0
 	la16	r4,_direntry
 	ldw	r4,r0(r4)
 	push	r4
@@ -4033,24 +4300,24 @@ L3_fs9_fs:
 	ldi	r2,2
 	add	sp,sp,r2
 	mov	r4,r1
-	la16	r4,L3_fs8_fs
+	la16	r4,L4_fs4
 	br.r r4
-L4_fs4:
-L4_fs0:
+L5_fs0:
+L4_fs6:
 	ldw	r4,-2(bp)
 	ld16	r3, 16
 	add	r4,r4,r3
 	stw	-2(bp),r4
-L4_fs2:
+L4_fs8:
 	ldw	r4,-2(bp)
 	ldw	r3,4(bp)
 	ld16	r2, 10
 	add	r3,r3,r2
 	ldw	r3,r0(r3)
 	skip.ulte	r3,r4
-	br	L3_fs9_fs
+	br	L4_fs5
 	mov	r1,r0
-L3_fs8_fs:
+L4_fs4:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -4062,46 +4329,46 @@ _nextelem:
 	mov	bp, sp
 	ldi	r4, 4
 	sub	sp, sp, r4
-	la16	r4,L4_fs9
+	la16	r4,L5_fs5
 	br.r r4
-L4_fs8:
-	ldw	r4,4(bp)
-	addi	r4,r4,1
-	stw	4(bp),r4
-L4_fs9:
-	ldw	r4,4(bp)
-	ldb	r4,r0(r4)
-	sext	r4,r4
-	ld16	r3, 47
-	skip.ne	r4,r3
-	br	L4_fs8
-	ldw	r4,4(bp)
-	ldb	r4,r0(r4)
-	sext	r4,r4
-	skip.eq r4,r0
-	br L5_fs1
-	mov	r1,r0
-	la16	r4,L4_fs7
-	br.r r4
-L5_fs1:
-	ldw	r4,4(bp)
-	stw	-2(bp),r4
-	la16	r4,L5_fs4
-	br.r r4
-L5_fs3:
-	ldw	r4,4(bp)
-	addi	r4,r4,1
-	stw	4(bp),r4
 L5_fs4:
 	ldw	r4,4(bp)
+	addi	r4,r4,1
+	stw	4(bp),r4
+L5_fs5:
+	ldw	r4,4(bp)
 	ldb	r4,r0(r4)
 	sext	r4,r4
 	ld16	r3, 47
 	skip.ne	r4,r3
-	br	L5_fs6
+	br	L5_fs4
+	ldw	r4,4(bp)
+	ldb	r4,r0(r4)
+	sext	r4,r4
 	skip.eq r4,r0
-	br L5_fs3
-L5_fs6:
+	br L5_fs7
+	mov	r1,r0
+	la16	r4,L5_fs3
+	br.r r4
+L5_fs7:
+	ldw	r4,4(bp)
+	stw	-2(bp),r4
+	la16	r4,L6_fs0
+	br.r r4
+L5_fs9:
+	ldw	r4,4(bp)
+	addi	r4,r4,1
+	stw	4(bp),r4
+L6_fs0:
+	ldw	r4,4(bp)
+	ldb	r4,r0(r4)
+	sext	r4,r4
+	ld16	r3, 47
+	skip.ne	r4,r3
+	br	L6_fs2
+	skip.eq r4,r0
+	br L5_fs9
+L6_fs2:
 	ldw	r4,-2(bp)
 	ldw	r3,4(bp)
 	mov	r2,r4
@@ -4122,7 +4389,7 @@ L5_fs6:
 	add	r4,r4,r3
 	stb	r0(r4),r0
 	ldw	r1,4(bp)
-L4_fs7:
+L5_fs3:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -4139,7 +4406,7 @@ _namei:
 	sext	r4,r4
 	ld16	r3, 47
 	skip.eq r4,r3
-	br L5_fs8
+	br L6_fs4
 	ld16	r4, 1
 	push	r4
 	la16	r4,_iget
@@ -4148,18 +4415,18 @@ _namei:
 	ldi	r2,2
 	add	sp,sp,r2
 	stw	-2(bp),r1
-	la16	r4,L6_fs1
+	la16	r4,L6_fs7
 	br.r r4
-L5_fs8:
+L6_fs4:
 	la16	r4,_currproc
 	ldw	r4,r0(r4)
 	ld16	r3, 10
 	add	r4,r4,r3
 	ldw	r4,r0(r4)
 	stw	-2(bp),r4
-	la16	r4,L6_fs1
+	la16	r4,L6_fs7
 	br.r r4
-L6_fs0:
+L6_fs6:
 	ldw	r4,-2(bp)
 	push	r4
 	la16	r4,_ilock
@@ -4173,8 +4440,8 @@ L6_fs0:
 	ldw	r4,r0(r4)
 	ld16	r3, 1
 	skip.ne	r4,r3
-	br	L6_fs3
-	la16	r4,L6_fs5
+	br	L6_fs9
+	la16	r4,L71_fs
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -4184,7 +4451,7 @@ L6_fs0:
 	la16	r4,_halt
 	addi	r1,pc,2
 	br.r	r4
-L6_fs3:
+L6_fs9:
 	ldi	r4, -18
 	add	r4, r4, bp
 	push	r4
@@ -4198,7 +4465,7 @@ L6_fs3:
 	stw	-4(bp),r1
 	ldw	r4,-4(bp)
 	stw	-2(bp),r4
-L6_fs1:
+L6_fs7:
 	ldi	r4, -18
 	add	r4, r4, bp
 	push	r4
@@ -4212,9 +4479,9 @@ L6_fs1:
 	stw	4(bp),r1
 	mov	r4,r1
 	skip.eq r4,r0
-	br L6_fs0
+	br L6_fs6
 	ldw	r1,-2(bp)
-L5_fs7:
+L6_fs3:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -4237,10 +4504,12 @@ _icache:
 _sb:
 	defs 14
 ;	.extern _loaduvm
+;	.extern _pushc
+;	.extern _popc
 ;	.extern _bread
 ;	.extern _binit
 	.data
-L6_fs5:
+L71_fs:
 	defb 110
 	defb 97
 	defb 109
@@ -4274,7 +4543,7 @@ L6_fs5:
 	defb 114
 	defb 10
 	defb 0
-L4_fs3:
+L4_fs9:
 	defb 100
 	defb 105
 	defb 114
@@ -4299,7 +4568,7 @@ L4_fs3:
 	defb 120
 	defb 10
 	defb 0
-L3_fs7_fs:
+L4_fs3:
 	defb 114
 	defb 101
 	defb 97
@@ -5120,6 +5389,274 @@ L2_bio1:
 
  ; INT_MAX: ffffffff
 
+;	.global _cinit
+;	.code
+_cinit:
+	push	r1
+	push	bp
+	mov	bp, sp
+	la16	r3,_rterm
+	stw	r0(r3),r0
+	la16	r3,_rterm+2
+	stw	r0(r3),r0
+	ld16	r4, 32
+	push	r4
+	push	r0
+	la16	r4,_rterm+4
+	push	r4
+	la16	r4,_memset
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,_rterm
+	push	r4
+	la16	r4,L4_cio
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+L1_cio:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _pushc
+_pushc:
+	push	r1
+	push	bp
+	mov	bp, sp
+	la16	r4,_rterm
+	ldw	r4,r0(r4)
+	la16	r3,_rterm+2
+	ldw	r3,r0(r3)
+	subi	r3,r3,1
+	ld16	r2, 63
+	and	r3,r3,r2
+	skip.eq r4,r3
+	br L6_cio
+	la16	r4,L9_cio
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L6_cio:
+	la16	r4,_rterm
+	ldw	r4,r0(r4)
+	la16	r3,_rterm+4
+	add	r4,r4,r3
+	ldw	r3,4(bp)
+	ldb	r3,r0(r3)
+	stb	r0(r4),r3
+	la16	r4,_rterm
+	ld16	r3, 1
+	ldw	r2,r0(r4)
+	add	r2,r2,r3
+	ld16	r1, 63
+	and	r2,r2,r1
+	stw	r0(r4),r2
+	mov	r1,r3
+L5_cio:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _writeterm
+_writeterm:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	stw	-2(bp),r0
+	la16	r4,L1_cio5
+	br.r r4
+L1_cio2:
+	ldw	r4,-2(bp)
+	ldw	r3,4(bp)
+	add	r4,r4,r3
+	ldb	r4,r0(r4)
+	sext	r4,r4
+	push	r4
+	la16	r4,_putc
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+L1_cio3:
+	ldw	r4,-2(bp)
+	addi	r4,r4,1
+	stw	-2(bp),r4
+L1_cio5:
+	ldw	r4,-2(bp)
+	ldw	r3,6(bp)
+	skip.gt	r4,r3
+	br	L1_cio2
+	mov	r1,r0
+L1_cio1:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _readterm
+_readterm:
+	push	r1
+	push	bp
+	mov	bp, sp
+L1_cio7:
+	la16	r4,_rterm
+	ldw	r4,r0(r4)
+	la16	r3,_rterm+2
+	ldw	r3,r0(r3)
+	skip.eq r4,r3
+	br L1_cio8
+	la16	r4,_rterm
+	push	r4
+	la16	r4,_sleep
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r4,L1_cio7
+	br.r r4
+L1_cio8:
+	ldw	r4,6(bp)
+	la16	r3,_rterm
+	ldw	r3,r0(r3)
+	la16	r2,_rterm+2
+	ldw	r2,r0(r2)
+	sub	r3,r3,r2
+	skip.gt	r4,r3
+	br	L21_cio
+	la16	r4,_rterm
+	ldw	r4,r0(r4)
+	la16	r3,_rterm+2
+	ldw	r3,r0(r3)
+	sub	r4,r4,r3
+	stw	6(bp),r4
+L21_cio:
+	ldw	r4,6(bp)
+	push	r4
+	la16	r4,_rterm+2
+	ldw	r4,r0(r4)
+	la16	r3,_rterm+4
+	add	r4,r4,r3
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,_memmove
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,_rterm+2
+	la16	r3,_rterm+2
+	ldw	r3,r0(r3)
+	addi	r3,r3,1
+	ld16	r2, 63
+	and	r3,r3,r2
+	stw	r0(r4),r3
+	ldw	r1,6(bp)
+L1_cio6:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _memmove
+;	.extern _sleep
+;	.extern _putc
+;	.extern _halt
+;	.extern _kprintf
+;	.extern _memset
+	.bss
+;	.global _txactive
+_txactive:
+	defs 2
+;	.global _rterm
+_rterm:
+	defs 36
+;	.global _wterm
+_wterm:
+	defs 36
+	.data
+L9_cio:
+	defb 99
+	defb 104
+	defb 97
+	defb 114
+	defb 112
+	defb 117
+	defb 116
+	defb 58
+	defb 32
+	defb 99
+	defb 98
+	defb 117
+	defb 102
+	defb 32
+	defb 105
+	defb 115
+	defb 32
+	defb 102
+	defb 117
+	defb 108
+	defb 108
+	defb 33
+	defb 10
+	defb 0
+L4_cio:
+	defb 99
+	defb 105
+	defb 110
+	defb 105
+	defb 116
+	defb 58
+	defb 32
+	defb 105
+	defb 110
+	defb 105
+	defb 116
+	defb 105
+	defb 97
+	defb 108
+	defb 105
+	defb 115
+	defb 101
+	defb 100
+	defb 32
+	defb 99
+	defb 104
+	defb 97
+	defb 114
+	defb 32
+	defb 98
+	defb 117
+	defb 102
+	defb 102
+	defb 101
+	defb 114
+	defb 32
+	defb 97
+	defb 116
+	defb 58
+	defb 32
+	defb 37
+	defb 120
+	defb 0
+;	.end
+
+
+;	DME assembly file, generated by lcc 4.2
+
+ ; INT_MAX: ffffffff
+
 ;	.global _sdrw
 ;	.code
 _sdrw:
@@ -5301,23 +5838,16 @@ _sdirq:
 	ldw	r4,4(bp)
 	skip.ne	r4,r0
 	br	L2_sd1
-	la16	r4,L2_sd3
-	push	r4
-	la16	r4,_kprintf
-	addi	r1,pc,2
-	br.r	r4
-	ldi	r2,2
-	add	sp,sp,r2
 	la16	r4,_sdreadcmd
 	addi	r1,pc,2
 	br.r	r4
 	ld16	r3, 16384
 	and	r4,r1,r3
 	skip.eq r4,r3
-	br L2_sd4
+	br L2_sd3
 	la16	r4,L2_sd0
 	br.r r4
-L2_sd4:
+L2_sd3:
 L2_sd1:
 	la16	r4,_sdqueue
 	push	r4
@@ -5329,11 +5859,11 @@ L2_sd1:
 	la16	r4,_sdqueue
 	ldw	r4,r0(r4)
 	skip.ne	r4,r0
-	br	L2_sd6
+	br	L2_sd5
 	la16	r4,_sdqueue
 	ldw	r4,r0(r4)
 	push	r4
-	la16	r4,L2_sd8
+	la16	r4,L2_sd7
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -5343,7 +5873,7 @@ L2_sd1:
 	la16	r4,_sdwork
 	addi	r1,pc,2
 	br.r	r4
-L2_sd6:
+L2_sd5:
 L2_sd0:
 	mov	sp, bp
 	pop	bp
@@ -5359,7 +5889,7 @@ L2_sd0:
 _sdqueue:
 	defs 2
 	.data
-L2_sd8:
+L2_sd7:
 	defb 115
 	defb 100
 	defb 105
@@ -5378,31 +5908,6 @@ L2_sd8:
 	defb 32
 	defb 37
 	defb 120
-	defb 0
-L2_sd3:
-	defb 115
-	defb 100
-	defb 105
-	defb 114
-	defb 113
-	defb 58
-	defb 32
-	defb 102
-	defb 111
-	defb 114
-	defb 99
-	defb 101
-	defb 100
-	defb 32
-	defb 100
-	defb 105
-	defb 115
-	defb 107
-	defb 32
-	defb 105
-	defb 114
-	defb 113
-	defb 10
 	defb 0
 L1_sd9:
 	defb 115
@@ -5590,7 +6095,7 @@ _exec:
 	push	r1
 	push	bp
 	mov	bp, sp
-	ldi	r4, 8
+	ldi	r4, 14
 	sub	sp, sp, r4
 	ldw	r4,4(bp)
 	push	r4
@@ -5621,6 +6126,17 @@ L2_exec:
 	br.r	r4
 	ldi	r2,2
 	add	sp,sp,r2
+	ldw	r4,-8(bp)
+	addi	r4,r4,4
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,L5_exec
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
 	ld16	r4, 6
 	push	r4
 	push	r0
@@ -5641,7 +6157,7 @@ L2_exec:
 	ldi	r4, -6
 	add	r4, r4, bp
 	push	r4
-	la16	r4,L5_exec
+	la16	r4,L6_exec
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -5651,8 +6167,8 @@ L2_exec:
 	ldw	r4,-6(bp)
 	ld16	r3, 0xbabe
 	skip.ne	r4,r3
-	br	L7_exec
-	la16	r4,L9_exec
+	br	L8_exec
+	la16	r4,L1_exec0
 	push	r4
 	la16	r4,_kprintf
 	addi	r1,pc,2
@@ -5662,7 +6178,38 @@ L2_exec:
 	la16	r4,_halt
 	addi	r1,pc,2
 	br.r	r4
-L7_exec:
+L8_exec:
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r4,r0(r4)
+	push	r4
+	ldw	r4,-4(bp)
+	push	r4
+	la16	r4,L1_exec1
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	ldw	r4,-4(bp)
+	la16	r3,_currproc
+	ldw	r3,r0(r3)
+	ldw	r3,r0(r3)
+	skip.ult	r3,r4
+	br	L1_exec3_exec
+	ldw	r4,-4(bp)
+	push	r4
+	la16	r4,_allocuvm
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r3,_currproc
+	ldw	r3,r0(r3)
+	mov	r4,r1
+	stw	r0(r3),r4
+L1_exec3_exec:
 	ldw	r4,-4(bp)
 	push	r4
 	ld16	r4, 6
@@ -5674,6 +6221,45 @@ L7_exec:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	stw	-14(bp),r4
+	ldw	r3,r0(r4)
+	stw	-10(bp),r3
+	ldw	r3,r0(r4)
+	ld16	r2, 4096
+	add	r3,r3,r2
+	push	r3
+	la16	r3,_allocuvm
+	stw	-12(bp),r3
+	addi	r1,pc,2
+	br.r	r3
+	ldi	r2,2
+	add	sp,sp,r2
+	ldw	r3,-14(bp)
+	stw	r0(r3),r1
+	ldw	r3,-10(bp)
+	ld16	r2, 4096
+	add	r3,r3,r2
+	skip.ne	r1,r3
+	br	L1_exec8_exec
+	la16	r4,_currproc
+	ldw	r4,r0(r4)
+	ldw	r4,r0(r4)
+	push	r4
+	ldw	r4,-10(bp)
+	push	r4
+	la16	r4,L2_exec0
+	push	r4
+	la16	r4,_kprintf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L1_exec8_exec:
 	la16	r4,_currproc
 	ldw	r4,r0(r4)
 	ld16	r3, 16
@@ -5690,17 +6276,18 @@ L7_exec:
 	la16	r4,_currproc
 	ldw	r4,r0(r4)
 	ld16	r3, 16
-	add	r4,r4,r3
+	add	r3,r4,r3
+	ldw	r3,r0(r3)
+	addi	r3,r3,2
 	ldw	r4,r0(r4)
-	addi	r4,r4,2
-	ld16	r3, 2047
-	stw	r0(r4),r3
+	stw	r0(r3),r4
 	mov	r1,r0
 L1_exec:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
+;	.extern _allocuvm
 ;	.extern _readi
 ;	.extern _halt
 ;	.extern _kprintf
@@ -5712,10 +6299,85 @@ L1_exec:
 ;	.extern _ilock
 ;	.extern _iget
 ;	.extern _fsinit
+;	.extern _pushc
+;	.extern _popc
 ;	.extern _bread
 ;	.extern _binit
 	.data
-L9_exec:
+L2_exec0:
+	defb 101
+	defb 120
+	defb 101
+	defb 99
+	defb 58
+	defb 32
+	defb 101
+	defb 114
+	defb 114
+	defb 111
+	defb 114
+	defb 32
+	defb 97
+	defb 108
+	defb 108
+	defb 111
+	defb 99
+	defb 97
+	defb 116
+	defb 105
+	defb 110
+	defb 103
+	defb 32
+	defb 117
+	defb 115
+	defb 116
+	defb 97
+	defb 99
+	defb 107
+	defb 58
+	defb 32
+	defb 37
+	defb 120
+	defb 32
+	defb 118
+	defb 115
+	defb 32
+	defb 37
+	defb 120
+	defb 10
+	defb 0
+L1_exec1:
+	defb 101
+	defb 120
+	defb 101
+	defb 99
+	defb 58
+	defb 32
+	defb 104
+	defb 100
+	defb 114
+	defb 46
+	defb 115
+	defb 105
+	defb 122
+	defb 101
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 44
+	defb 32
+	defb 99
+	defb 117
+	defb 114
+	defb 114
+	defb 40
+	defb 37
+	defb 120
+	defb 41
+	defb 10
+	defb 0
+L1_exec0:
 	defb 101
 	defb 120
 	defb 101
@@ -5735,6 +6397,11 @@ L9_exec:
 	defb 110
 	defb 100
 	defb 32
+	defb 101
+	defb 120
+	defb 101
+	defb 99
+	defb 32
 	defb 104
 	defb 101
 	defb 97
@@ -5743,7 +6410,7 @@ L9_exec:
 	defb 114
 	defb 10
 	defb 0
-L5_exec:
+L6_exec:
 	defb 101
 	defb 120
 	defb 101
@@ -5787,6 +6454,23 @@ L5_exec:
 	defb 37
 	defb 120
 	defb 41
+	defb 10
+	defb 0
+L5_exec:
+	defb 101
+	defb 120
+	defb 101
+	defb 99
+	defb 44
+	defb 32
+	defb 105
+	defb 110
+	defb 117
+	defb 109
+	defb 58
+	defb 32
+	defb 37
+	defb 120
 	defb 0
 L4_exec:
 	defb 101
@@ -5985,6 +6669,9 @@ _kmain:
 	la16	r4,_inituart
 	addi	r1,pc,2
 	br.r	r4
+	la16	r4,_cinit
+	addi	r1,pc,2
+	br.r	r4
 	la16	r4,L2_kmain
 	push	r4
 	la16	r4,_kprintf
@@ -6022,6 +6709,7 @@ L1_kmain:
 ;	.extern _pinit
 ;	.extern _initkmem
 ;	.extern _kprintf
+;	.extern _cinit
 ;	.extern _inituart
 ;	.extern _stable
 ;	.extern _allocproc
@@ -6032,6 +6720,8 @@ L1_kmain:
 ;	.extern _ilock
 ;	.extern _iget
 ;	.extern _fsinit
+;	.extern _pushc
+;	.extern _popc
 ;	.extern _bread
 ;	.extern _binit
 	.data
@@ -6160,8 +6850,12 @@ modL2_pseudo_ops:
 ;
 ; (unsigned)
 _mult:
-	pop r2 ; op1
-	pop r3 ; op2
+	push r1
+	push bp
+	mov bp, sp
+	ldw r2, 4(bp)
+	ldw r2, 6(bp)
+
 	mov r1, r0 ; result reg
 ; if a > b
 	skip.gt r2, r3
@@ -6187,7 +6881,9 @@ multL3_pseudo_ops:
 	andi r4, r2, 1
 	skip.eq r4, r0
 	add r1, r1, r3
-	br.r bp
+	mov	sp, bp
+	pop	bp
+	pop	pc
 
 ;  Initial process execs /init.
 ;

@@ -1,8 +1,10 @@
 #include "types.h"
 #include "mmap.h"
+#include "proc.h"
 
 /* address space for kptb space has already been setup in boot.s */
 uint kptb = 0;
+extern struct proc *currproc;
 
 void
 initpag()
@@ -15,9 +17,9 @@ mapkernelvm(uint ptb, uint kstackpg)
 {
 	pte_t pte;
 	int i;
-	kprintf("mapkernelvm: building address space for ptb: %d\n", ptb);
+	kprintf("mapkernelvm: building address space for ptb: %x\n", ptb);
 	/* map the kernel code in new address space to pg 16 and above*/
-	for(i=0;i<=14;i++){
+	for(i=0;i<=13;i++){
 		writepte(ptb+i+16, ((i<<8)|0x1));
 	}
 	/* map stack in new address space */
@@ -25,12 +27,12 @@ mapkernelvm(uint ptb, uint kstackpg)
 }
 
 void
-mappage(uint ptb, uint ppage, uint vpage, char perm)
+mappage(uint ptb, uint ppage, uint vpage,  int perm)
 {
 	pte_t pte;
-
 	/* map it into the current address space */
 	pte = (ppage << 8) | perm;
+	//kprintf("mappage: ptb(%x), ppage(%x), vpage(%x), perm(%x)", ptb, ppage, vpage, perm);
 	writepte((ptb+vpage), pte);
 }
 
@@ -54,16 +56,15 @@ copyuvm(uint parentptb, uint childptb, uint size)
 {
 	uint i, pages, newpg;
 
-	pages = ADDR2PG(size);
 	kprintf("copyuvm: target %x, pages to copy: %x", childptb, pages);
-	for(i=0;i<=pages;i++){
+	for(i=0;i<size;i+=PGSIZE){
 		// we need to add the new page to the parent address space so we can access it
 		newpg = kalloc();
 		mappage(parentptb, newpg, 30, 0x3);
-		// copy its contents
-		memmove(PG2ADDR(30), PG2ADDR(i), PGSIZE);
+		// copy its contents to the place holder page
+		memmove((uint*)0xf000, i, PGSIZE);
 		// add it to the new address space
-		mappage(childptb, newpg, i, 0x1);
+		mappage(childptb, newpg, i/PGSIZE, 0x1);
 	}
 }
 
@@ -73,13 +74,30 @@ loaduvm(struct inode *ip, uint doff, uint size)
 {
 	uint dst;
 
+	// FIXME: still assuming one page for now
 	dst = 0;
 	memset(0, 0, PGSIZE);
+
 	dst += readi(ip, (char*)dst, doff, size);
 	return 1;
 }
-// grow uvm
 
+// grow uvm to size size
+int
+allocuvm(uint newsz)
+{
+	int i, currpgs, newpg;
+
+	// a process' size is always a multiple of PGSIZE
+	// the requested size does not have to be..
+	kprintf("allocuvm: curr(%x) to new(%x)\n", currproc->sz, newsz);
+	for(i=currproc->sz; i < newsz; i+=PGSIZE){
+		newpg = kalloc();
+		mappage(currproc->ptb, newpg, i/PGSIZE, 0x1);
+	}
+	kprintf("allocuvm: returning %x\n", i);
+	return i;
+}
 // shrink uvm
 
 void

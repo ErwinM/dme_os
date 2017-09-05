@@ -1,3 +1,6 @@
+; putc is to be used by the kernel for outputting
+; it waits for the UART to become available after each char
+; not using the interrupt mechanics (for now)
 _putc:
 	; satisfy calling convention
 	push r1
@@ -22,7 +25,7 @@ check_tx_free:
 	pop	bp
 	pop	pc
 
-
+; initialise the UART 14450 controller
 _inituart:
 	push r1
 	push bp
@@ -40,3 +43,4 @@ _inituart:
 	stw 3(bp), r1		; port + 3 set LCR - validate
 	pop	bp
 	pop	pc
+
