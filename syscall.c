@@ -108,7 +108,7 @@ void syscall(void)
 		kprintf("unknown syscall nr %d\n", callnr);
 		halt();
 	} else {
-		kprintf("syscall: call id: %x\n", callnr);
+		//kprintf("syscall: call id: %x\n", callnr);
 		currproc->tf->r1 = syscalls[callnr]();
 	}
 }

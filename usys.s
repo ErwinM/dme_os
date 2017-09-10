@@ -6,6 +6,14 @@ _fork:
 	ldi r1, 1
 	br dosyscall
 
+_exit:
+	push r1
+	push bp
+	mov bp, sp
+
+	ldi r1, 2
+	br dosyscall
+
 _wait:
 	push r1
 	push bp

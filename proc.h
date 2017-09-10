@@ -19,7 +19,7 @@ struct proc {
 	void *chan;                  // If non-zero, sleeping on chan
   int killed;                  // If non-zero, have been killed
 
-	char name[8];               // Process name (debugging)
+	char name[8];                // Process name (debugging)
 };
 
 struct trapframe {

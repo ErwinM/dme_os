@@ -46,7 +46,7 @@ uartirq()
 
 	// echo char
 	// TODO: handle backspace, enter etc
-	//putc(c);
+	putc(c);
 
 	//wake any processes sleeping on rterm
 	wakeup(&rterm);

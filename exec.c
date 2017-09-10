@@ -1,3 +1,4 @@
+#include "types.h"
 #include "fs.h"
 #include "defs.h"
 #include "proc.h"
@@ -33,20 +34,12 @@ exec(char *path, char **argv)
 	// adjust size of userspace to new binary image
 	// FIXME: we are only growing procs, we should also be shrinking them..
 	kprintf("exec: hdr.size(%x), curr(%x)\n", hdr.size, currproc->sz);
-	if(hdr.size > currproc->sz){
-		currproc->sz = allocuvm(hdr.size);
+	if((hdr.size+PGSIZE) > currproc->sz){
+		currproc->sz = allocuvm(hdr.size+PGSIZE);
 	}
 
   // Load program into memory of current user process
 	loaduvm(ip, 6, hdr.size);
-
-  // Allocate two pages at the next page boundary.
-  // Make the first inaccessible (TODO).  Use the second as the user stack.
-	oldsz = currproc->sz;
-	if((currproc->sz = allocuvm(currproc->sz+0x1000)) != oldsz+0x1000){
-		kprintf("exec: error allocating ustack: %x vs %x\n", oldsz, currproc->sz);
-		halt();
-	}
 
   // Push argument strings
 

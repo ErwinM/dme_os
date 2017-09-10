@@ -56,6 +56,7 @@ loopreadterm:
 		sleep(&rterm);
 		goto loopreadterm;
 	}
+
 	if(n > rterm.in - rterm.out)
 		n = rterm.in-rterm.out;
 

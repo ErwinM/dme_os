@@ -33,15 +33,15 @@ ULIB = \
 .PRECIOUS: %.ss
 
 kernel: $(OBJS)
-	ruby link.rb $(OBJS)
-	m4 linked.ss > linked.s
-	asm.rb -f=linked.s
+	ruby link.rb $(OBJS) -odme_os
+	m4 dme_os.ss > dme_os.s
+	asm.rb -f=dme_os.s -o=dme_os
 
 _%: %.ss $(ULIB)
-	ruby link.rb $@.ss $(ULIB)
-	m4 linked.ss > linked.s
-	asm.rb -f=linked.s
-	cp A.bin mkfs/$@
+	ruby link.rb $@.ss $(ULIB) -oulinked
+	m4 ulinked.ss > ulinked.s
+	asm.rb -f=ulinked.s -o=ulinked
+	cp ulinked.bin mkfs/$@
 
 %.ss: %.c
 	gcc -E $< | rcc -target=dme > $@

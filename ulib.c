@@ -38,6 +38,7 @@ printf(int fd, char *fmt, ...)
       //printint(*argp++, 16, 0);
       break;
     case 's':
+			breek();
       if((s = (char*)*argp++) == 0)
         s = "(null)";
       for(; *s; s++){
@@ -66,12 +67,12 @@ gets(int fd, char *buf, int max)
 {
 	int i;
 	char c;
-
+	//breek();
 	for(i=0;i<=max;){
 		read(fd, &c, 1);
 		//printf("%x", c);
 		if(c=='\r' || c=='\n' || c==0x3c){
-			buf[i]='\0';
+			buf[i]=0;
 			return i;
 		} else {
 			buf[i]=c;

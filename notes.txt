@@ -56,3 +56,20 @@ Option 2 is theoretically more responsive and will utilise the IO (uart and disk
 
 Lets do option 1. Lets first test in sim
 
+There is also an option 3:
+We run a permanent userspace program just to catch IRQs...
+
+
+User space memory allocation:
+-----------------------------
+- initcode launches in a single page with the stack allocated at the page's end
+- all other processes require a separate page for stack which will be tagged on to the back..this creates a continuous space vitual address space
+- fork copies this entire space (so including the stack)
+- exec needs to check wether the curr address space is big enough to hold the program to be executed + 1 page for stack
+- inode sz is the size on disk (f.e. 45c)
+- hdr sz is the size in memory (includes uninitialized variables, f.e. 65c)
+- proc sz is the size in memory (INCL the stack stack?, f.e. 800 + stack = 1000)
+
+
+
+

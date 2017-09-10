@@ -12,7 +12,7 @@ main()
 	int pid;
 
 	printf(1, "init running!!!\n");
-	breek();
+	//breek();
 	for(;;) {
 		pid=fork();
 		if(pid < 0) {

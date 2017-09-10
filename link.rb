@@ -1,10 +1,24 @@
 # link.rb
 require 'pry'
 
-#args = Hash[ ARGV.join(' ').scan(/--?([^=\s]+)(?:=(\S+))?/) ]
-#test_groups = args["t"].split("")
+# parse ARGV to seperate source and output name
+# format is link source1, source2, source2, -oOUTPUTNAME
+sources = []
 
-output = File.open("linked.ss", "w+")
+ARGV.each do |arg|
+  if arg[0..1]=='-o' then
+    $out = arg[2..-1]
+  else
+    sources << arg
+  end
+end
+
+if $out.nil?
+  puts "No output name given"
+  exit
+end
+
+output = File.open("#{$out}.ss", "w+")
 output.write("include(pseudo_ops.h)\n\n")
 
 # build list of tests to run
@@ -12,7 +26,7 @@ output.write("include(pseudo_ops.h)\n\n")
 filenr = 0
 #last_test = in_files.length
 
-ARGV.each do |fname|
+sources.each do |fname|
   filenr +=1;
   name, ext = fname.split(".")
   if name[0]=='_' then

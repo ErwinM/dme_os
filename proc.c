@@ -1,6 +1,7 @@
 #include "types.h"
 #include "proc.h"
 #include "mmap.h"
+#include "defs.h"
 
 /* process table is directly linked with the available address spaces
  * determined by the size of the physical page table memory in CPU
@@ -90,6 +91,7 @@ userinit()
 	cf->ip = 0;
 	cf->cr = CR_PG | CR_IRQ;
 	p->sz = PGSIZE;
+	p->cwd = namei("/");
 	p->state = RUNNABLE;
 	kprintf("userinit: first user process ready to run..\n");
 }
@@ -110,7 +112,7 @@ scheduler()
 			norunnable = 0;
 			currproc = p;
 			p->state = RUNNING;
-			kprintf("scheduler: about to switch...to: %x\n", p->ptb);
+			//kprintf("scheduler: about to switch...to: %x\n", p->ptb);
 			swtch(&sched.kstack, p->ptb, p->kstack );
 			currproc = 0;
 		}
@@ -142,6 +144,7 @@ fork(void)
 	child->sz = currproc->sz;
 	child->parent = currproc;
 	child->state = 3;
+	child->cwd = currproc->cwd;
 	// copy contents to new process
 	copyuvm(currproc->ptb, child->ptb, currproc->sz);
 	//kprintf("HWG: ptb: %x, kstack: %x, pid: %x\n", child->ptb, child->kstack, child->pid);
@@ -152,7 +155,7 @@ fork(void)
 void
 tosched()
 {
-	kprintf("tosched: switching to scheduler at %x\n", &sched);
+	//kprintf("tosched: switching to scheduler at %x\n", &sched);
 	swtch(&currproc->kstack, sched.ptb, sched.kstack );
 }
 
@@ -184,21 +187,24 @@ wait()
 	// check if we have children that have exited
 	struct proc *p;
 	int activechild;
-
-	activechild = 0;
-	for(p=ptable;p<&ptable[15];p++) {
-		if(p->parent==currproc) {
-			if(p->state == ZOMBIE)
-				freevm(p->ptb);
-			else
-				activechild++;
+	for(;;) {
+		activechild = 0;
+		for(p=ptable;p<&ptable[15];p++) {
+			if(p->parent==currproc) {
+				if(p->state == ZOMBIE) {
+					freevm(p);
+					return p->pid;
+				} else {
+					activechild=1;
+				}
+			}
 		}
+		kprintf("wait: activechild: %x\n", activechild);
+		if(activechild > 0)
+			sleep(&ptable);
+		else
+			return -1;
 	}
-	kprintf("wait: activechild: %x\n", activechild);
-	if(activechild > 0)
-		sleep(&ptable);
-	else
-		return -1;
 }
 
 // exit the current process:

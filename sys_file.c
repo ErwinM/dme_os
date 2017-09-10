@@ -19,7 +19,7 @@ sys_write(void)
 	if(argptr(1, &buf, n) < 0)
 		halt();
 
-	kprintf("sys_write: call to write: %x, n(%x)\n", (uint)buf, n);
+	//kprintf("sys_write: call to write: %x, n(%x)\n", (uint)buf, n);
 	writeterm(buf, n);
 	return 0;
 }
@@ -38,6 +38,6 @@ sys_read(void)
 	if(argptr(1, &buf, n) < 0)
 		halt();
 
-	kprintf("sys_read\n");
+	//kprintf("sys_read\n");
 	return readterm(buf, n);
 }

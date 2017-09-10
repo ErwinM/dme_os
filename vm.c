@@ -96,24 +96,32 @@ allocuvm(uint newsz)
 		mappage(currproc->ptb, newpg, i/PGSIZE, 0x1);
 	}
 	kprintf("allocuvm: returning %x\n", i);
+	currproc->sz = i;
 	return i;
 }
 // shrink uvm
 
 void
-freevm(uint ptb)
+freevm(struct proc *p)
 {
-	// do we read the ptb and free each entry?
-	// i think we do, for otherwise we have to track mappings in the kernel...
 	uint pgtable[32], i, page;
 
-	readpt(ptb, &pgtable);
-	for(i=0;i<=31;i++){
+	kprintf("ptable at %x/n", &pgtable);
+
+	readpt(p->ptb, &pgtable);
+	// remember the kernel is also mapped in every address space. These
+	// pages should not be freed!!
+
+	// free every used page in user space
+	for(i=0;i<16;i++){
 		if( (pgtable[i] & PG_PR) == PG_PR ){
+			//kprintf("freevm: pt entry: %x\n", pgtable[i]);
 			page = (pgtable[i] >> 8);
 			kfree(page);
 		}
 	}
+	// free the kstack
+	kfree(p->kstackpage);
 }
 
 

@@ -1,4 +1,5 @@
 /* file system routines */
+#include "types.h"
 #include "fs.h"
 #include "buf.h"
 #include "defs.h"
@@ -188,7 +189,7 @@ namei(char *path)
 	struct inode *ip, *next;
 	int inum, i;
 	char name[DIRSIZE];
-
+	kprintf("cwd: %x", currproc->cwd);
 	// find where to begin
 	if(path[0]=='/')
 		ip = iget(ROOTINO);

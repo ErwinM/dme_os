@@ -5,7 +5,7 @@
  * and is mapped to 0x8000 by boot.s
  */
 
-
+#define KCODESTART 0x8000
 #define KCODE	0x1000
 #define KSTACKTOP 0xff00
 #define KSTACKSCAFF_PG 30
@@ -14,7 +14,7 @@
 
 #define PGSIZE 0x800
 
-#define ADDR2PG(a) (a/0x800)
+#define ADDR2PG(a) (uint)(a/0x800)
 #define PG2ADDR(a) (a*0x800)
 
 #define CR_MD          0x01      // Mode

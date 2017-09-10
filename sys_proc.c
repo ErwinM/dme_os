@@ -2,6 +2,7 @@
 
 uint sys_exit(void) {
 	kprintf("sys_exit\n");
+	exit();
 }
 
 uint sys_exec(void) {
