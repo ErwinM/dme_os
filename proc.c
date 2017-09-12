@@ -192,7 +192,11 @@ wait()
 		for(p=ptable;p<&ptable[15];p++) {
 			if(p->parent==currproc) {
 				if(p->state == ZOMBIE) {
-					freevm(p);
+					freeuvm(p);
+					p->sz = 0;
+					p->pid = 0;
+					p->parent = 0;
+					p->state = UNUSED;
 					return p->pid;
 				} else {
 					activechild=1;
@@ -224,4 +228,18 @@ growproc(int sz)
 
 	i = allocuvm(sz);
 	currproc->sz = i;
+}
+
+void
+listproc(void)
+{
+	int i;
+	struct proc *p;
+
+	kprintf("\nPID LOC PTB  NAME\n");
+	for(p=ptable;p<&ptable[15];p++){
+		if(p->state != UNUSED){
+			kprintf("%d  %x  %x  NAME\n", p->pid, p, p->ptb);
+		}
+	}
 }

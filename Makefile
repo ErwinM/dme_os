@@ -18,6 +18,7 @@ OBJS = \
 	fs.ss\
 	bio.ss\
 	cio.ss\
+	file.ss\
 	sd.ss\
 	exec.ss\
 	sdasm.s\
@@ -29,6 +30,7 @@ ULIB = \
 	usys.s\
 	ulib.ss\
 	ulibasm.s\
+	pseudo_ops.s\
 
 .PRECIOUS: %.ss
 

@@ -51,5 +51,5 @@ exec(char *path, char **argv)
   // Save program name for debugging.
 
   // Commit to the user image.
-
+	//kprintf("exec: returning\n");
 }

@@ -13,7 +13,27 @@ _main:
 	push	r1
 	push	bp
 	mov	bp, sp
-	la16	r4,L2_ls
+	ldi	r4, 2
+	sub	sp, sp, r4
+	push	r0
+	la16	r4,L2_sh
+	push	r4
+	la16	r4,_open
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	stw	-2(bp),r1
+	ldw	r4,-2(bp)
+	push	r4
+	la16	r4,L3_sh
+	push	r4
+	la16	r4,_printf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	la16	r4,L4_sh
 	push	r4
 	ld16	r4, 1
 	push	r4
@@ -22,38 +42,382 @@ _main:
 	br.r	r4
 	ldi	r2,4
 	add	sp,sp,r2
-	la16	r4,_breek
+	la16	r4,L6_sh
+	br.r r4
+L5_sh:
+	ldw	r4,-2(bp)
+	push	r4
+	la16	r4,_getcmd
 	addi	r1,pc,2
 	br.r	r4
-	la16	r4,_exit
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r4,_wait
 	addi	r1,pc,2
 	br.r	r4
-	mov	r1,r0
-L1_ls:
+	la16	r4,L8_sh
+	push	r4
+	ld16	r4, 1
+	push	r4
+	la16	r4,_printf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+L6_sh:
+	la16	r4,L5_sh
+	br.r r4
+	la16	r4,_halt
+	addi	r1,pc,2
+	br.r	r4
+L1_sh:
 	mov	sp, bp
 	pop	bp
 	pop	pc
 
-;	.extern _exit
-;	.extern _breek
+;	.global _getcmd
+_getcmd:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	la16	r4,L1_sh0
+	push	r4
+	ld16	r4, 1
+	push	r4
+	la16	r4,_printf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+	ld16	r4, 20
+	push	r4
+	la16	r4,_ibuf
+	push	r4
+	ldw	r4,4(bp)
+	push	r4
+	la16	r4,_gets
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,_ibuf
+	push	r4
+	la16	r4,_parseline
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r4,_nulterminate
+	addi	r1,pc,2
+	br.r	r4
+	la16	r4,_fork
+	addi	r1,pc,2
+	br.r	r4
+	stw	-2(bp),r1
+	ldw	r4,-2(bp)
+	skip.eq r4,r0
+	br L1_sh1
+	la16	r4,_ecmd+4
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_ecmd+4
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_exec
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,4
+	add	sp,sp,r2
+L1_sh1:
+	mov	r1,r0
+L9_sh:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _nspace
+_nspace:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	ldw	r4,4(bp)
+	stw	-2(bp),r4
+	la16	r4,L1_sh7
+	br.r r4
+L1_sh6:
+	ldw	r4,-2(bp)
+	ldb	r4,r0(r4)
+	sext	r4,r4
+	ld16	r3, 32
+	skip.ne	r4,r3
+	br	L2_sh1_sh
+	ld16	r3, 95
+	skip.eq r4,r3
+	br L1_sh9
+L2_sh1_sh:
+	ldw	r1,-2(bp)
+	la16	r4,L1_sh5
+	br.r r4
+L1_sh9:
+	ldw	r4,-2(bp)
+	addi	r4,r4,1
+	stw	-2(bp),r4
+L1_sh7:
+	ldw	r4,-2(bp)
+	ldb	r4,r0(r4)
+	sext	r4,r4
+	skip.eq r4,r0
+	br L1_sh6
+	ldw	r1,-2(bp)
+L1_sh5:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _parseline
+_parseline:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 2
+	sub	sp, sp, r4
+	la16	r4,_ecmd+2
+	stw	r0(r4),r0
+	ldw	r4,4(bp)
+	stw	-2(bp),r4
+	la16	r4,L2_sh7_sh
+	br.r r4
+L2_sh4_sh:
+	la16	r4,_ecmd+2
+	ldw	r4,r0(r4)
+	shl	r4, r4, 1
+	la16	r3,_ecmd+4
+	add	r4,r4,r3
+	ldw	r3,-2(bp)
+	stw	r0(r4),r3
+	ldw	r4,-2(bp)
+	push	r4
+	la16	r4,_nspace
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	la16	r3,_ecmd+2
+	ldw	r3,r0(r3)
+	shl	r3, r3, 1
+	la16	r2,_ecmd+14
+	add	r3,r3,r2
+	stw	r0(r3),r1
+	ld16	r4, 1
+	la16	r3,_ecmd+2
+	ldw	r3,r0(r3)
+	shl	r3, r3, 1
+	la16	r2,_ecmd+14
+	add	r3,r3,r2
+	ldw	r3,r0(r3)
+	addi	r3,r3,1
+	stw	-2(bp),r3
+	la16	r3,_ecmd+2
+	ldw	r2,r0(r3)
+	add	r4,r2,r4
+	stw	r0(r3),r4
+	la16	r4,_ecmd+2
+	ldw	r4,r0(r4)
+	ld16	r3, 4
+	skip.gt	r4,r3
+	br	L3_sh5_sh
+	la16	r4,L3_sh8_sh
+	push	r4
+	la16	r4,_printf
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,2
+	add	sp,sp,r2
+	mov	r1,r0
+	la16	r4,L2_sh2_sh
+	br.r r4
+L3_sh5_sh:
+L2_sh5_sh:
+L2_sh7_sh:
+	ldw	r4,-2(bp)
+	ldb	r4,r0(r4)
+	sext	r4,r4
+	skip.eq r4,r0
+	br L2_sh4_sh
+	ld16	r1, 1
+L2_sh2_sh:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _nulterminate
+_nulterminate:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 4
+	sub	sp, sp, r4
+	la16	r4,_ecmd
+	stw	-4(bp),r4
+	stw	-2(bp),r0
+	la16	r4,L4_sh3_sh
+	br.r r4
+L4_sh0_sh:
+	ldw	r4,-2(bp)
+	shl	r4, r4, 1
+	ldw	r3,-4(bp)
+	ld16	r2, 14
+	add	r3,r3,r2
+	add	r4,r4,r3
+	ldw	r4,r0(r4)
+	stb	r0(r4),r0
+L4_sh1_sh:
+	ldw	r4,-2(bp)
+	addi	r4,r4,1
+	stw	-2(bp),r4
+L4_sh3_sh:
+	ldw	r4,-2(bp)
+	shl	r4, r4, 1
+	ldw	r3,-4(bp)
+	addi	r3,r3,4
+	add	r4,r4,r3
+	ldw	r4,r0(r4)
+	skip.eq r4,r0
+	br L4_sh0_sh
+L3_sh9_sh:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.extern _exec
+;	.extern _fork
+;	.extern _gets
+;	.extern _halt
+;	.extern _wait
 ;	.extern _printf
+;	.extern _open
+	.bss
+;	.global _ecmd
+_ecmd:
+	defs 24
+;	.global _ibuf
+_ibuf:
+	defs 32
 	.data
-L2_ls:
-	defb 76
-	defb 83
+L3_sh8_sh:
+	defb 116
+	defb 111
+	defb 111
 	defb 32
-	defb 105
+	defb 109
+	defb 97
+	defb 110
+	defb 121
+	defb 32
+	defb 97
+	defb 114
+	defb 103
+	defb 117
+	defb 109
+	defb 101
+	defb 110
+	defb 116
 	defb 115
+	defb 33
+	defb 10
+	defb 0
+L1_sh0:
+	defb 68
+	defb 77
+	defb 69
+	defb 32
+	defb 79
+	defb 83
+	defb 36
+	defb 32
+	defb 0
+L8_sh:
+	defb 115
+	defb 104
+	defb 58
+	defb 32
+	defb 103
+	defb 101
+	defb 116
+	defb 99
+	defb 109
+	defb 100
 	defb 32
 	defb 114
+	defb 101
+	defb 116
 	defb 117
+	defb 114
 	defb 110
-	defb 110
+	defb 101
+	defb 100
+	defb 10
+	defb 0
+L4_sh:
+	defb 68
+	defb 77
+	defb 69
+	defb 32
+	defb 115
+	defb 104
+	defb 101
+	defb 108
+	defb 108
+	defb 32
+	defb 118
+	defb 49
+	defb 32
+	defb 115
+	defb 116
+	defb 97
+	defb 114
+	defb 116
 	defb 105
 	defb 110
 	defb 103
-	defb 33
+	defb 46
+	defb 46
 	defb 10
+	defb 10
+	defb 10
+	defb 10
+	defb 0
+L3_sh:
+	defb 109
+	defb 97
+	defb 105
+	defb 110
+	defb 58
+	defb 32
+	defb 99
+	defb 111
+	defb 110
+	defb 115
+	defb 111
+	defb 108
+	defb 101
+	defb 32
+	defb 37
+	defb 120
+	defb 0
+L2_sh:
+	defb 47
+	defb 99
+	defb 111
+	defb 110
+	defb 115
+	defb 111
+	defb 108
+	defb 101
 	defb 0
 ;	.end
 
@@ -98,6 +462,14 @@ _read:
 	ldi r1, 5
 	br dosyscall_usys
 
+_open:
+	push r1
+	push bp
+	mov bp, sp
+
+	ldi r1, 15
+	br dosyscall_usys
+
 _write:
 	push r1
 	push bp
@@ -118,8 +490,144 @@ dosyscall_usys:
 
  ; INT_MAX: ffffffff
 
-;	.global _printf
+	.data 0x1000
+L3_ulib:
+	defb 48
+	defb 49
+	defb 50
+	defb 51
+	defb 52
+	defb 53
+	defb 54
+	defb 55
+	defb 56
+	defb 57
+	defb 97
+	defb 98
+	defb 99
+	defb 100
+	defb 101
+	defb 102
+	defb 0
 ;	.code
+_printint:
+	push	r1
+	push	bp
+	mov	bp, sp
+	ldi	r4, 28
+	sub	sp, sp, r4
+	ldw	r3,8(bp)
+	skip.ne	r3,r0
+	br	L4_ulib
+	ldw	r3,4(bp)
+	skip.lt r3, r0
+	br L7_ulib
+	ld16	r4, 1
+	stw	-22(bp),r4
+	la16	r4,L8_ulib
+	br.r r4
+L7_ulib:
+	stw	-22(bp),r0
+L8_ulib:
+	ldw	r4,-22(bp)
+	stw	8(bp),r4
+	skip.ne	r4,r0
+	br	L4_ulib
+	ldw	r4,4(bp)
+sub	r4,r0,r4
+	stw	-4(bp),r4
+	la16	r4,L5_ulib
+	br.r r4
+L4_ulib:
+	ldw	r4,4(bp)
+	stw	-4(bp),r4
+L5_ulib:
+	stw	-2(bp),r0
+L9_ulib:
+	ldw	r4,-2(bp)
+	addi	r3,r4,1
+	stw	-2(bp),r3
+	ldi	r3, -20
+	add	r3, r3, bp
+	add	r4,r4,r3
+	stw	-28(bp),r4
+	ldw	r3,-4(bp)
+	stw	-24(bp),r3
+	ldw	r2,6(bp)
+	stw	-26(bp),r2
+
+push r3
+push r2
+ldi r2, 6
+add r1, pc, r2
+la16 r2, _mod
+br.r r2
+; clean stack
+addi sp, sp, 4
+; result will be in r1
+
+	la16	r4,L3_ulib
+	add	r4,r1,r4
+	ldb	r4,r0(r4)
+	ldw	r3,-28(bp)
+	stb	r0(r3),r4
+L10_ulib:
+	ldw	r4,-4(bp)
+	ldw	r3,6(bp)
+
+push r4
+push r3
+ldi r2, 6
+add r1, pc, r2
+la16 r2, _div
+br.r r2
+; clean stack
+addi sp, sp, 4
+; result will be in r1
+
+	stw	-4(bp),r1
+	skip.eq r1,r0
+	br L9_ulib
+	ldw	r4,8(bp)
+	skip.ne	r4,r0
+	br	L15_ulib
+	ldw	r4,-2(bp)
+	addi	r3,r4,1
+	stw	-2(bp),r3
+	ldi	r3, -20
+	add	r3, r3, bp
+	add	r4,r4,r3
+	ld16	r3, 45
+	stb	r0(r4),r3
+	la16	r4,L15_ulib
+	br.r r4
+L14_ulib:
+	la16	r4,_pbuf+64
+	ldw	r4,r0(r4)
+	la16	r3,_pbuf
+	add	r4,r4,r3
+	ldw	r3,-2(bp)
+	ldi	r2, -20
+	add	r2, r2, bp
+	add	r3,r3,r2
+	ldb	r3,r0(r3)
+	stb	r0(r4),r3
+	la16	r4,_pbuf+64
+	ldw	r3,r0(r4)
+	addi	r3,r3,1
+	stw	r0(r4),r3
+L15_ulib:
+	ldw	r4,-2(bp)
+	subi	r4,r4,1
+	stw	-2(bp),r4
+	skip.lt r4, r0
+	br L14_ulib
+L2_ulib:
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+;	.global _printf
 _printf:
 	push	r1
 	push	bp
@@ -132,13 +640,13 @@ _printf:
 	add	r4, r4, bp
 	stw	-8(bp),r4
 	stw	-6(bp),r0
-	la16	r4,L8_ulib
+	la16	r4,L2_ulib5
 	br.r r4
-L5_ulib:
+L2_ulib2:
 	ldw	r4,-2(bp)
 	ld16	r3, 37
 	skip.ne	r4,r3
-	br	L9_ulib
+	br	L2_ulib6
 	la16	r4,_pbuf+64
 	ldw	r4,r0(r4)
 	la16	r3,_pbuf
@@ -149,9 +657,9 @@ L5_ulib:
 	ldw	r3,r0(r4)
 	addi	r3,r3,1
 	stw	r0(r4),r3
-	la16	r4,L6_ulib
+	la16	r4,L2_ulib3
 	br.r r4
-L9_ulib:
+L2_ulib6:
 	ldw	r4,-6(bp)
 	addi	r4,r4,1
 	stw	-6(bp),r4
@@ -164,48 +672,81 @@ L9_ulib:
 	stw	-2(bp),r4
 	ldw	r4,-2(bp)
 	skip.eq r4,r0
-	br L13_ulib
-	la16	r4,L7_ulib
+	br L3_ulib0
+	la16	r4,L2_ulib4
 	br.r r4
-L13_ulib:
+L3_ulib0:
 	ldw	r4,-2(bp)
 	ld16	r3, 104
 	skip.ne	r4,r3
-	br	L16_ulib
+	br	L3_ulib5
 	skip.lte	r4,r3
-	br	L37_ulib
-L36_ulib:
+	br	L5_ulib4
+L5_ulib3:
 	ldw	r4,-2(bp)
 	ld16	r3, 37
 	skip.ne	r4,r3
-	br	L2_ulib9_ulib
+	br	L4_ulib6
 	skip.gte	r4,r3
-	br	L15_ulib
-L38_ulib:
+	br	L3_ulib2
+L5_ulib5:
 	ldw	r4,-2(bp)
 	ld16	r3, 100
 	skip.ne	r4,r3
-	br	L16_ulib
-	la16	r4,L15_ulib
+	br	L3_ulib4
+	la16	r4,L3_ulib2
 	br.r r4
-L37_ulib:
+L5_ulib4:
 	ldw	r4,-2(bp)
 	ld16	r3, 112
 	skip.ne	r4,r3
-	br	L16_ulib
+	br	L3_ulib5
 	ld16	r2, 115
 	skip.ne	r4,r2
-	br	L19_ulib
+	br	L3_ulib6
 	skip.gte	r4,r3
-	br	L15_ulib
-L39_ulib:
+	br	L3_ulib2
+L5_ulib6:
 	ldw	r4,-2(bp)
 	ld16	r3, 120
 	skip.ne	r4,r3
-	br	L16_ulib
-	la16	r4,L15_ulib
+	br	L3_ulib5
+	la16	r4,L3_ulib2
 	br.r r4
-L19_ulib:
+L3_ulib4:
+	ld16	r4, 1
+	push	r4
+	ld16	r4, 10
+	push	r4
+	ldw	r4,-8(bp)
+	addi	r3,r4,2
+	stw	-8(bp),r3
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_printint
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,L3_ulib3
+	br.r r4
+L3_ulib5:
+	push	r0
+	ld16	r4, 16
+	push	r4
+	ldw	r4,-8(bp)
+	addi	r3,r4,2
+	stw	-8(bp),r3
+	ldw	r4,r0(r4)
+	push	r4
+	la16	r4,_printint
+	addi	r1,pc,2
+	br.r	r4
+	ldi	r2,6
+	add	sp,sp,r2
+	la16	r4,L3_ulib3
+	br.r r4
+L3_ulib6:
 	la16	r4,_breek
 	addi	r1,pc,2
 	br.r	r4
@@ -215,12 +756,12 @@ L19_ulib:
 	ldw	r4,r0(r4)
 	stw	-4(bp),r4
 	skip.eq r4,r0
-	br L2_ulib6_ulib
-	la16	r4,L2_ulib2
+	br L4_ulib3
+	la16	r4,L3_ulib9
 	stw	-4(bp),r4
-	la16	r4,L2_ulib6_ulib
+	la16	r4,L4_ulib3
 	br.r r4
-L2_ulib3_ulib:
+L4_ulib0:
 	la16	r4,_pbuf+64
 	ldw	r4,r0(r4)
 	la16	r3,_pbuf
@@ -232,19 +773,19 @@ L2_ulib3_ulib:
 	ldw	r3,r0(r4)
 	addi	r3,r3,1
 	stw	r0(r4),r3
-L2_ulib4_ulib:
+L4_ulib1:
 	ldw	r4,-4(bp)
 	addi	r4,r4,1
 	stw	-4(bp),r4
-L2_ulib6_ulib:
+L4_ulib3:
 	ldw	r4,-4(bp)
 	ldb	r4,r0(r4)
 	sext	r4,r4
 	skip.eq r4,r0
-	br L2_ulib3_ulib
-	la16	r4,L16_ulib
+	br L4_ulib0
+	la16	r4,L3_ulib3
 	br.r r4
-L2_ulib9_ulib:
+L4_ulib6:
 	la16	r4,_pbuf+64
 	ldw	r4,r0(r4)
 	la16	r3,_pbuf
@@ -255,9 +796,9 @@ L2_ulib9_ulib:
 	ldw	r3,r0(r4)
 	addi	r3,r3,1
 	stw	r0(r4),r3
-	la16	r4,L16_ulib
+	la16	r4,L3_ulib3
 	br.r r4
-L15_ulib:
+L3_ulib2:
 	la16	r4,_pbuf+64
 	ldw	r4,r0(r4)
 	la16	r3,_pbuf
@@ -278,12 +819,12 @@ L15_ulib:
 	ldw	r3,r0(r4)
 	addi	r3,r3,1
 	stw	r0(r4),r3
-L16_ulib:
-L6_ulib:
+L3_ulib3:
+L2_ulib3:
 	ldw	r4,-6(bp)
 	addi	r4,r4,1
 	stw	-6(bp),r4
-L8_ulib:
+L2_ulib5:
 	ldw	r4,-6(bp)
 	ldw	r3,6(bp)
 	add	r4,r4,r3
@@ -293,8 +834,8 @@ L8_ulib:
 	and	r4,r4,r3
 	stw	-2(bp),r4
 	skip.eq r4,r0
-	br L5_ulib
-L7_ulib:
+	br L2_ulib2
+L2_ulib4:
 	la16	r4,_pbuf+64
 	ldw	r4,r0(r4)
 	la16	r3,_pbuf
@@ -312,7 +853,7 @@ L7_ulib:
 	br.r	r4
 	ldi	r2,6
 	add	sp,sp,r2
-L2_ulib:
+L19_ulib:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -325,9 +866,9 @@ _gets:
 	ldi	r4, 4
 	sub	sp, sp, r4
 	stw	-4(bp),r0
-	la16	r4,L46_ulib
+	la16	r4,L63_ulib
 	br.r r4
-L43_ulib:
+L60_ulib:
 	ld16	r4, 1
 	push	r4
 	ldi	r4, -1
@@ -344,22 +885,22 @@ L43_ulib:
 	sext	r4,r4
 	ld16	r3, 13
 	skip.ne	r4,r3
-	br	L5_ulib0
+	br	L67_ulib
 	ld16	r3, 10
 	skip.ne	r4,r3
-	br	L5_ulib0
+	br	L67_ulib
 	ld16	r3, 60
 	skip.eq r4,r3
-	br L47_ulib
-L5_ulib0:
+	br L64_ulib
+L67_ulib:
 	ldw	r4,-4(bp)
 	ldw	r3,6(bp)
 	add	r4,r4,r3
 	stb	r0(r4),r0
 	ldw	r1,-4(bp)
-	la16	r4,L42_ulib
+	la16	r4,L5_ulib9
 	br.r r4
-L47_ulib:
+L64_ulib:
 	ldw	r4,-4(bp)
 	ldw	r3,6(bp)
 	add	r4,r4,r3
@@ -368,14 +909,14 @@ L47_ulib:
 	ldw	r4,-4(bp)
 	addi	r4,r4,1
 	stw	-4(bp),r4
-L44_ulib:
-L46_ulib:
+L61_ulib:
+L63_ulib:
 	ldw	r4,-4(bp)
 	ldw	r3,8(bp)
 	skip.gt	r4,r3
-	br	L43_ulib
+	br	L60_ulib
 	mov	r1,r0
-L42_ulib:
+L5_ulib9:
 	mov	sp, bp
 	pop	bp
 	pop	pc
@@ -388,7 +929,7 @@ L42_ulib:
 _pbuf:
 	defs 66
 	.data
-L2_ulib2:
+L3_ulib9:
 	defb 40
 	defb 110
 	defb 117
@@ -406,4 +947,140 @@ _breek:
 	push r1
 	brk
 	pop pc
+
+; https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_.28unsigned.29_with_remainder
+
+
+; DIVIDE -------------------------
+_div:
+; normal function conventions to keep life simple
+; we will not args to locals, since we kow what we are doing (he..)
+; N is be in bp+6, D is in bp+4
+; create 1 local to hold Q: bp-2
+; r1 temp
+; r2 cntr
+; r3 load/store N/Q/D
+; r4 R
+	push r1
+	push bp
+	mov bp, sp
+	ldi r2, 16
+	mov r4, r0
+	stw -2(bp), r0
+divL1_pseudo_ops:
+	subi r2, r2, 1
+	shl r4,r4,1
+
+	ld16 r1, 0xfffe
+	and r4, r4, r1
+
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, 6(bp)
+	and r1, r3, r1
+
+	shr.r r1, r1, r2
+	or r4, r4, r1
+
+	ldw r3, 4(bp)
+	skip.ulte r3, r4
+	br divL2_pseudo_ops
+
+	sub r4, r4, r3
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, -2(bp)
+	or r3, r3, r1
+	stw -2(bp), r3
+
+divL2_pseudo_ops:
+	skip.eq r2, r0
+	br divL1_pseudo_ops
+	ldw r1, -2(bp)
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+; MODULO -------------------------
+; UNSIGNED
+; (same algo as div, just returning remainer)
+_mod:
+	push r1
+	push bp
+	mov bp, sp
+	ldi r2, 16
+	mov r4, r0
+	stw -2(bp), r0
+modL1_pseudo_ops:
+	subi r2, r2, 1
+	shl r4,r4,1
+
+	ld16 r1, 0xfffe
+	and r4, r4, r1
+
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, 6(bp)
+	and r1, r3, r1
+
+	shr.r r1, r1, r2
+	or r4, r4, r1
+
+	ldw r3, 4(bp)
+	skip.ulte r3, r4
+	br modL2_pseudo_ops
+
+	sub r4, r4, r3
+	ldi r1, 1
+	shl.r r1, r1, r2
+	ldw r3, -2(bp)
+	or r3, r3, r1
+	stw -2(bp), r3
+
+modL2_pseudo_ops:
+	skip.eq r2, r0
+	br modL1_pseudo_ops
+	mov r1, r4 ; transfer result to r1
+	mov	sp, bp
+	pop	bp
+	pop	pc
+
+; MULTIPLY  -------------------------
+;
+; (unsigned)
+_mult:
+	push r1
+	push bp
+	mov bp, sp
+	ldw r2, 4(bp)
+	ldw r2, 6(bp)
+
+	mov r1, r0 ; result reg
+; if a > b
+	skip.gt r2, r3
+	br multL2_pseudo_ops
+; switch them
+	mov r4, r2
+	mov r2, r3
+	mov r3, r4
+
+multL2_pseudo_ops:
+; while r1 > 1 loop
+	ldi r4, 1
+	skip.gt r2, r4
+	br multL3_pseudo_ops
+; check if r1 is even/odd
+	andi r4, r2, 1
+	skip.eq r4, r0
+	add r1, r1, r3
+	shr r2, r2, 1
+	shl r3, r3, 1
+	br multL2_pseudo_ops
+multL3_pseudo_ops:
+	andi r4, r2, 1
+	skip.eq r4, r0
+	add r1, r1, r3
+	mov	sp, bp
+	pop	bp
+	pop	pc
 

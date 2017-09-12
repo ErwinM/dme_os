@@ -1,7 +1,7 @@
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
-#define NOFILE	3							 // nr of files a single process can have open
+#define NOFILE	3						 // nr of files a single process can have open
 
 // Per-process state
 struct proc {
@@ -23,6 +23,7 @@ struct proc {
 };
 
 struct trapframe {
+	uint trapno;
 	uint r1;
 	uint sp;
 	uint pc;

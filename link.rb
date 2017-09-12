@@ -55,7 +55,7 @@ sources.each do |fname|
       # only replace symbols with local scope (without underscore)
       unless symbol[0]=="_" then
         syms << symbol
-        puts "Replace: #{symbol}\n"
+        #puts "Replace: #{symbol}\n"
       end
     end
   end

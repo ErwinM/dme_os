@@ -102,7 +102,7 @@ allocuvm(uint newsz)
 // shrink uvm
 
 void
-freevm(struct proc *p)
+freeuvm(struct proc *p)
 {
 	uint pgtable[32], i, page;
 

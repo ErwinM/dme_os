@@ -31,6 +31,7 @@ extern uint sys_fork(void);
 extern uint sys_exit(void);
 extern uint sys_wait(void);
 extern uint sys_write(void);
+extern uint sys_open(void);
 extern uint sys_read(void);
 
 
@@ -52,7 +53,7 @@ static uint (*syscalls[17])(void)={
 	0,
 	0,
 	0,
-	0,
+	sys_open,
 	sys_write
 };
 
@@ -102,13 +103,12 @@ argptr(int n, char **p, int sz)
 
 void syscall(void)
 {
-	uint callnr;
+	uint callnr, ret;
 	callnr = *(uint*)currproc->tf->sp;
 	if(!syscalls[callnr]) {
 		kprintf("unknown syscall nr %d\n", callnr);
 		halt();
 	} else {
-		//kprintf("syscall: call id: %x\n", callnr);
 		currproc->tf->r1 = syscalls[callnr]();
 	}
 }

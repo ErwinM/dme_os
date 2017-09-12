@@ -1,4 +1,5 @@
 // user shell, sh
+#include "types.h"
 
 char ibuf[32];
 
@@ -14,11 +15,13 @@ struct execcmd ecmd;
 void
 main()
 {
+	int n;
 	// lets assume we have our standard fd open
-
-	printf(1, "DME shell v1 starting..\n\n");
+	n = open("/console", 0);
+	printf("main: console %x", n);
+	printf(1, "DME shell v1 starting..\n\n\n\n");
 	while(1){
-		getcmd();
+		getcmd(n);
 		wait();
 		printf(1, "sh: getcmd returned\n");
 	}
@@ -26,13 +29,13 @@ main()
 }
 
 int
-getcmd()
+getcmd(uint term)
 {
 	int pid;
 
 	// for now it is always an execcmd
 	printf(1, "DME OS$ ");
-	gets(0, &ibuf, 20);
+	gets(term, &ibuf, 20);
 	parseline(&ibuf);
 	nulterminate();
 	//breek();

@@ -42,6 +42,10 @@ uartirq()
 
 	c = *(char*)0xff90;
 	//kprintf("uartirq: %x", (uint)c);
+	if(c==0x5d) {
+		listproc();
+		return;
+	}
 	pushc(&c);
 
 	// echo char

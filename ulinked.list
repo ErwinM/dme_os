@@ -2,412 +2,1043 @@
 0000 : be01     |     push	r1
 0002 : be05     |     push	bp
 0004 : 9585     |     mov	bp, sp
-0006 : 04a4     |     la16	r4,L2_ls
-0008 : bc07     |     
-000a : be04     |     push	r4
-000c : 000c     |     ld16	r4, 1
-000e : be04     |     push	r4
-0010 : 03d4     |     la16	r4,_printf
-0012 : bc03     |     
-0014 : a279     |     addi	r1,pc,2
-0016 : c204     |     br.r	r4
-0018 : 0022     |     ldi	r2,4
-001a : 9596     |     add	sp,sp,r2
-001c : 0474     |     la16	r4,_breek
-001e : bc07     |     
-0020 : a279     |     addi	r1,pc,2
-0022 : c204     |     br.r	r4
-0024 : 01f4     |     la16	r4,_exit
-0026 : bc03     |     
-0028 : a279     |     addi	r1,pc,2
-002a : c204     |     br.r	r4
-002c : 9401     |     mov	r1,r0
-     :          | L1_ls:
-002e : 9546     |     mov	sp, bp
-0030 : c005     |     pop	bp
-0032 : c007     |     pop	pc
+0006 : 0014     |     ldi	r4, 2
+0008 : 97a6     |     sub	sp, sp, r4
+000a : be00     |     push	r0
+000c : 0724     |     la16	r4,L2_sh
+000e : bc0f     |     
+0010 : be04     |     push	r4
+0012 : 03e4     |     la16	r4,_open
+0014 : bc07     |     
+0016 : a279     |     addi	r1,pc,2
+0018 : c204     |     br.r	r4
+001a : 0022     |     ldi	r2,4
+001c : 9596     |     add	sp,sp,r2
+001e : 8df8     |     stw	-2(bp),r1
+0020 : 89fb     |     ldw	r4,-2(bp)
+0022 : be04     |     push	r4
+0024 : 069c     |     la16	r4,L3_sh
+0026 : bc0f     |     
+0028 : be04     |     push	r4
+002a : 0b84     |     la16	r4,_printf
+002c : bc07     |     
+002e : a279     |     addi	r1,pc,2
+0030 : c204     |     br.r	r4
+0032 : 0022     |     ldi	r2,4
+0034 : 9596     |     add	sp,sp,r2
+0036 : 05bc     |     la16	r4,L4_sh
+0038 : bc0f     |     
+003a : be04     |     push	r4
+003c : 000c     |     ld16	r4, 1
+003e : be04     |     push	r4
+0040 : 0b84     |     la16	r4,_printf
+0042 : bc07     |     
+0044 : a279     |     addi	r1,pc,2
+0046 : c204     |     br.r	r4
+0048 : 0022     |     ldi	r2,4
+004a : 9596     |     add	sp,sp,r2
+004c : 0404     |     la16	r4,L6_sh
+004e : bc03     |     
+0050 : c204     |     br.r r4
+     :          | L5_sh:
+0052 : 89fb     |     ldw	r4,-2(bp)
+0054 : be04     |     push	r4
+0056 : 04a4     |     la16	r4,_getcmd
+0058 : bc03     |     
+005a : a279     |     addi	r1,pc,2
+005c : c204     |     br.r	r4
+005e : 0012     |     ldi	r2,2
+0060 : 9596     |     add	sp,sp,r2
+0062 : 02f4     |     la16	r4,_wait
+0064 : bc07     |     
+0066 : a279     |     addi	r1,pc,2
+0068 : c204     |     br.r	r4
+006a : 0514     |     la16	r4,L8_sh
+006c : bc0f     |     
+006e : be04     |     push	r4
+0070 : 000c     |     ld16	r4, 1
+0072 : be04     |     push	r4
+0074 : 0b84     |     la16	r4,_printf
+0076 : bc07     |     
+0078 : a279     |     addi	r1,pc,2
+007a : c204     |     br.r	r4
+007c : 0022     |     ldi	r2,4
+007e : 9596     |     add	sp,sp,r2
+     :          | L6_sh:
+0080 : 0294     |     la16	r4,L5_sh
+0082 : bc03     |     
+0084 : c204     |     br.r r4
+0086 : 0e44     |     la16	r4,_halt
+0088 : bc0b     |     
+008a : a279     |     addi	r1,pc,2
+008c : c204     |     br.r	r4
+     :          | L1_sh:
+008e : 9546     |     mov	sp, bp
+0090 : c005     |     pop	bp
+0092 : c007     |     pop	pc
+     :          | _getcmd:
+0094 : be01     |     push	r1
+0096 : be05     |     push	bp
+0098 : 9585     |     mov	bp, sp
+009a : 0014     |     ldi	r4, 2
+009c : 97a6     |     sub	sp, sp, r4
+009e : 04cc     |     la16	r4,L1_sh0
+00a0 : bc0f     |     
+00a2 : be04     |     push	r4
+00a4 : 000c     |     ld16	r4, 1
+00a6 : be04     |     push	r4
+00a8 : 0b84     |     la16	r4,_printf
+00aa : bc07     |     
+00ac : a279     |     addi	r1,pc,2
+00ae : c204     |     br.r	r4
+00b0 : 0022     |     ldi	r2,4
+00b2 : 9596     |     add	sp,sp,r2
+00b4 : 00a4     |     ld16	r4, 20
+00b6 : be04     |     push	r4
+00b8 : 08f4     |     la16	r4,_ibuf
+00ba : bc0f     |     
+00bc : be04     |     push	r4
+00be : 8813     |     ldw	r4,4(bp)
+00c0 : be04     |     push	r4
+00c2 : 0ab4     |     la16	r4,_gets
+00c4 : bc0b     |     
+00c6 : a279     |     addi	r1,pc,2
+00c8 : c204     |     br.r	r4
+00ca : 0032     |     ldi	r2,6
+00cc : 9596     |     add	sp,sp,r2
+00ce : 08f4     |     la16	r4,_ibuf
+00d0 : bc0f     |     
+00d2 : be04     |     push	r4
+00d4 : 0b14     |     la16	r4,_parseline
+00d6 : bc03     |     
+00d8 : a279     |     addi	r1,pc,2
+00da : c204     |     br.r	r4
+00dc : 0012     |     ldi	r2,2
+00de : 9596     |     add	sp,sp,r2
+00e0 : 0034     |     la16	r4,_nulterminate
+00e2 : bc07     |     
+00e4 : a279     |     addi	r1,pc,2
+00e6 : c204     |     br.r	r4
+00e8 : 0254     |     la16	r4,_fork
+00ea : bc07     |     
+00ec : a279     |     addi	r1,pc,2
+00ee : c204     |     br.r	r4
+00f0 : 8df8     |     stw	-2(bp),r1
+00f2 : 89fb     |     ldw	r4,-2(bp)
+00f4 : 9d00     |     skip.eq r4,r0
+00f6 : 201c     |     br L1_sh1
+00f8 : 0854     |     la16	r4,_ecmd+4
+00fa : bc0f     |     
+00fc : b024     |     ldw	r4,r0(r4)
+00fe : be04     |     push	r4
+0100 : 0854     |     la16	r4,_ecmd+4
+0102 : bc0f     |     
+0104 : b024     |     ldw	r4,r0(r4)
+0106 : be04     |     push	r4
+0108 : 0344     |     la16	r4,_exec
+010a : bc07     |     
+010c : a279     |     addi	r1,pc,2
+010e : c204     |     br.r	r4
+0110 : 0022     |     ldi	r2,4
+0112 : 9596     |     add	sp,sp,r2
+     :          | L1_sh1:
+0114 : 9401     |     mov	r1,r0
+     :          | L9_sh:
+0116 : 9546     |     mov	sp, bp
+0118 : c005     |     pop	bp
+011a : c007     |     pop	pc
+     :          | _nspace:
+011c : be01     |     push	r1
+011e : be05     |     push	bp
+0120 : 9585     |     mov	bp, sp
+0122 : 0014     |     ldi	r4, 2
+0124 : 97a6     |     sub	sp, sp, r4
+0126 : 8813     |     ldw	r4,4(bp)
+0128 : 8dfb     |     stw	-2(bp),r4
+012a : 0a84     |     la16	r4,L1_sh7
+012c : bc03     |     
+012e : c204     |     br.r r4
+     :          | L1_sh6:
+0130 : 89fb     |     ldw	r4,-2(bp)
+0132 : b224     |     ldb	r4,r0(r4)
+0134 : b904     |     sext	r4,r4
+0136 : 0103     |     ld16	r3, 32
+0138 : 9d19     |     skip.ne	r4,r3
+013a : 2006     |     br	L2_sh1_sh
+013c : 02fb     |     ld16	r3, 95
+013e : 9d18     |     skip.eq r4,r3
+0140 : 2008     |     br L1_sh9
+     :          | L2_sh1_sh:
+0142 : 89f8     |     ldw	r1,-2(bp)
+0144 : 0ae4     |     la16	r4,L1_sh5
+0146 : bc03     |     
+0148 : c204     |     br.r r4
+     :          | L1_sh9:
+014a : 89fb     |     ldw	r4,-2(bp)
+014c : a224     |     addi	r4,r4,1
+014e : 8dfb     |     stw	-2(bp),r4
+     :          | L1_sh7:
+0150 : 89fb     |     ldw	r4,-2(bp)
+0152 : b224     |     ldb	r4,r0(r4)
+0154 : b904     |     sext	r4,r4
+0156 : 9d00     |     skip.eq r4,r0
+0158 : 3fd6     |     br L1_sh6
+015a : 89f8     |     ldw	r1,-2(bp)
+     :          | L1_sh5:
+015c : 9546     |     mov	sp, bp
+015e : c005     |     pop	bp
+0160 : c007     |     pop	pc
+     :          | _parseline:
+0162 : be01     |     push	r1
+0164 : be05     |     push	bp
+0166 : 9585     |     mov	bp, sp
+0168 : 0014     |     ldi	r4, 2
+016a : 97a6     |     sub	sp, sp, r4
+016c : 0844     |     la16	r4,_ecmd+2
+016e : bc0f     |     
+0170 : b420     |     stw	r0(r4),r0
+0172 : 8813     |     ldw	r4,4(bp)
+0174 : 8dfb     |     stw	-2(bp),r4
+0176 : 0fa4     |     la16	r4,L2_sh7_sh
+0178 : bc03     |     
+017a : c204     |     br.r r4
+     :          | L2_sh4_sh:
+017c : 0844     |     la16	r4,_ecmd+2
+017e : bc0f     |     
+0180 : b024     |     ldw	r4,r0(r4)
+0182 : da33     |     shl	r4, r4, 1
+0184 : 0853     |     la16	r3,_ecmd+4
+0186 : bc0e     |     
+0188 : 951c     |     add	r4,r4,r3
+018a : 89fa     |     ldw	r3,-2(bp)
+018c : b423     |     stw	r0(r4),r3
+018e : 89fb     |     ldw	r4,-2(bp)
+0190 : be04     |     push	r4
+0192 : 08e4     |     la16	r4,_nspace
+0194 : bc03     |     
+0196 : a279     |     addi	r1,pc,2
+0198 : c204     |     br.r	r4
+019a : 0012     |     ldi	r2,2
+019c : 9596     |     add	sp,sp,r2
+019e : 0843     |     la16	r3,_ecmd+2
+01a0 : bc0e     |     
+01a2 : b01b     |     ldw	r3,r0(r3)
+01a4 : da2e     |     shl	r3, r3, 1
+01a6 : 08a2     |     la16	r2,_ecmd+14
+01a8 : bc0d     |     
+01aa : 94d3     |     add	r3,r3,r2
+01ac : b419     |     stw	r0(r3),r1
+01ae : 000c     |     ld16	r4, 1
+01b0 : 0843     |     la16	r3,_ecmd+2
+01b2 : bc0e     |     
+01b4 : b01b     |     ldw	r3,r0(r3)
+01b6 : da2e     |     shl	r3, r3, 1
+01b8 : 08a2     |     la16	r2,_ecmd+14
+01ba : bc0d     |     
+01bc : 94d3     |     add	r3,r3,r2
+01be : b01b     |     ldw	r3,r0(r3)
+01c0 : a21b     |     addi	r3,r3,1
+01c2 : 8dfa     |     stw	-2(bp),r3
+01c4 : 0843     |     la16	r3,_ecmd+2
+01c6 : bc0e     |     
+01c8 : b01a     |     ldw	r2,r0(r3)
+01ca : 94a4     |     add	r4,r2,r4
+01cc : b41c     |     stw	r0(r3),r4
+01ce : 0844     |     la16	r4,_ecmd+2
+01d0 : bc0f     |     
+01d2 : b024     |     ldw	r4,r0(r4)
+01d4 : 0023     |     ld16	r3, 4
+01d6 : 9d1c     |     skip.gt	r4,r3
+01d8 : 201a     |     br	L3_sh5_sh
+01da : 0424     |     la16	r4,L3_sh8_sh
+01dc : bc0f     |     
+01de : be04     |     push	r4
+01e0 : 0b84     |     la16	r4,_printf
+01e2 : bc07     |     
+01e4 : a279     |     addi	r1,pc,2
+01e6 : c204     |     br.r	r4
+01e8 : 0012     |     ldi	r2,2
+01ea : 9596     |     add	sp,sp,r2
+01ec : 9401     |     mov	r1,r0
+01ee : 0004     |     la16	r4,L2_sh2_sh
+01f0 : bc07     |     
+01f2 : c204     |     br.r r4
+     :          | L3_sh5_sh:
+01f4 : 89fb     |     ldw	r4,-2(bp)
+01f6 : b224     |     ldb	r4,r0(r4)
+01f8 : b904     |     sext	r4,r4
+01fa : 9d00     |     skip.eq r4,r0
+01fc : 3f7e     |     br L2_sh4_sh
+01fe : 0009     |     ld16	r1, 1
+     :          | L2_sh2_sh:
+0200 : 9546     |     mov	sp, bp
+0202 : c005     |     pop	bp
+0204 : c007     |     pop	pc
+     :          | _nulterminate:
+0206 : be01     |     push	r1
+0208 : be05     |     push	bp
+020a : 9585     |     mov	bp, sp
+020c : 0024     |     ldi	r4, 4
+020e : 97a6     |     sub	sp, sp, r4
+0210 : 0834     |     la16	r4,_ecmd
+0212 : bc0f     |     
+0214 : 8df3     |     stw	-4(bp),r4
+0216 : 91f8     |     stw	-2(bp),r0
+0218 : 01a4     |     la16	r4,L4_sh3_sh
+021a : bc07     |     
+021c : c204     |     br.r r4
+     :          | L4_sh0_sh:
+021e : 89fb     |     ldw	r4,-2(bp)
+0220 : da33     |     shl	r4, r4, 1
+0222 : 89f2     |     ldw	r3,-4(bp)
+0224 : 0072     |     ld16	r2, 14
+0226 : 94d3     |     add	r3,r3,r2
+0228 : 951c     |     add	r4,r4,r3
+022a : b024     |     ldw	r4,r0(r4)
+022c : b620     |     stb	r0(r4),r0
+     :          | L4_sh1_sh:
+022e : 89fb     |     ldw	r4,-2(bp)
+0230 : a224     |     addi	r4,r4,1
+0232 : 8dfb     |     stw	-2(bp),r4
+     :          | L4_sh3_sh:
+0234 : 89fb     |     ldw	r4,-2(bp)
+0236 : da33     |     shl	r4, r4, 1
+0238 : 89f2     |     ldw	r3,-4(bp)
+023a : a29b     |     addi	r3,r3,4
+023c : 951c     |     add	r4,r4,r3
+023e : b024     |     ldw	r4,r0(r4)
+0240 : 9d00     |     skip.eq r4,r0
+0242 : 3fda     |     br L4_sh0_sh
+     :          | L3_sh9_sh:
+0244 : 9546     |     mov	sp, bp
+0246 : c005     |     pop	bp
+0248 : c007     |     pop	pc
      :          | _fork:
-0034 : be01     |     push r1
-0036 : be05     |     push bp
-0038 : 9585     |     mov bp, sp
-003a : 0009     |     ldi r1, 1
-003c : 2032     |     br dosyscall_usys
+024a : be01     |     push r1
+024c : be05     |     push bp
+024e : 9585     |     mov bp, sp
+0250 : 0009     |     ldi r1, 1
+0252 : 203c     |     br dosyscall_usys
      :          | _exit:
-003e : be01     |     push r1
-0040 : be05     |     push bp
-0042 : 9585     |     mov bp, sp
-0044 : 0011     |     ldi r1, 2
-0046 : 2028     |     br dosyscall_usys
+0254 : be01     |     push r1
+0256 : be05     |     push bp
+0258 : 9585     |     mov bp, sp
+025a : 0011     |     ldi r1, 2
+025c : 2032     |     br dosyscall_usys
      :          | _wait:
-0048 : be01     |     push r1
-004a : be05     |     push bp
-004c : 9585     |     mov bp, sp
-004e : 0019     |     ldi r1, 3
-0050 : 201e     |     br dosyscall_usys
+025e : be01     |     push r1
+0260 : be05     |     push bp
+0262 : 9585     |     mov bp, sp
+0264 : 0019     |     ldi r1, 3
+0266 : 2028     |     br dosyscall_usys
      :          | _exec:
-0052 : be01     |     push r1
-0054 : be05     |     push bp
-0056 : 9585     |     mov bp, sp
-0058 : 0039     |     ldi r1, 7
-005a : 2014     |     br dosyscall_usys
+0268 : be01     |     push r1
+026a : be05     |     push bp
+026c : 9585     |     mov bp, sp
+026e : 0039     |     ldi r1, 7
+0270 : 201e     |     br dosyscall_usys
      :          | _read:
-005c : be01     |     push r1
-005e : be05     |     push bp
-0060 : 9585     |     mov bp, sp
-0062 : 0029     |     ldi r1, 5
-0064 : 200a     |     br dosyscall_usys
+0272 : be01     |     push r1
+0274 : be05     |     push bp
+0276 : 9585     |     mov bp, sp
+0278 : 0029     |     ldi r1, 5
+027a : 2014     |     br dosyscall_usys
+     :          | _open:
+027c : be01     |     push r1
+027e : be05     |     push bp
+0280 : 9585     |     mov bp, sp
+0282 : 0079     |     ldi r1, 15
+0284 : 200a     |     br dosyscall_usys
      :          | _write:
-0066 : be01     |     push r1
-0068 : be05     |     push bp
-006a : 9585     |     mov bp, sp
-006c : 0081     |     ldi r1, 16
-006e : 2000     |     br dosyscall_usys
+0286 : be01     |     push r1
+0288 : be05     |     push bp
+028a : 9585     |     mov bp, sp
+028c : 0081     |     ldi r1, 16
+028e : 2000     |     br dosyscall_usys
      :          | dosyscall_usys:
-0070 : be01     |     push r1
-0072 : c400     |     syscall
-0074 : c004     |     pop r4 ; this pops r1 (syscall number) from the stack into a random reg
-0076 : c005     |     pop bp
-0078 : c007     |     pop pc
-     :          | _printf:
-007a : be01     |     push	r1
-007c : be05     |     push	bp
-007e : 9585     |     mov	bp, sp
-0080 : 0044     |     ldi	r4, 8
-0082 : 97a6     |     sub	sp, sp, r4
-0084 : 0764     |     la16	r4,_pbuf+64
-0086 : bc07     |     
-0088 : b420     |     stw	r0(r4),r0
-008a : 0044     |     ldi	r4, 8
-008c : 952c     |     add	r4, r4, bp
-008e : 8de3     |     stw	-8(bp),r4
-0090 : 91e8     |     stw	-6(bp),r0
-0092 : 0ea4     |     la16	r4,L8_ulib
-0094 : bc03     |     
-0096 : c204     |     br.r r4
-     :          | L5_ulib:
-0098 : 89fb     |     ldw	r4,-2(bp)
-009a : 012b     |     ld16	r3, 37
-009c : 9d19     |     skip.ne	r4,r3
-009e : 2020     |     br	L9_ulib
-00a0 : 0764     |     la16	r4,_pbuf+64
-00a2 : bc07     |     
-00a4 : b024     |     ldw	r4,r0(r4)
-00a6 : 0563     |     la16	r3,_pbuf
-00a8 : bc06     |     
-00aa : 951c     |     add	r4,r4,r3
-00ac : 89fa     |     ldw	r3,-2(bp)
-00ae : b623     |     stb	r0(r4),r3
-00b0 : 0764     |     la16	r4,_pbuf+64
-00b2 : bc07     |     
-00b4 : b023     |     ldw	r3,r0(r4)
-00b6 : a21b     |     addi	r3,r3,1
-00b8 : b423     |     stw	r0(r4),r3
-00ba : 0e74     |     la16	r4,L6_ulib
-00bc : bc03     |     
-00be : c204     |     br.r r4
-     :          | L9_ulib:
-00c0 : 89eb     |     ldw	r4,-6(bp)
-00c2 : a224     |     addi	r4,r4,1
-00c4 : 8deb     |     stw	-6(bp),r4
-00c6 : 881a     |     ldw	r3,6(bp)
-00c8 : 951c     |     add	r4,r4,r3
-00ca : b224     |     ldb	r4,r0(r4)
-00cc : b904     |     sext	r4,r4
-00ce : 07fb     |     ld16	r3, 255
-00d0 : 991c     |     and	r4,r4,r3
-00d2 : 8dfb     |     stw	-2(bp),r4
-00d4 : 89fb     |     ldw	r4,-2(bp)
-00d6 : 9d00     |     skip.eq r4,r0
-00d8 : 2006     |     br L13_ulib
-00da : 0f44     |     la16	r4,L7_ulib
-00dc : bc03     |     
-00de : c204     |     br.r r4
-     :          | L13_ulib:
-00e0 : 89fb     |     ldw	r4,-2(bp)
-00e2 : 0343     |     ld16	r3, 104
-00e4 : 9d19     |     skip.ne	r4,r3
-00e6 : 20e6     |     br	L16_ulib
-00e8 : 9d1b     |     skip.lte	r4,r3
-00ea : 201a     |     br	L37_ulib
-     :          | L36_ulib:
-00ec : 89fb     |     ldw	r4,-2(bp)
-00ee : 012b     |     ld16	r3, 37
-00f0 : 9d19     |     skip.ne	r4,r3
-00f2 : 2086     |     br	L2_ulib9_ulib
-00f4 : 9d1d     |     skip.gte	r4,r3
-00f6 : 20a2     |     br	L15_ulib
-     :          | L38_ulib:
-00f8 : 89fb     |     ldw	r4,-2(bp)
-00fa : 0323     |     ld16	r3, 100
-00fc : 9d19     |     skip.ne	r4,r3
-00fe : 20ce     |     br	L16_ulib
-0100 : 0cd4     |     la16	r4,L15_ulib
-0102 : bc03     |     
-0104 : c204     |     br.r r4
-     :          | L37_ulib:
-0106 : 89fb     |     ldw	r4,-2(bp)
-0108 : 0383     |     ld16	r3, 112
-010a : 9d19     |     skip.ne	r4,r3
-010c : 20c0     |     br	L16_ulib
-010e : 039a     |     ld16	r2, 115
-0110 : 9d11     |     skip.ne	r4,r2
-0112 : 2012     |     br	L19_ulib
-0114 : 9d1d     |     skip.gte	r4,r3
-0116 : 2082     |     br	L15_ulib
-     :          | L39_ulib:
-0118 : 89fb     |     ldw	r4,-2(bp)
-011a : 03c3     |     ld16	r3, 120
-011c : 9d19     |     skip.ne	r4,r3
-011e : 20ae     |     br	L16_ulib
-0120 : 0cd4     |     la16	r4,L15_ulib
-0122 : bc03     |     
-0124 : c204     |     br.r r4
-     :          | L19_ulib:
-0126 : 0474     |     la16	r4,_breek
-0128 : bc07     |     
-012a : a279     |     addi	r1,pc,2
-012c : c204     |     br.r	r4
-012e : 89e3     |     ldw	r4,-8(bp)
-0130 : a263     |     addi	r3,r4,2
-0132 : 8de2     |     stw	-8(bp),r3
-0134 : b024     |     ldw	r4,r0(r4)
-0136 : 8df3     |     stw	-4(bp),r4
-0138 : 9d00     |     skip.eq r4,r0
-013a : 202e     |     br L2_ulib6_ulib
-013c : 0524     |     la16	r4,L2_ulib2
-013e : bc07     |     
-0140 : 8df3     |     stw	-4(bp),r4
-0142 : 0b54     |     la16	r4,L2_ulib6_ulib
-0144 : bc03     |     
-0146 : c204     |     br.r r4
-     :          | L2_ulib3_ulib:
-0148 : 0764     |     la16	r4,_pbuf+64
-014a : bc07     |     
-014c : b024     |     ldw	r4,r0(r4)
-014e : 0563     |     la16	r3,_pbuf
-0150 : bc06     |     
-0152 : 951c     |     add	r4,r4,r3
-0154 : 89f2     |     ldw	r3,-4(bp)
-0156 : b21b     |     ldb	r3,r0(r3)
-0158 : b623     |     stb	r0(r4),r3
-015a : 0764     |     la16	r4,_pbuf+64
-015c : bc07     |     
-015e : b023     |     ldw	r3,r0(r4)
-0160 : a21b     |     addi	r3,r3,1
-0162 : b423     |     stw	r0(r4),r3
-     :          | L2_ulib4_ulib:
-0164 : 89f3     |     ldw	r4,-4(bp)
-0166 : a224     |     addi	r4,r4,1
-0168 : 8df3     |     stw	-4(bp),r4
-     :          | L2_ulib6_ulib:
-016a : 89f3     |     ldw	r4,-4(bp)
-016c : b224     |     ldb	r4,r0(r4)
-016e : b904     |     sext	r4,r4
-0170 : 9d00     |     skip.eq r4,r0
-0172 : 3fd4     |     br L2_ulib3_ulib
-0174 : 0e74     |     la16	r4,L16_ulib
-0176 : bc03     |     
-0178 : c204     |     br.r r4
-     :          | L2_ulib9_ulib:
-017a : 0764     |     la16	r4,_pbuf+64
-017c : bc07     |     
-017e : b024     |     ldw	r4,r0(r4)
-0180 : 0563     |     la16	r3,_pbuf
-0182 : bc06     |     
-0184 : 951c     |     add	r4,r4,r3
-0186 : 012b     |     ld16	r3, 37
-0188 : b623     |     stb	r0(r4),r3
-018a : 0764     |     la16	r4,_pbuf+64
-018c : bc07     |     
-018e : b023     |     ldw	r3,r0(r4)
-0190 : a21b     |     addi	r3,r3,1
-0192 : b423     |     stw	r0(r4),r3
-0194 : 0e74     |     la16	r4,L16_ulib
-0196 : bc03     |     
-0198 : c204     |     br.r r4
-     :          | L15_ulib:
-019a : 0764     |     la16	r4,_pbuf+64
-019c : bc07     |     
-019e : b024     |     ldw	r4,r0(r4)
-01a0 : 0563     |     la16	r3,_pbuf
-01a2 : bc06     |     
-01a4 : 951c     |     add	r4,r4,r3
-01a6 : 012b     |     ld16	r3, 37
-01a8 : b623     |     stb	r0(r4),r3
-01aa : 0764     |     la16	r4,_pbuf+64
-01ac : bc07     |     
-01ae : b023     |     ldw	r3,r0(r4)
-01b0 : a21b     |     addi	r3,r3,1
-01b2 : b423     |     stw	r0(r4),r3
-01b4 : 0764     |     la16	r4,_pbuf+64
-01b6 : bc07     |     
-01b8 : b024     |     ldw	r4,r0(r4)
-01ba : 0563     |     la16	r3,_pbuf
-01bc : bc06     |     
-01be : 951c     |     add	r4,r4,r3
-01c0 : 89fa     |     ldw	r3,-2(bp)
-01c2 : b623     |     stb	r0(r4),r3
-01c4 : 0764     |     la16	r4,_pbuf+64
-01c6 : bc07     |     
-01c8 : b023     |     ldw	r3,r0(r4)
-01ca : a21b     |     addi	r3,r3,1
-01cc : b423     |     stw	r0(r4),r3
-     :          | L16_ulib:
-01ce : 89eb     |     ldw	r4,-6(bp)
-01d0 : a224     |     addi	r4,r4,1
-01d2 : 8deb     |     stw	-6(bp),r4
-     :          | L8_ulib:
-01d4 : 89eb     |     ldw	r4,-6(bp)
-01d6 : 881a     |     ldw	r3,6(bp)
-01d8 : 951c     |     add	r4,r4,r3
-01da : b224     |     ldb	r4,r0(r4)
-01dc : b904     |     sext	r4,r4
-01de : 07fb     |     ld16	r3, 255
-01e0 : 991c     |     and	r4,r4,r3
-01e2 : 8dfb     |     stw	-2(bp),r4
-01e4 : 9d00     |     skip.eq r4,r0
-01e6 : 3eb0     |     br L5_ulib
+0290 : be01     |     push r1
+0292 : c400     |     syscall
+0294 : c004     |     pop r4 ; this pops r1 (syscall number) from the stack into a random reg
+0296 : c005     |     pop bp
+0298 : c007     |     pop pc
+     :          | _printint:
+029a : be01     |     push	r1
+029c : be05     |     push	bp
+029e : 9585     |     mov	bp, sp
+02a0 : 00e4     |     ldi	r4, 28
+02a2 : 97a6     |     sub	sp, sp, r4
+02a4 : 8822     |     ldw	r3,8(bp)
+02a6 : 9cc1     |     skip.ne	r3,r0
+02a8 : 2026     |     br	L4_ulib
+02aa : 8812     |     ldw	r3,4(bp)
+02ac : 9cc2     |     skip.lt r3, r0
+02ae : 200a     |     br L7_ulib
+02b0 : 000c     |     ld16	r4, 1
+02b2 : 8dab     |     stw	-22(bp),r4
+02b4 : 05e4     |     la16	r4,L8_ulib
+02b6 : bc07     |     
+02b8 : c204     |     br.r r4
      :          | L7_ulib:
-01e8 : 0764     |     la16	r4,_pbuf+64
-01ea : bc07     |     
-01ec : b024     |     ldw	r4,r0(r4)
-01ee : 0563     |     la16	r3,_pbuf
-01f0 : bc06     |     
-01f2 : 951c     |     add	r4,r4,r3
-01f4 : b620     |     stb	r0(r4),r0
-01f6 : 0764     |     la16	r4,_pbuf+64
-01f8 : bc07     |     
-01fa : b024     |     ldw	r4,r0(r4)
-01fc : be04     |     push	r4
-01fe : 0564     |     la16	r4,_pbuf
-0200 : bc07     |     
-0202 : be04     |     push	r4
-0204 : 8813     |     ldw	r4,4(bp)
-0206 : be04     |     push	r4
-0208 : 0334     |     la16	r4,_write
-020a : bc03     |     
-020c : a279     |     addi	r1,pc,2
-020e : c204     |     br.r	r4
-0210 : 0032     |     ldi	r2,6
-0212 : 9596     |     add	sp,sp,r2
+02ba : 91a8     |     stw	-22(bp),r0
+     :          | L8_ulib:
+02bc : 89ab     |     ldw	r4,-22(bp)
+02be : 8c23     |     stw	8(bp),r4
+02c0 : 9d01     |     skip.ne	r4,r0
+02c2 : 200c     |     br	L4_ulib
+02c4 : 8813     |     ldw	r4,4(bp)
+02c6 : 9624     |     sub	r4,r0,r4
+02c8 : 8df3     |     stw	-4(bp),r4
+02ca : 06a4     |     la16	r4,L5_ulib
+02cc : bc07     |     
+02ce : c204     |     br.r r4
+     :          | L4_ulib:
+02d0 : 8813     |     ldw	r4,4(bp)
+02d2 : 8df3     |     stw	-4(bp),r4
+     :          | L5_ulib:
+02d4 : 91f8     |     stw	-2(bp),r0
+     :          | L9_ulib:
+02d6 : 89fb     |     ldw	r4,-2(bp)
+02d8 : a223     |     addi	r3,r4,1
+02da : 8dfa     |     stw	-2(bp),r3
+02dc : 1f63     |     ldi	r3, -20
+02de : 94eb     |     add	r3, r3, bp
+02e0 : 951c     |     add	r4,r4,r3
+02e2 : 8d93     |     stw	-28(bp),r4
+02e4 : 89f2     |     ldw	r3,-4(bp)
+02e6 : 8da2     |     stw	-24(bp),r3
+02e8 : 8819     |     ldw	r2,6(bp)
+02ea : 8d99     |     stw	-26(bp),r2
+02ec : be03     |     push r3
+02ee : be02     |     push r2
+02f0 : 0032     |     ldi r2, 6
+02f2 : 95d1     |     add r1, pc, r2
+02f4 : 0082     |     la16 r2, _mod
+02f6 : bc0d     |     
+02f8 : c202     |     br.r r2
+02fa : a2b6     |     addi sp, sp, 4
+02fc : 076c     |     la16	r4,L3_ulib
+02fe : bc0f     |     
+0300 : 9464     |     add	r4,r1,r4
+0302 : b224     |     ldb	r4,r0(r4)
+0304 : 8992     |     ldw	r3,-28(bp)
+0306 : b61c     |     stb	r0(r3),r4
+     :          | L10_ulib:
+0308 : 89f3     |     ldw	r4,-4(bp)
+030a : 881a     |     ldw	r3,6(bp)
+030c : be04     |     push r4
+030e : be03     |     push r3
+0310 : 0032     |     ldi r2, 6
+0312 : 95d1     |     add r1, pc, r2
+0314 : 0e82     |     la16 r2, _div
+0316 : bc09     |     
+0318 : c202     |     br.r r2
+031a : a2b6     |     addi sp, sp, 4
+031c : 8df0     |     stw	-4(bp),r1
+031e : 9c40     |     skip.eq r1,r0
+0320 : 3fb4     |     br L9_ulib
+0322 : 8823     |     ldw	r4,8(bp)
+0324 : 9d01     |     skip.ne	r4,r0
+0326 : 2038     |     br	L15_ulib
+0328 : 89fb     |     ldw	r4,-2(bp)
+032a : a223     |     addi	r3,r4,1
+032c : 8dfa     |     stw	-2(bp),r3
+032e : 1f63     |     ldi	r3, -20
+0330 : 94eb     |     add	r3, r3, bp
+0332 : 951c     |     add	r4,r4,r3
+0334 : 016b     |     ld16	r3, 45
+0336 : b623     |     stb	r0(r4),r3
+0338 : 0b04     |     la16	r4,L15_ulib
+033a : bc07     |     
+033c : c204     |     br.r r4
+     :          | L14_ulib:
+033e : 0bf4     |     la16	r4,_pbuf+64
+0340 : bc0f     |     
+0342 : b024     |     ldw	r4,r0(r4)
+0344 : 09f3     |     la16	r3,_pbuf
+0346 : bc0e     |     
+0348 : 951c     |     add	r4,r4,r3
+034a : 89fa     |     ldw	r3,-2(bp)
+034c : 1f62     |     ldi	r2, -20
+034e : 94aa     |     add	r2, r2, bp
+0350 : 94d3     |     add	r3,r3,r2
+0352 : b21b     |     ldb	r3,r0(r3)
+0354 : b623     |     stb	r0(r4),r3
+0356 : 0bf4     |     la16	r4,_pbuf+64
+0358 : bc0f     |     
+035a : b023     |     ldw	r3,r0(r4)
+035c : a21b     |     addi	r3,r3,1
+035e : b423     |     stw	r0(r4),r3
+     :          | L15_ulib:
+0360 : 89fb     |     ldw	r4,-2(bp)
+0362 : a424     |     subi	r4,r4,1
+0364 : 8dfb     |     stw	-2(bp),r4
+0366 : 9d02     |     skip.lt r4, r0
+0368 : 3fd4     |     br L14_ulib
      :          | L2_ulib:
-0214 : 9546     |     mov	sp, bp
-0216 : c005     |     pop	bp
-0218 : c007     |     pop	pc
-     :          | _gets:
-021a : be01     |     push	r1
-021c : be05     |     push	bp
-021e : 9585     |     mov	bp, sp
-0220 : 0024     |     ldi	r4, 4
-0222 : 97a6     |     sub	sp, sp, r4
-0224 : 91f0     |     stw	-4(bp),r0
-0226 : 03e4     |     la16	r4,L46_ulib
-0228 : bc07     |     
-022a : c204     |     br.r r4
-     :          | L43_ulib:
-022c : 000c     |     ld16	r4, 1
-022e : be04     |     push	r4
-0230 : 1ffc     |     ldi	r4, -1
-0232 : 952c     |     add	r4, r4, bp
-0234 : be04     |     push	r4
-0236 : 8813     |     ldw	r4,4(bp)
-0238 : be04     |     push	r4
-023a : 02e4     |     la16	r4,_read
-023c : bc03     |     
-023e : a279     |     addi	r1,pc,2
-0240 : c204     |     br.r	r4
-0242 : 0032     |     ldi	r2,6
-0244 : 9596     |     add	sp,sp,r2
-0246 : 8bff     |     ldb	r4,-1(bp)
-0248 : b904     |     sext	r4,r4
-024a : 006b     |     ld16	r3, 13
-024c : 9d19     |     skip.ne	r4,r3
-024e : 200c     |     br	L5_ulib0
-0250 : 0053     |     ld16	r3, 10
-0252 : 9d19     |     skip.ne	r4,r3
-0254 : 2006     |     br	L5_ulib0
-0256 : 01e3     |     ld16	r3, 60
-0258 : 9d18     |     skip.eq r4,r3
-025a : 2010     |     br L47_ulib
-     :          | L5_ulib0:
-025c : 89f3     |     ldw	r4,-4(bp)
-025e : 881a     |     ldw	r3,6(bp)
-0260 : 951c     |     add	r4,r4,r3
-0262 : b620     |     stb	r0(r4),r0
-0264 : 89f0     |     ldw	r1,-4(bp)
-0266 : 0434     |     la16	r4,L42_ulib
-0268 : bc07     |     
-026a : c204     |     br.r r4
-     :          | L47_ulib:
-026c : 89f3     |     ldw	r4,-4(bp)
-026e : 881a     |     ldw	r3,6(bp)
-0270 : 951c     |     add	r4,r4,r3
-0272 : 8bfe     |     ldb	r3,-1(bp)
-0274 : b623     |     stb	r0(r4),r3
-0276 : 89f3     |     ldw	r4,-4(bp)
-0278 : a224     |     addi	r4,r4,1
-027a : 8df3     |     stw	-4(bp),r4
-     :          | L44_ulib:
-027c : 89f3     |     ldw	r4,-4(bp)
-027e : 8822     |     ldw	r3,8(bp)
-0280 : 9d1c     |     skip.gt	r4,r3
-0282 : 3fa8     |     br	L43_ulib
-0284 : 9401     |     mov	r1,r0
-     :          | L42_ulib:
-0286 : 9546     |     mov	sp, bp
-0288 : c005     |     pop	bp
-028a : c007     |     pop	pc
-     :          | _halt:
-028c : fe00     |     hlt
-     :          | _breek:
-028e : be01     |     push r1
-0290 : ca00     |     brk
-0292 : c007     |     pop pc
-     :          | L2_ls:
-0294 : 4c53     |     defb 76
-0296 : 2069     |     defb 32
-0298 : 7320     |     defb 115
-029a : 7275     |     defb 114
-029c : 6e6e     |     defb 110
-029e : 696e     |     defb 105
-02a0 : 6721     |     defb 103
-02a2 : 0a00     |     defb 10
+036a : 9546     |     mov	sp, bp
+036c : c005     |     pop	bp
+036e : c007     |     pop	pc
+     :          | _printf:
+0370 : be01     |     push	r1
+0372 : be05     |     push	bp
+0374 : 9585     |     mov	bp, sp
+0376 : 0044     |     ldi	r4, 8
+0378 : 97a6     |     sub	sp, sp, r4
+037a : 0bf4     |     la16	r4,_pbuf+64
+037c : bc0f     |     
+037e : b420     |     stw	r0(r4),r0
+0380 : 0044     |     ldi	r4, 8
+0382 : 952c     |     add	r4, r4, bp
+0384 : 8de3     |     stw	-8(bp),r4
+0386 : 91e8     |     stw	-6(bp),r0
+0388 : 0884     |     la16	r4,L2_ulib5
+038a : bc0b     |     
+038c : c204     |     br.r r4
      :          | L2_ulib2:
-02a4 : 286e     |     defb 40
-02a6 : 756c     |     defb 117
-02a8 : 6c29     |     defb 108
-02aa : 0000     |     defb 0
+038e : 89fb     |     ldw	r4,-2(bp)
+0390 : 012b     |     ld16	r3, 37
+0392 : 9d19     |     skip.ne	r4,r3
+0394 : 2020     |     br	L2_ulib6
+0396 : 0bf4     |     la16	r4,_pbuf+64
+0398 : bc0f     |     
+039a : b024     |     ldw	r4,r0(r4)
+039c : 09f3     |     la16	r3,_pbuf
+039e : bc0e     |     
+03a0 : 951c     |     add	r4,r4,r3
+03a2 : 89fa     |     ldw	r3,-2(bp)
+03a4 : b623     |     stb	r0(r4),r3
+03a6 : 0bf4     |     la16	r4,_pbuf+64
+03a8 : bc0f     |     
+03aa : b023     |     ldw	r3,r0(r4)
+03ac : a21b     |     addi	r3,r3,1
+03ae : b423     |     stw	r0(r4),r3
+03b0 : 0854     |     la16	r4,L2_ulib3
+03b2 : bc0b     |     
+03b4 : c204     |     br.r r4
+     :          | L2_ulib6:
+03b6 : 89eb     |     ldw	r4,-6(bp)
+03b8 : a224     |     addi	r4,r4,1
+03ba : 8deb     |     stw	-6(bp),r4
+03bc : 881a     |     ldw	r3,6(bp)
+03be : 951c     |     add	r4,r4,r3
+03c0 : b224     |     ldb	r4,r0(r4)
+03c2 : b904     |     sext	r4,r4
+03c4 : 07fb     |     ld16	r3, 255
+03c6 : 991c     |     and	r4,r4,r3
+03c8 : 8dfb     |     stw	-2(bp),r4
+03ca : 89fb     |     ldw	r4,-2(bp)
+03cc : 9d00     |     skip.eq r4,r0
+03ce : 2006     |     br L3_ulib0
+03d0 : 0924     |     la16	r4,L2_ulib4
+03d2 : bc0b     |     
+03d4 : c204     |     br.r r4
+     :          | L3_ulib0:
+03d6 : 89fb     |     ldw	r4,-2(bp)
+03d8 : 0343     |     ld16	r3, 104
+03da : 9d19     |     skip.ne	r4,r3
+03dc : 2062     |     br	L3_ulib5
+03de : 9d1b     |     skip.lte	r4,r3
+03e0 : 201a     |     br	L5_ulib4
+     :          | L5_ulib3:
+03e2 : 89fb     |     ldw	r4,-2(bp)
+03e4 : 012b     |     ld16	r3, 37
+03e6 : 9d19     |     skip.ne	r4,r3
+03e8 : 20cc     |     br	L4_ulib6
+03ea : 9d1d     |     skip.gte	r4,r3
+03ec : 20e8     |     br	L3_ulib2
+     :          | L5_ulib5:
+03ee : 89fb     |     ldw	r4,-2(bp)
+03f0 : 0323     |     ld16	r3, 100
+03f2 : 9d19     |     skip.ne	r4,r3
+03f4 : 2026     |     br	L3_ulib4
+03f6 : 06b4     |     la16	r4,L3_ulib2
+03f8 : bc0b     |     
+03fa : c204     |     br.r r4
+     :          | L5_ulib4:
+03fc : 89fb     |     ldw	r4,-2(bp)
+03fe : 0383     |     ld16	r3, 112
+0400 : 9d19     |     skip.ne	r4,r3
+0402 : 203c     |     br	L3_ulib5
+0404 : 039a     |     ld16	r2, 115
+0406 : 9d11     |     skip.ne	r4,r2
+0408 : 2058     |     br	L3_ulib6
+040a : 9d1d     |     skip.gte	r4,r3
+040c : 20c8     |     br	L3_ulib2
+     :          | L5_ulib6:
+040e : 89fb     |     ldw	r4,-2(bp)
+0410 : 03c3     |     ld16	r3, 120
+0412 : 9d19     |     skip.ne	r4,r3
+0414 : 202a     |     br	L3_ulib5
+0416 : 06b4     |     la16	r4,L3_ulib2
+0418 : bc0b     |     
+041a : c204     |     br.r r4
+     :          | L3_ulib4:
+041c : 000c     |     ld16	r4, 1
+041e : be04     |     push	r4
+0420 : 0054     |     ld16	r4, 10
+0422 : be04     |     push	r4
+0424 : 89e3     |     ldw	r4,-8(bp)
+0426 : a263     |     addi	r3,r4,2
+0428 : 8de2     |     stw	-8(bp),r3
+042a : b024     |     ldw	r4,r0(r4)
+042c : be04     |     push	r4
+042e : 04d4     |     la16	r4,_printint
+0430 : bc07     |     
+0432 : a279     |     addi	r1,pc,2
+0434 : c204     |     br.r	r4
+0436 : 0032     |     ldi	r2,6
+0438 : 9596     |     add	sp,sp,r2
+043a : 0854     |     la16	r4,L3_ulib3
+043c : bc0b     |     
+043e : c204     |     br.r r4
+     :          | L3_ulib5:
+0440 : be00     |     push	r0
+0442 : 0084     |     ld16	r4, 16
+0444 : be04     |     push	r4
+0446 : 89e3     |     ldw	r4,-8(bp)
+0448 : a263     |     addi	r3,r4,2
+044a : 8de2     |     stw	-8(bp),r3
+044c : b024     |     ldw	r4,r0(r4)
+044e : be04     |     push	r4
+0450 : 04d4     |     la16	r4,_printint
+0452 : bc07     |     
+0454 : a279     |     addi	r1,pc,2
+0456 : c204     |     br.r	r4
+0458 : 0032     |     ldi	r2,6
+045a : 9596     |     add	sp,sp,r2
+045c : 0854     |     la16	r4,L3_ulib3
+045e : bc0b     |     
+0460 : c204     |     br.r r4
+     :          | L3_ulib6:
+0462 : 0e54     |     la16	r4,_breek
+0464 : bc0b     |     
+0466 : a279     |     addi	r1,pc,2
+0468 : c204     |     br.r	r4
+046a : 89e3     |     ldw	r4,-8(bp)
+046c : a263     |     addi	r3,r4,2
+046e : 8de2     |     stw	-8(bp),r3
+0470 : b024     |     ldw	r4,r0(r4)
+0472 : 8df3     |     stw	-4(bp),r4
+0474 : 9d00     |     skip.eq r4,r0
+0476 : 202e     |     br L4_ulib3
+0478 : 07f4     |     la16	r4,L3_ulib9
+047a : bc0f     |     
+047c : 8df3     |     stw	-4(bp),r4
+047e : 0534     |     la16	r4,L4_ulib3
+0480 : bc0b     |     
+0482 : c204     |     br.r r4
+     :          | L4_ulib0:
+0484 : 0bf4     |     la16	r4,_pbuf+64
+0486 : bc0f     |     
+0488 : b024     |     ldw	r4,r0(r4)
+048a : 09f3     |     la16	r3,_pbuf
+048c : bc0e     |     
+048e : 951c     |     add	r4,r4,r3
+0490 : 89f2     |     ldw	r3,-4(bp)
+0492 : b21b     |     ldb	r3,r0(r3)
+0494 : b623     |     stb	r0(r4),r3
+0496 : 0bf4     |     la16	r4,_pbuf+64
+0498 : bc0f     |     
+049a : b023     |     ldw	r3,r0(r4)
+049c : a21b     |     addi	r3,r3,1
+049e : b423     |     stw	r0(r4),r3
+     :          | L4_ulib1:
+04a0 : 89f3     |     ldw	r4,-4(bp)
+04a2 : a224     |     addi	r4,r4,1
+04a4 : 8df3     |     stw	-4(bp),r4
+     :          | L4_ulib3:
+04a6 : 89f3     |     ldw	r4,-4(bp)
+04a8 : b224     |     ldb	r4,r0(r4)
+04aa : b904     |     sext	r4,r4
+04ac : 9d00     |     skip.eq r4,r0
+04ae : 3fd4     |     br L4_ulib0
+04b0 : 0854     |     la16	r4,L3_ulib3
+04b2 : bc0b     |     
+04b4 : c204     |     br.r r4
+     :          | L4_ulib6:
+04b6 : 0bf4     |     la16	r4,_pbuf+64
+04b8 : bc0f     |     
+04ba : b024     |     ldw	r4,r0(r4)
+04bc : 09f3     |     la16	r3,_pbuf
+04be : bc0e     |     
+04c0 : 951c     |     add	r4,r4,r3
+04c2 : 012b     |     ld16	r3, 37
+04c4 : b623     |     stb	r0(r4),r3
+04c6 : 0bf4     |     la16	r4,_pbuf+64
+04c8 : bc0f     |     
+04ca : b023     |     ldw	r3,r0(r4)
+04cc : a21b     |     addi	r3,r3,1
+04ce : b423     |     stw	r0(r4),r3
+04d0 : 0854     |     la16	r4,L3_ulib3
+04d2 : bc0b     |     
+04d4 : c204     |     br.r r4
+     :          | L3_ulib2:
+04d6 : 0bf4     |     la16	r4,_pbuf+64
+04d8 : bc0f     |     
+04da : b024     |     ldw	r4,r0(r4)
+04dc : 09f3     |     la16	r3,_pbuf
+04de : bc0e     |     
+04e0 : 951c     |     add	r4,r4,r3
+04e2 : 012b     |     ld16	r3, 37
+04e4 : b623     |     stb	r0(r4),r3
+04e6 : 0bf4     |     la16	r4,_pbuf+64
+04e8 : bc0f     |     
+04ea : b023     |     ldw	r3,r0(r4)
+04ec : a21b     |     addi	r3,r3,1
+04ee : b423     |     stw	r0(r4),r3
+04f0 : 0bf4     |     la16	r4,_pbuf+64
+04f2 : bc0f     |     
+04f4 : b024     |     ldw	r4,r0(r4)
+04f6 : 09f3     |     la16	r3,_pbuf
+04f8 : bc0e     |     
+04fa : 951c     |     add	r4,r4,r3
+04fc : 89fa     |     ldw	r3,-2(bp)
+04fe : b623     |     stb	r0(r4),r3
+0500 : 0bf4     |     la16	r4,_pbuf+64
+0502 : bc0f     |     
+0504 : b023     |     ldw	r3,r0(r4)
+0506 : a21b     |     addi	r3,r3,1
+0508 : b423     |     stw	r0(r4),r3
+     :          | L3_ulib3:
+050a : 89eb     |     ldw	r4,-6(bp)
+050c : a224     |     addi	r4,r4,1
+050e : 8deb     |     stw	-6(bp),r4
+     :          | L2_ulib5:
+0510 : 89eb     |     ldw	r4,-6(bp)
+0512 : 881a     |     ldw	r3,6(bp)
+0514 : 951c     |     add	r4,r4,r3
+0516 : b224     |     ldb	r4,r0(r4)
+0518 : b904     |     sext	r4,r4
+051a : 07fb     |     ld16	r3, 255
+051c : 991c     |     and	r4,r4,r3
+051e : 8dfb     |     stw	-2(bp),r4
+0520 : 9d00     |     skip.eq r4,r0
+0522 : 3e6a     |     br L2_ulib2
+     :          | L2_ulib4:
+0524 : 0bf4     |     la16	r4,_pbuf+64
+0526 : bc0f     |     
+0528 : b024     |     ldw	r4,r0(r4)
+052a : 09f3     |     la16	r3,_pbuf
+052c : bc0e     |     
+052e : 951c     |     add	r4,r4,r3
+0530 : b620     |     stb	r0(r4),r0
+0532 : 0bf4     |     la16	r4,_pbuf+64
+0534 : bc0f     |     
+0536 : b024     |     ldw	r4,r0(r4)
+0538 : be04     |     push	r4
+053a : 09f4     |     la16	r4,_pbuf
+053c : bc0f     |     
+053e : be04     |     push	r4
+0540 : 8813     |     ldw	r4,4(bp)
+0542 : be04     |     push	r4
+0544 : 0434     |     la16	r4,_write
+0546 : bc07     |     
+0548 : a279     |     addi	r1,pc,2
+054a : c204     |     br.r	r4
+054c : 0032     |     ldi	r2,6
+054e : 9596     |     add	sp,sp,r2
+     :          | L19_ulib:
+0550 : 9546     |     mov	sp, bp
+0552 : c005     |     pop	bp
+0554 : c007     |     pop	pc
+     :          | _gets:
+0556 : be01     |     push	r1
+0558 : be05     |     push	bp
+055a : 9585     |     mov	bp, sp
+055c : 0024     |     ldi	r4, 4
+055e : 97a6     |     sub	sp, sp, r4
+0560 : 91f0     |     stw	-4(bp),r0
+0562 : 0dc4     |     la16	r4,L63_ulib
+0564 : bc0b     |     
+0566 : c204     |     br.r r4
+     :          | L60_ulib:
+0568 : 000c     |     ld16	r4, 1
+056a : be04     |     push	r4
+056c : 1ffc     |     ldi	r4, -1
+056e : 952c     |     add	r4, r4, bp
+0570 : be04     |     push	r4
+0572 : 8813     |     ldw	r4,4(bp)
+0574 : be04     |     push	r4
+0576 : 0394     |     la16	r4,_read
+0578 : bc07     |     
+057a : a279     |     addi	r1,pc,2
+057c : c204     |     br.r	r4
+057e : 0032     |     ldi	r2,6
+0580 : 9596     |     add	sp,sp,r2
+0582 : 8bff     |     ldb	r4,-1(bp)
+0584 : b904     |     sext	r4,r4
+0586 : 006b     |     ld16	r3, 13
+0588 : 9d19     |     skip.ne	r4,r3
+058a : 200c     |     br	L67_ulib
+058c : 0053     |     ld16	r3, 10
+058e : 9d19     |     skip.ne	r4,r3
+0590 : 2006     |     br	L67_ulib
+0592 : 01e3     |     ld16	r3, 60
+0594 : 9d18     |     skip.eq r4,r3
+0596 : 2010     |     br L64_ulib
+     :          | L67_ulib:
+0598 : 89f3     |     ldw	r4,-4(bp)
+059a : 881a     |     ldw	r3,6(bp)
+059c : 951c     |     add	r4,r4,r3
+059e : b620     |     stb	r0(r4),r0
+05a0 : 89f0     |     ldw	r1,-4(bp)
+05a2 : 0e14     |     la16	r4,L5_ulib9
+05a4 : bc0b     |     
+05a6 : c204     |     br.r r4
+     :          | L64_ulib:
+05a8 : 89f3     |     ldw	r4,-4(bp)
+05aa : 881a     |     ldw	r3,6(bp)
+05ac : 951c     |     add	r4,r4,r3
+05ae : 8bfe     |     ldb	r3,-1(bp)
+05b0 : b623     |     stb	r0(r4),r3
+05b2 : 89f3     |     ldw	r4,-4(bp)
+05b4 : a224     |     addi	r4,r4,1
+05b6 : 8df3     |     stw	-4(bp),r4
+     :          | L61_ulib:
+05b8 : 89f3     |     ldw	r4,-4(bp)
+05ba : 8822     |     ldw	r3,8(bp)
+05bc : 9d1c     |     skip.gt	r4,r3
+05be : 3fa8     |     br	L60_ulib
+05c0 : 9401     |     mov	r1,r0
+     :          | L5_ulib9:
+05c2 : 9546     |     mov	sp, bp
+05c4 : c005     |     pop	bp
+05c6 : c007     |     pop	pc
+     :          | _halt:
+05c8 : fe00     |     hlt
+     :          | _breek:
+05ca : be01     |     push r1
+05cc : ca00     |     brk
+05ce : c007     |     pop pc
+     :          | _div:
+05d0 : be01     |     push r1
+05d2 : be05     |     push bp
+05d4 : 9585     |     mov bp, sp
+05d6 : 0082     |     ldi r2, 16
+05d8 : 9404     |     mov r4, r0
+05da : 91f8     |     stw -2(bp), r0
+     :          | divL1_pseudo_ops:
+05dc : a412     |     subi r2, r2, 1
+05de : da33     |     shl r4,r4,1
+05e0 : 0ff1     |     ld16 r1, 0xfffe
+05e2 : bdfc     |     
+05e4 : 990c     |     and r4, r4, r1
+05e6 : 0009     |     ldi r1, 1
+05e8 : de51     |     shl.r r1, r1, r2
+05ea : 881a     |     ldw r3, 6(bp)
+05ec : 98c9     |     and r1, r3, r1
+05ee : e051     |     shr.r r1, r1, r2
+05f0 : 9b0c     |     or r4, r4, r1
+05f2 : 8812     |     ldw r3, 4(bp)
+05f4 : 9ce7     |     skip.ulte r3, r4
+05f6 : 200c     |     br divL2_pseudo_ops
+05f8 : 971c     |     sub r4, r4, r3
+05fa : 0009     |     ldi r1, 1
+05fc : de51     |     shl.r r1, r1, r2
+05fe : 89fa     |     ldw r3, -2(bp)
+0600 : 9acb     |     or r3, r3, r1
+0602 : 8dfa     |     stw -2(bp), r3
+     :          | divL2_pseudo_ops:
+0604 : 9c80     |     skip.eq r2, r0
+0606 : 3fd4     |     br divL1_pseudo_ops
+0608 : 89f8     |     ldw r1, -2(bp)
+060a : 9546     |     mov	sp, bp
+060c : c005     |     pop	bp
+060e : c007     |     pop	pc
+     :          | _mod:
+0610 : be01     |     push r1
+0612 : be05     |     push bp
+0614 : 9585     |     mov bp, sp
+0616 : 0082     |     ldi r2, 16
+0618 : 9404     |     mov r4, r0
+061a : 91f8     |     stw -2(bp), r0
+     :          | modL1_pseudo_ops:
+061c : a412     |     subi r2, r2, 1
+061e : da33     |     shl r4,r4,1
+0620 : 0ff1     |     ld16 r1, 0xfffe
+0622 : bdfc     |     
+0624 : 990c     |     and r4, r4, r1
+0626 : 0009     |     ldi r1, 1
+0628 : de51     |     shl.r r1, r1, r2
+062a : 881a     |     ldw r3, 6(bp)
+062c : 98c9     |     and r1, r3, r1
+062e : e051     |     shr.r r1, r1, r2
+0630 : 9b0c     |     or r4, r4, r1
+0632 : 8812     |     ldw r3, 4(bp)
+0634 : 9ce7     |     skip.ulte r3, r4
+0636 : 200c     |     br modL2_pseudo_ops
+0638 : 971c     |     sub r4, r4, r3
+063a : 0009     |     ldi r1, 1
+063c : de51     |     shl.r r1, r1, r2
+063e : 89fa     |     ldw r3, -2(bp)
+0640 : 9acb     |     or r3, r3, r1
+0642 : 8dfa     |     stw -2(bp), r3
+     :          | modL2_pseudo_ops:
+0644 : 9c80     |     skip.eq r2, r0
+0646 : 3fd4     |     br modL1_pseudo_ops
+0648 : 9501     |     mov r1, r4 ; transfer result to r1
+064a : 9546     |     mov	sp, bp
+064c : c005     |     pop	bp
+064e : c007     |     pop	pc
+     :          | _mult:
+0650 : be01     |     push r1
+0652 : be05     |     push bp
+0654 : 9585     |     mov bp, sp
+0656 : 8811     |     ldw r2, 4(bp)
+0658 : 8819     |     ldw r2, 6(bp)
+065a : 9401     |     mov r1, r0 ; result reg
+065c : 9c9c     |     skip.gt r2, r3
+065e : 2006     |     br multL2_pseudo_ops
+0660 : 9484     |     mov r4, r2
+0662 : 94c2     |     mov r2, r3
+0664 : 9503     |     mov r3, r4
+     :          | multL2_pseudo_ops:
+0666 : 000c     |     ldi r4, 1
+0668 : 9ca4     |     skip.gt r2, r4
+066a : 200c     |     br multL3_pseudo_ops
+066c : a614     |     andi r4, r2, 1
+066e : 9d00     |     skip.eq r4, r0
+0670 : 9459     |     add r1, r1, r3
+0672 : dc29     |     shr r2, r2, 1
+0674 : da2e     |     shl r3, r3, 1
+0676 : 3fee     |     br multL2_pseudo_ops
+     :          | multL3_pseudo_ops:
+0678 : a614     |     andi r4, r2, 1
+067a : 9d00     |     skip.eq r4, r0
+067c : 9459     |     add r1, r1, r3
+067e : 9546     |     mov	sp, bp
+0680 : c005     |     pop	bp
+0682 : c007     |     pop	pc
+     :          | L3_sh8_sh:
+0684 : 746f     |     defb 116
+0686 : 6f20     |     defb 111
+0688 : 6d61     |     defb 109
+068a : 6e79     |     defb 110
+068c : 2061     |     defb 32
+068e : 7267     |     defb 114
+0690 : 756d     |     defb 117
+0692 : 656e     |     defb 101
+0694 : 7473     |     defb 116
+0696 : 210a     |     defb 33
+0698 : 0044     |     defb 0
+069a : 4d45     |     defb 77
+069c : 204f     |     defb 32
+069e : 5324     |     defb 83
+06a0 : 2000     |     defb 32
+     :          | L8_sh:
+06a2 : 7368     |     defb 115
+06a4 : 3a20     |     defb 58
+06a6 : 6765     |     defb 103
+06a8 : 7463     |     defb 116
+06aa : 6d64     |     defb 109
+06ac : 2072     |     defb 32
+06ae : 6574     |     defb 101
+06b0 : 7572     |     defb 117
+06b2 : 6e65     |     defb 110
+06b4 : 640a     |     defb 100
+06b6 : 0044     |     defb 0
+06b8 : 4d45     |     defb 77
+06ba : 2073     |     defb 32
+06bc : 6865     |     defb 104
+06be : 6c6c     |     defb 108
+06c0 : 2076     |     defb 32
+06c2 : 3120     |     defb 49
+06c4 : 7374     |     defb 115
+06c6 : 6172     |     defb 97
+06c8 : 7469     |     defb 116
+06ca : 6e67     |     defb 110
+06cc : 2e2e     |     defb 46
+06ce : 0a0a     |     defb 10
+06d0 : 0a0a     |     defb 10
+06d2 : 006d     |     defb 0
+06d4 : 6169     |     defb 97
+06d6 : 6e3a     |     defb 110
+06d8 : 2063     |     defb 32
+06da : 6f6e     |     defb 111
+06dc : 736f     |     defb 115
+06de : 6c65     |     defb 108
+06e0 : 2025     |     defb 32
+06e2 : 7800     |     defb 120
+     :          | L2_sh:
+06e4 : 2f63     |     defb 47
+06e6 : 6f6e     |     defb 111
+06e8 : 736f     |     defb 115
+06ea : 6c65     |     defb 108
+06ec : 0030     |     defb 0
+06ee : 3132     |     defb 49
+06f0 : 3334     |     defb 51
+06f2 : 3536     |     defb 53
+06f4 : 3738     |     defb 55
+06f6 : 3961     |     defb 57
+06f8 : 6263     |     defb 98
+06fa : 6465     |     defb 100
+06fc : 6600     |     defb 102
+     :          | L3_ulib9:
+06fe : 286e     |     defb 40
+0700 : 756c     |     defb 117
+0702 : 6c29     |     defb 108
+0704 : 0000     |     defb 0
+     :          | _ecmd:
+0706 : 0000     |     defs 24
+0708 : 0000     |     
+070a : 0000     |     
+070c : 0000     |     
+070e : 0000     |     
+0710 : 0000     |     
+0712 : 0000     |     
+0714 : 0000     |     
+0716 : 0000     |     
+0718 : 0000     |     
+071a : 0000     |     
+071c : 0000     |     
+     :          | _ibuf:
+071e : 0000     |     defs 32
+0720 : 0000     |     
+0722 : 0000     |     
+0724 : 0000     |     
+0726 : 0000     |     
+0728 : 0000     |     
+072a : 0000     |     
+072c : 0000     |     
+072e : 0000     |     
+0730 : 0000     |     
+0732 : 0000     |     
+0734 : 0000     |     
+0736 : 0000     |     
+0738 : 0000     |     
+073a : 0000     |     
+073c : 0000     |     
      :          | _pbuf:
-02ac : 0000     |     defs 66
-02ae : 0000     |     
-02b0 : 0000     |     
-02b2 : 0000     |     
-02b4 : 0000     |     
-02b6 : 0000     |     
-02b8 : 0000     |     
-02ba : 0000     |     
-02bc : 0000     |     
-02be : 0000     |     
-02c0 : 0000     |     
-02c2 : 0000     |     
-02c4 : 0000     |     
-02c6 : 0000     |     
-02c8 : 0000     |     
-02ca : 0000     |     
-02cc : 0000     |     
-02ce : 0000     |     
-02d0 : 0000     |     
-02d2 : 0000     |     
-02d4 : 0000     |     
-02d6 : 0000     |     
-02d8 : 0000     |     
-02da : 0000     |     
-02dc : 0000     |     
-02de : 0000     |     
-02e0 : 0000     |     
-02e2 : 0000     |     
-02e4 : 0000     |     
-02e6 : 0000     |     
-02e8 : 0000     |     
-02ea : 0000     |     
-02ec : 0000     |     
+073e : 0000     |     defs 66
+0740 : 0000     |     
+0742 : 0000     |     
+0744 : 0000     |     
+0746 : 0000     |     
+0748 : 0000     |     
+074a : 0000     |     
+074c : 0000     |     
+074e : 0000     |     
+0750 : 0000     |     
+0752 : 0000     |     
+0754 : 0000     |     
+0756 : 0000     |     
+0758 : 0000     |     
+075a : 0000     |     
+075c : 0000     |     
+075e : 0000     |     
+0760 : 0000     |     
+0762 : 0000     |     
+0764 : 0000     |     
+0766 : 0000     |     
+0768 : 0000     |     
+076a : 0000     |     
+076c : 0000     |     
+076e : 0000     |     
+0770 : 0000     |     
+0772 : 0000     |     
+0774 : 0000     |     
+0776 : 0000     |     
+0778 : 0000     |     
+077a : 0000     |     
+077c : 0000     |     
+077e : 0000     |     

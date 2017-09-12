@@ -14,7 +14,7 @@
 #define T_DEV  3   // Device
 
 
-#define NINODES 10
+#define NINODES 5
 #define MAXOPBLOCKS  10  // max # of blocks any FS op writes
 #define LOGSIZE      (MAXOPBLOCKS*3)  // max data blocks in on-disk log
 #define FSSIZE		1000 // 1000 blocks = 512kb
@@ -39,15 +39,17 @@ struct superblock {
 #define NINDIRECT (BSIZE / sizeof(uint))
 #define MAXFILE (NDIRECT + NINDIRECT)
 
+#define DEV_SD 0
+#define DEV_TERM 1
 
 // On-disk inode structure
 struct dinode {
-  uint type;           // File type
-	uint major;          // Major device number (T_DEV only)
-	uint minor;          // Minor device number (T_DEV only)
-  uint nlink;          // Number of links to inode in file system
+  uint type;           	// File type
+	uint major;           // Major device number (T_DEV only)
+	uint minor;         // Minor device number (T_DEV only)
+  uint nlink;          	// Number of links to inode in file system
   uint size;            // Size of file (bytes)
-  uint addrs[NDIRECT+1];   // Data block addresses
+  uint addrs[NDIRECT+1];// Data block addresses
 };
 
 // In-memory inode structure
@@ -57,7 +59,7 @@ struct inode {
 	uint inum;
 
 	uint type;         	   // File type
-//  uint major;          // Major device number (T_DEV only)
+	//uint major;          // Major device number (T_DEV only)
 //  uint minor;          // Minor device number (T_DEV only)
   uint nlink;          	 // Number of links to inode in file system
   uint size;             // Size of file (bytes)
@@ -67,7 +69,7 @@ struct inode {
 #define I_BUSY 0x1
 #define I_VALID 0x2
 
-// header for files on disk
+// header for executables on disk
 struct binhdr {
 	uint magic;
 	uint size;

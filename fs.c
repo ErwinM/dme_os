@@ -127,6 +127,10 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 	struct buf *b;
 	uint bn, tot, m;
 
+	kprintf("readi: ip(%x), type(%x)\n", ip->inum, ip->type);
+	if(ip->type == T_DEV){
+		return readterm(dst, n);
+	}
 
 	for(tot=0; tot<n; tot+=m, off+=m, dst+=m) {
 		b = bread(bmap(ip, off/BSIZE));

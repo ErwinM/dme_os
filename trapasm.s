@@ -18,7 +18,6 @@ _contextret:
 ; this means we need to restore the user registers which were saved
 ; to the kstack as a trapframe when we trapped
 ; sp is pointing at the bottom of tf (r1)
-
 	pop.u r1
 	pop.u r2
 	pop.u r3
@@ -33,6 +32,7 @@ _contextret:
 simpletrap:
 	push.u pc
 	push.u sp
+	push.u r1
 	push r1 				;trapnr
 	mov r1, sp  		; GOTCHA: pushing sp pushing the updated value not the old value!!
 	push r1
@@ -43,7 +43,7 @@ simpletrap:
 ; when we return from a (non context switch) trap
 trapret:
 ; we prob need to pop some more stuff of the stack but lets see
-	addi sp, sp, 2 	; pops sp of (used to pass argument to trap(*tf))
+	addi sp, sp, 4 	; pops sp and sR1 (used to pass argument to trap(*tf))
 	pop.u r1			 	; load return value to r1
 	pop.u sp			 	; pop sp (will not have changed)
 	pop.u pc			 	; will only have changed for exec syscall

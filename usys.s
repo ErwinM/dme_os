@@ -38,6 +38,14 @@ _read:
 	ldi r1, 5
 	br dosyscall
 
+_open:
+	push r1
+	push bp
+	mov bp, sp
+
+	ldi r1, 15
+	br dosyscall
+
 _write:
 	push r1
 	push bp

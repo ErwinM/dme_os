@@ -38,6 +38,24 @@ sys_read(void)
 	if(argptr(1, &buf, n) < 0)
 		halt();
 
-	//kprintf("sys_read\n");
-	return readterm(buf, n);
+	kprintf("sys_read: fd(%d)\n", fd);
+
+	return fileread(fd, buf, n);
+}
+
+uint
+sys_open(void)
+{
+	// open(path, mode)
+	// ustack: syscallnr - *buf - omod
+	char *path;
+	uint omod;
+
+	if(argstr(0, &path) < 0)
+		halt();
+	if(argint(1, omod) < 0)
+		halt();
+
+	return fileopen(path, omod);
+
 }

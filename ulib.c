@@ -5,6 +5,34 @@ struct {
 	int idx;
 } pbuf;
 
+static void
+printint(int xx, int base, int sign)
+{
+	static char digits[] = "0123456789abcdef";
+  char buf[16];
+  int i;
+  uint x;
+
+  if(sign && (sign = xx < 0))
+    x = -xx;
+  else
+    x = xx;
+
+  i = 0;
+
+  do{
+    buf[i++] = digits[x % base];
+  }while((x /= base) != 0);
+
+
+  if(sign)
+    buf[i++] = '-';
+
+  while(--i >= 0){
+    pbuf.data[pbuf.idx] = buf[i];
+		pbuf.idx++;
+	}
+}
 
 void
 printf(int fd, char *fmt, ...)
@@ -30,12 +58,12 @@ printf(int fd, char *fmt, ...)
       break;
     switch(c){
 		case 'd':
-			//printint(*argp++, 10, 1);
+			printint(*argp++, 10, 1);
       break;
     case 'x':
     case 'p':
 		case 'h':
-      //printint(*argp++, 16, 0);
+			printint(*argp++, 16, 0);
       break;
     case 's':
 			breek();

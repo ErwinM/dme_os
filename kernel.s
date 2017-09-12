@@ -66,7 +66,6 @@ _writepte:
 
 _readpt:
 ; readpt(ptb, pointer to uint[32])
-brk
 	push r1
 	push bp
 	mov bp, sp
@@ -83,7 +82,6 @@ _readptL1:
 	stw r0(r1), r4
 	skip.eq r1, r2
 	br _readptL1
-	brk
 	pop bp
 	pop pc
 
